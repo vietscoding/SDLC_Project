@@ -477,9 +477,9 @@ $admins   = getUsersByRole($conn, 'admin', $keyword);
                             <?= $row['id'] ?> - <?= htmlspecialchars($row['fullname']) ?> (<?= htmlspecialchars($row['email']) ?>)
                         </div>
                         <div class="user-actions">
-                            <a href="admin_edit_user.php?user_id=<?= $row['id'] ?>"><i class="fas fa-edit"></i> Edit</a>
-                            <a href="admin_delete_user.php?user_id=<?= $row['id'] ?>" onclick="return confirm('Delete this user?')"><i class="fas fa-trash-alt"></i> Delete</a>
-                        </div>
+    <span style="color: #888; font-style: italic;">Cannot edit admin user</span>
+</div>
+
                     </li>
                 <?php endwhile; ?>
             </ul>

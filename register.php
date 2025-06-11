@@ -9,7 +9,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $email = trim($_POST['email']);
     $password = $_POST['password'];
     $role = $_POST['role']; // 'student' or 'teacher'
-
+    $status = ($role == 'teacher') ? 'pending' : 'approved';
     if (!empty($fullname) && !empty($email) && !empty($password)) {
         // Check if email already exists
         $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
@@ -22,8 +22,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         } else {
             // Hash password
             $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (fullname, email, password, role) VALUES (?, ?, ?, ?)");
-            $stmt->bind_param("ssss", $fullname, $email, $hashedPassword, $role);
+            $stmt = $conn->prepare("INSERT INTO users (fullname, email, password, role, status) VALUES (?, ?, ?, ?, ?)");
+            $stmt->bind_param("sssss", $fullname, $email, $hashedPassword, $role, $status);
+
 
             if ($stmt->execute()) {
                 $success = "Registration successful! You can now log in.";
@@ -44,7 +45,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Register Account | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         /* Basic Reset */
         *, *::before, *::after {
@@ -54,28 +55,24 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         body {
-            font-family: 'Open Sans', sans-serif;
-            background: linear-gradient(135deg, #e0f2f7, #81d4fa); /* Light blue gradient */
-            color: #333;
-            line-height: 1.6;
-            min-height: 100vh;
+            font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            overflow: hidden;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 50%, #fbc2eb 100%);
+            padding: 20px; /* Add some padding for smaller screens */
         }
 
         .registration-container {
             background-color: #fff;
-            padding: 30px;
-            border-radius: 12px;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
-            width: 100%;
-            max-width: 360px;
-            text-align: left;
-            animation: slideIn 0.5s ease-out;
-            position: relative;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            width: 800px; /* Match login container width */
+            max-width: 95%; /* Ensure responsiveness */
+            animation: slideIn 0.5s ease-out; /* Keep existing animation */
         }
 
         @keyframes slideIn {
@@ -89,11 +86,35 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
+        .registration-panel {
+            flex: 1;
+            padding: 40px; /* Match login panel padding */
+            display: flex;
+            flex-direction: column;
+            text-align: left; /* Ensure text alignment */
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px;
+            color: #525252;
+            font-weight: 500;
+            font-size: 1.2rem;
+        }
+
+        .logo img {
+            width: 24px; /* Adjust logo size */
+            height: 24px;
+            margin-right: 10px;
+        }
+
         h2 {
-            font-size: 2em;
+            font-size: 2rem; /* Match login h2 size */
+            font-weight: 700; /* Match login h2 weight */
             margin-bottom: 20px;
-            color: #0056b3;
-            text-align: center;
+            color: #262626; /* Match login h2 color */
+            text-align: left; /* Align to left */
         }
 
         .success-message,
@@ -119,44 +140,27 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         .form-group {
-            margin-bottom: 18px; /* Slightly increased margin */
-            position: relative;
-            display: flex; /* Use flexbox to align label and input */
-            flex-direction: column; /* Stack label above input */
+            margin-bottom: 20px; /* Match login form-group margin */
         }
 
-        label {
+        .form-group label {
             display: block;
-            margin-bottom: 6px;
-            color: #555;
-            font-weight: bold;
-            font-size: 0.95em;
-        }
-
-        .input-wrapper {
-            position: relative; /* Wrapper for input and icon */
-        }
-
-        .input-wrapper i {
-            position: absolute;
-            left: 10px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #0056b3;
-            opacity: 0.7;
-            pointer-events: none;
+            margin-bottom: 8px; /* Match login label margin */
+            color: #525252; /* Match login label color */
+            font-weight: 500; /* Match login label weight */
+            font-size: 0.9rem; /* Match login label size */
         }
 
         input[type="text"],
         input[type="email"],
         input[type="password"],
         select {
-            width: calc(100% - 30px); /* Adjusted width for icon spacing */
-            padding: 8px 10px 8px 35px; /* More left padding for icon */
-            border: 1px solid #ced4da;
-            border-radius: 6px;
-            font-size: 1em;
-            color: #495057;
+            width: 100%; /* Full width */
+            padding: 12px 16px; /* Match login input padding */
+            border: 1px solid #d4d4d4; /* Match login input border */
+            border-radius: 6px; /* Match login input border-radius */
+            font-size: 1rem; /* Match login input font size */
+            color: #262626; /* Match login input color */
             transition: border-color 0.3s ease;
         }
 
@@ -164,143 +168,150 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         input[type="email"]:focus,
         input[type="password"]:focus,
         select:focus {
-            border-color: #0056b3;
+            border-color: #3b82f6; /* Blue focus color from login */
             outline: none;
-            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25); /* Blue shadow from login */
         }
 
         select {
             appearance: none;
             background-image: url('data:image/svg+xml;charset=UTF-8,<svg fill="%23495057" viewBox="0 0 24 24"><path d="M7 10l5 5 5-5z"/></svg>');
             background-repeat: no-repeat;
-            background-position: right 10px center;
+            background-position: right 16px center; /* Adjust position for wider padding */
             background-size: 16px;
-            padding-left: 35px; /* Match input padding */
         }
 
         button[type="submit"] {
-            background-color: #0056b3;
+            background-color: #3b82f6; /* Match login button color */
             color: #fff;
-            padding: 10px 20px;
+            padding: 12px 24px; /* Match login button padding */
             border: none;
-            border-radius: 8px;
+            border-radius: 6px; /* Match login button border-radius */
             cursor: pointer;
-            font-size: 1em;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.2s ease-in-out;
+            font-size: 1rem; /* Match login button font size */
+            font-weight: 500; /* Match login button font weight */
+            transition: background-color 0.3s ease;
             width: 100%;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
         }
 
         button[type="submit"]:hover {
-            background-color: #004494;
-            transform: translateY(-1px);
+            background-color: #2563eb; /* Match login button hover color */
+            transform: translateY(-1px); /* Keep subtle hover effect */
         }
 
-        p {
-            margin-top: 15px;
-            color: #6c757d;
+        p.link-text { /* New class for descriptive paragraph links */
+            margin-top: 30px; /* Match signup-link margin-top */
             text-align: center;
-            font-size: 0.9em;
+            font-size: 0.9rem; /* Match signup-link font size */
+            color: #525252; /* Match signup-link color */
         }
 
-        p a {
-            color: #0056b3;
+        p.link-text a {
+            color: #3b82f6; /* Match signup-link a color */
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 500; /* Match signup-link a font weight */
         }
 
-        p a:hover {
+        p.link-text a:hover {
             text-decoration: underline;
         }
 
-        /* Floating BTEC logo */
-        .floating-logo {
-            position: fixed;
-            top: 15px;
-            left: 15px;
-            width: 60px;
+        .illustration-panel {
+            flex: 1;
+            background-color: #e0f2fe; /* Light blue for illustration */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px; /* Add padding to illustration */
+        }
+
+        .illustration-panel img {
+            max-width: 100%;
             height: auto;
-            opacity: 0.7;
-            animation: floatLogo 4s infinite alternate ease-in-out;
+            display: block;
         }
 
-        @keyframes floatLogo {
-            0% {
-                transform: translateY(0);
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .registration-container {
+                flex-direction: column;
+                width: 100%;
+                max-width: 100%;
             }
-            100% {
-                transform: translateY(-8px);
-            }
-        }
 
-        /* Subtle background pattern */
-        body::before {
-            content: "";
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background-image: url('data:image/svg+xml,%3Csvg width="60" height="60" viewBox="0 0 60 60" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="none" fill-rule="evenodd"%3E%3Cg id="slash" fill="%23e1f5fe" fill-opacity="0.4"%3E%3Cpath d="M0 0l60 60-10 10L-10 0z"/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');
-            opacity: 0.6;
-            z-index: -1;
+            .illustration-panel {
+                display: none; /* Hide illustration on smaller screens */
+            }
+
+            .registration-panel {
+                padding: 30px; /* Adjust padding for smaller screens */
+            }
         }
     </style>
 </head>
 <body>
-    <img src="https://cdn.haitrieu.com/wp-content/uploads/2023/02/Logo-Truong-cao-dang-Quoc-te-BTEC-FPT.png" alt="BTEC FPT Logo" class="floating-logo">
-
     <div class="registration-container">
-        <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+        <div class="registration-panel">
+            <div class="logo">
+                <img src="https://vinadesign.vn/uploads/images/2023/06/logo-fpt-vinadesign-03-14-38-27.jpg" alt="BTEC FPT Logo">
+                BTEC FPT
+            </div>
+            <h2><i class="fas fa-user-plus"></i> Create Account</h2>
 
-        <?php if ($success): ?>
-            <p class="success-message"><i class="fas fa-check-circle"></i> <?= $success ?></p>
-        <?php elseif ($error): ?>
-            <p class="error-message"><i class="fas fa-exclamation-triangle"></i> <?= $error ?></p>
-        <?php endif; ?>
+            <?php
+            // Example PHP logic for success/error messages
+            $success = null;
+            $error = null;
 
-        <form method="post" action="">
-            <div class="form-group">
-                <label for="fullname"><i class="fas fa-user"></i> Full Name:</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-user"></i>
+            // This part would typically come from your server-side PHP processing
+            // For demonstration, let's simulate a success or error
+            // if (isset($_POST['submit_registration'])) {
+            //     // Simulate successful registration
+            //     $success = "Account registered successfully!";
+            //     // Simulate an error
+            //     // $error = "Email already exists. Please try another.";
+            // }
+            ?>
+
+            <?php if ($success): ?>
+                <p class="success-message"><i class="fas fa-check-circle"></i> <?= $success ?></p>
+            <?php elseif ($error): ?>
+                <p class="error-message"><i class="fas fa-exclamation-triangle"></i> <?= $error ?></p>
+            <?php endif; ?>
+
+            <form method="post" action="">
+                <div class="form-group">
+                    <label for="fullname"><i class="fas fa-user"></i> Full Name:</label>
                     <input type="text" id="fullname" name="fullname" required>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="email"><i class="fas fa-envelope"></i> Email:</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-envelope"></i>
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email:</label>
                     <input type="email" id="email" name="email" required>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="password"><i class="fas fa-lock"></i> Password:</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-lock"></i>
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password:</label>
                     <input type="password" id="password" name="password" required>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <label for="role"><i class="fas fa-graduation-cap"></i> Role:</label>
-                <div class="input-wrapper">
-                    <i class="fas fa-graduation-cap"></i>
+                <div class="form-group">
+                    <label for="role"><i class="fas fa-graduation-cap"></i> Role:</label>
                     <select id="role" name="role" required>
                         <option value="student">Student</option>
                         <option value="teacher">Teacher</option>
-                        <option value="admin">Admin</option>
                     </select>
                 </div>
-            </div>
 
-            <button type="submit"><i class="fas fa-sign-up-alt"></i> Register</button>
-        </form>
+                <button type="submit"><i class="fas fa-sign-up-alt"></i> Register</button>
+            </form>
 
-        <p><i class="fas fa-sign-in-alt"></i> Already have an account? <a href="login.php">Log in</a></p>
+            <p class="link-text">Already have an account? <a href="login.php">Log in</a></p>
+        </div>
+        <div class="illustration-panel">
+            <img src="https://cdn.tokyotechlab.com/Blog/Blog%202024/Blog%20T9/tai_sao_cac_doanh_nghiep_va_to_chuc_giao_duc_nen_su_dung_phan_mem_lms_6092bea1d6.webp" alt="Registration Illustration">
+        </div>
     </div>
 </body>
 </html>

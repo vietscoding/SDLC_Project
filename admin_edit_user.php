@@ -25,12 +25,16 @@ if (!$stmt->fetch()) {
     exit;
 }
 $stmt->close();
+if ($role == 'admin') {
+    echo "<h2 style='color:red;padding:30px'>❌ You are not allowed to edit an Admin user.</h2>";
+    exit;
+}
 
 // Xử lý cập nhật role khi submit
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $new_role = $_POST['role'];
 
-    if (in_array($new_role, ['student', 'teacher', 'admin'])) {
+    if (in_array($new_role, ['student', 'teacher'])) {
         $stmt = $conn->prepare("UPDATE users SET role = ? WHERE id = ?");
         $stmt->bind_param("si", $new_role, $user_id);
         if ($stmt->execute()) {
@@ -392,10 +396,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             <div class="form-group">
                 <label for="role"><i class="fas fa-user-tag"></i> Role:</label><br>
                 <select id="role" name="role" required>
-                    <option value="student" <?= ($role == 'student') ? 'selected' : '' ?>>Student</option>
-                    <option value="teacher" <?= ($role == 'teacher') ? 'selected' : '' ?>>Teacher</option>
-                    <option value="admin" <?= ($role == 'admin') ? 'selected' : '' ?>>Admin</option>
-                </select>
+    <option value="student" <?= ($role == 'student') ? 'selected' : '' ?>>Student</option>
+    <option value="teacher" <?= ($role == 'teacher') ? 'selected' : '' ?>>Teacher</option>
+</select>
+
             </div>
 
             <div class="form-actions">

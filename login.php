@@ -10,36 +10,42 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     if (!empty($email) && !empty($password)) {
         // Fetch user by email
-        $stmt = $conn->prepare("SELECT id, fullname, password, role FROM users WHERE email = ?");
+        $stmt = $conn->prepare("SELECT id, fullname, password, role, status FROM users WHERE email = ?");
         $stmt->bind_param("s", $email);
         $stmt->execute();
         $stmt->store_result();
 
         if ($stmt->num_rows > 0) {
-            $stmt->bind_result($id, $fullname, $hashedPassword, $role);
+            $stmt->bind_result($id, $fullname, $hashedPassword, $role, $status);
             $stmt->fetch();
 
             // Verify password
-            if (password_verify($password, $hashedPassword)) {
-                // Store user data in session
-                $_SESSION['user_id'] = $id;
-                $_SESSION['fullname'] = $fullname;
-                $_SESSION['role'] = $role;
+           if (password_verify($password, $hashedPassword)) {
+    // Check teacher approval
+    if ($role == 'teacher' && $status != 'approved') {
+        $error = "Your account is pending approval by admin.";
+    } else {
+        // Store user data in session
+        $_SESSION['user_id'] = $id;
+        $_SESSION['fullname'] = $fullname;
+        $_SESSION['role'] = $role;
 
-                // Redirect based on role
-                if ($role == 'student') {
-                    header("Location: student_dashboard.php");
-                    exit;
-                } elseif ($role == 'teacher') {
-                    header("Location: teacher_dashboard.php");
-                    exit;
-                } elseif ($role == 'admin') {
-                    header("Location: admin_dashboard.php");
-                    exit;
-                }
-            } else {
-                $error = "Incorrect password.";
-            }
+        // Redirect based on role
+        if ($role == 'student') {
+            header("Location: student_dashboard.php");
+            exit;
+        } elseif ($role == 'teacher') {
+            header("Location: teacher_dashboard.php");
+            exit;
+        } elseif ($role == 'admin') {
+            header("Location: admin_dashboard.php");
+            exit;
+        }
+    }
+} else {
+    $error = "Incorrect password.";
+}
+
         } else {
             $error = "Account not found.";
         }
@@ -56,7 +62,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <title>Log In | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
         *, *::before, *::after {
             box-sizing: border-box;
@@ -65,136 +71,219 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         body {
-            font-family: 'Open Sans', sans-serif;
-            /* Option 1: Soft Gradient Background */
-             background: linear-gradient(135deg, #e0f2f7, #bbdefb); 
-
-            /* Option 2: Subtle Pattern Background (replace URL) */
-            /* background: url('path/to/your/subtle-pattern.png'); */
-
-            /* Option 3: Educational Image Background (replace URL) */
-            /*background: url('https://images.unsplash.com/photo-1519681393784-d1202a9c2313?q=80&w=2070&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D') no-repeat center center fixed;*/
-            background-size: cover;
+            font-family: 'Roboto', sans-serif;
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            margin: 0;
+            /* Đổi màu nền phía sau form */
+            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 50%, #fbc2eb 100%);
         }
 
         .login-container {
-            background-color: rgba(255, 255, 255, 0.9);
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            width: 800px; /* Adjust as needed */
+            max-width: 95%;
+        }
+
+        .login-panel {
+            flex: 1;
             padding: 40px;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
-            text-align: center;
-            width: 400px;
-            max-width: 90%;
-            animation: fadeIn 0.5s ease-in-out;
+            display: flex;
+            flex-direction: column;
         }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-         h2 {
-            color: #1976d2; /* A more standard blue */
+        .logo {
+            display: flex;
+            align-items: center;
             margin-bottom: 30px;
-            font-size: 2.5em;
-            font-weight: 600;
+            color: #525252;
+            font-weight: 500;
+            font-size: 1.2rem;
         }
 
-        .error-message {
-            color: #d32f2f; /* A clearer red for errors */
-            background-color: #ffebee; /* Light red background for errors */
-            padding: 10px;
-            border-radius: 5px;
+        .logo img {
+            width: 24px;
+            height: 24px;
+            margin-right: 10px;
+            /* Style your logo image */
+        }
+
+        h2 {
+            color: #262626;
             margin-bottom: 20px;
-            border: 1px solid #ef9a9a; /* Light red border for errors */
+            font-size: 2rem;
+            font-weight: 700;
         }
 
-        label {
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
             display: block;
-            margin-bottom: 10px;
-            color: #424242; /* Darker gray for labels */
-            font-weight: bold;
-            text-align: left;
+            margin-bottom: 8px;
+            color: #525252;
+            font-weight: 500;
+            font-size: 0.9rem;
         }
 
-       input[type="email"],
-        input[type="password"] {
-            width: calc(100% - 20px);
-            padding: 12px;
-            margin-bottom: 20px;
-            border: 1px solid #9e9e9e; /* Medium gray border for inputs */
-            border-radius: 5px;
-            font-size: 1em;
+        .form-group input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid #d4d4d4;
+            border-radius: 6px;
+            font-size: 1rem;
+            color: #262626;
             transition: border-color 0.3s ease;
         }
 
-       input[type="email"]:focus,
-        input[type="password"]:focus {
-            border-color: #1976d2; /* Focus color matches heading */
+        .form-group input:focus {
             outline: none;
-            box-shadow: 0 0 5px rgba(25, 118, 210, 0.5); /* Focus shadow matches heading */
+            border-color: #3b82f6; /* Blue focus color */
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
         }
 
-       button[type="submit"] {
-            background-color: #1976d2; /* Primary blue for button */
-            color: white;
-            padding: 15px 25px;
-            border: none;
-            border-radius: 5px;
-            font-size: 1.1em;
-            cursor: pointer;
-            transition: background-color 0.3s ease, transform 0.2s ease;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        .remember-forgot {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            font-size: 0.9rem;
+            color: #525252;
         }
 
-        button[type="submit"]:hover {
-            background-color: #1565c0; /* Darker shade of blue on hover */
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+        .remember-me {
+            display: flex;
+            align-items: center;
         }
 
-       p {
-            margin-top: 20px;
-            color: #616161; /* Medium gray for paragraph text */
+        .remember-me input {
+            margin-right: 8px;
         }
 
-        p a {
-            color: #2196f3; /* A brighter blue for links */
+        .forgot-password a {
+            color: #3b82f6;
             text-decoration: none;
-            font-weight: bold;
-            transition: color 0.3s ease;
         }
 
-        p a:hover {
-            color: #1976d2; /* Hover color matches heading and focus */
+        .forgot-password a:hover {
             text-decoration: underline;
+        }
+
+        button.login-btn {
+            background-color: #3b82f6;
+            color: #fff;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+            width: 100%;
+        }
+
+        button.login-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .signup-link {
+            margin-top: 30px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #525252;
+        }
+
+        .signup-link a {
+            color: #3b82f6;
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .signup-link a:hover {
+            text-decoration: underline;
+        }
+
+        .illustration-panel {
+            flex: 1;
+            background-color: #e0f2fe; /* Light blue for illustration */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .illustration-panel img {
+            max-width: 100%;
+            height: auto;
+            display: block;
+        }
+
+        @media (max-width: 768px) {
+            .login-container {
+                flex-direction: column;
+                width: 100%;
+                max-width: 100%;
+            }
+
+            .illustration-panel {
+                display: none; /* Hide illustration on smaller screens */
+            }
+
+            .login-panel {
+                padding: 30px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2><i class="fas fa-graduation-cap"></i> Log In</h2>
+        <div class="login-panel">
+            <div class="logo">
+                <img src="https://vinadesign.vn/uploads/images/2023/06/logo-fpt-vinadesign-03-14-38-27.jpg" alt="BTEC FPT Logo" width="200px">
+                BTEC FPT
+            </div>
+            <h2>Log In</h2>
 
-        <?php if ($error): ?>
-            <p class="error-message"><?= $error ?></p>
-        <?php endif; ?>
+            <?php if (isset($error)): ?>
+                <p style="color: #dc2626; margin-bottom: 15px;"><?php echo $error; ?></p>
+            <?php endif; ?>
 
-        <form method="post">
-            <label for="email"><i class="fas fa-envelope"></i> Email:</label><br>
-            <input type="email" id="email" name="email" required><br><br>
+            <form method="post">
+                <div class="form-group">
+                    <label for="email"><i class="fas fa-envelope"></i> Email:</label>
+                    <input type="email" id="email" name="email" required>
+                </div>
 
-            <label for="password"><i class="fas fa-lock"></i> Password:</label><br>
-            <input type="password" id="password" name="password" required><br><br>
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Password:</label>
+                    <input type="password" id="password" name="password" required>
+                </div>
 
-            <button type="submit"><i class="fas fa-sign-in-alt"></i> Log In</button>
-        </form>
+                <div class="remember-forgot">
+                    <div class="remember-me">
+                        <input type="checkbox" id="remember" name="remember">
+                        <label for="remember">Remember me</label>
+                    </div>
+                    <div class="forgot-password">
+                        <a href="#">Forgot password?</a>
+                    </div>
+                </div>
 
-        <p><i class="fas fa-question-circle"></i> <a href="register.php">Don't have an account? Register here</a></p>
+                <button type="submit" class="login-btn"><i class="fas fa-sign-in-alt"></i> Log In</button>
+            </form>
+
+            <div class="signup-link">
+                Don't have an account? <a href="register.php">Sign up</a>
+            </div>
+        </div>
+        <div class="illustration-panel">
+            <img src="https://cdn.tokyotechlab.com/Blog/Blog%202024/Blog%20T9/tai_sao_cac_doanh_nghiep_va_to_chuc_giao_duc_nen_su_dung_phan_mem_lms_6092bea1d6.webp" alt="Login Illustration">
+        </div>
     </div>
 </body>
 </html>
