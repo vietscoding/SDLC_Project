@@ -24,6 +24,18 @@ $total_assignments = $conn->query("SELECT COUNT(*) AS total FROM assignments")->
 
 // Tổng số bài nộp assignment
 $total_assignment_submissions = $conn->query("SELECT COUNT(*) AS total FROM assignment_submissions")->fetch_assoc()['total'];
+// Thống kê tiến độ trung bình sinh viên (% lessons đã hoàn thành trên tổng bài học)
+$progress_result = $conn->query("
+    SELECT 
+        ROUND(AVG(completed.lesson_completed / total.total_lessons) * 100, 2) AS avg_progress
+    FROM 
+        (SELECT user_id, COUNT(*) AS lesson_completed FROM progress WHERE is_completed = 1 GROUP BY user_id) AS completed
+    JOIN 
+        (SELECT COUNT(*) AS total_lessons FROM lessons) AS total
+");
+$avg_progress = $progress_result->fetch_assoc()['avg_progress'] ?? 0;
+
+
 
 // Thống kê trung bình điểm từng assignment
 $assignment_stats = $conn->query("
@@ -42,6 +54,31 @@ $quiz_stats = $conn->query("
     GROUP BY q.id
     ORDER BY q.id DESC
 ");
+
+// Tính Course Completion Rate (% học viên hoàn thành tất cả bài học)
+$total_lessons_res = $conn->query("SELECT COUNT(*) AS total FROM lessons");
+$total_lessons = $total_lessons_res->fetch_assoc()['total'] ?? 0;
+
+$completed_students = 0;
+$total_students_in_progress = 0;
+
+if ($total_lessons > 0) {
+    $students_progress = $conn->query("
+        SELECT user_id, COUNT(*) AS completed
+        FROM progress
+        WHERE is_completed = 1
+        GROUP BY user_id
+    ");
+    while ($row = $students_progress->fetch_assoc()) {
+        $total_students_in_progress++;
+        if ($row['completed'] == $total_lessons) {
+            $completed_students++;
+        }
+    }
+    $completion_rate = $total_students_in_progress > 0 ? round(($completed_students / $total_students_in_progress) * 100, 2) : 0;
+} else {
+    $completion_rate = 0;
+}
 ?>
 
 <!DOCTYPE html>
@@ -447,6 +484,9 @@ $quiz_stats = $conn->query("
             <li class="summary-item"><i class="fas fa-file-alt"></i> Total Quiz Submissions: <strong><?= $total_submissions ?></strong></li>
             <li class="summary-item"><i class="fas fa-tasks"></i> Total Assignments: <strong><?= $total_assignments ?></strong></li>
             <li class="summary-item"><i class="fas fa-upload"></i> Total Assignment Submissions: <strong><?= $total_assignment_submissions ?></strong></li>
+            <li class="summary-item"><i class="fas fa-spinner"></i> Average Student Progress: <strong><?= $avg_progress ?>%</strong></li>
+<li class="summary-item"><i class="fas fa-check-circle"></i> Course Completion Rate: <strong><?= $completion_rate ?>%</strong></li>
+
         </ul>
     </div>
 

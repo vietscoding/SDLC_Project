@@ -6,9 +6,89 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'teacher') {
 }
 include "includes/db_connect.php";
 
-$sys_notif_result = $conn->query("SELECT message, created_at FROM system_notifications ORDER BY created_at DESC LIMIT 5"); // Limit to a few recent notifications
+$sys_notif_result = $conn->query("SELECT message, created_at FROM system_notifications ORDER BY created_at DESC LIMIT 5");
 $fullname = htmlspecialchars($_SESSION['fullname']);
 $role = htmlspecialchars($_SESSION['role']);
+$teacher_id = $_SESSION['user_id'];
+
+// Fetch courses taught by the teacher
+$courses_taught_query = "SELECT id, title FROM courses WHERE teacher_id = ?";
+$stmt = $conn->prepare($courses_taught_query);
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$courses_taught_result = $stmt->get_result();
+$courses_taught = $courses_taught_result->fetch_all(MYSQLI_ASSOC);
+
+// Fetch assignments to grade
+$assignments_to_grade_query = "
+    SELECT COUNT(DISTINCT asub.id) AS count_assignments
+    FROM assignment_submissions asub
+    JOIN assignments a ON asub.assignment_id = a.id
+    JOIN courses c ON a.course_id = c.id
+    WHERE c.teacher_id = ? AND asub.grade IS NULL;
+";
+$stmt = $conn->prepare($assignments_to_grade_query);
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$assignments_to_grade_result = $stmt->get_result();
+$assignments_to_grade = $assignments_to_grade_result->fetch_assoc();
+
+// Fetch quizzes to grade (assuming quizzes need manual grading if 'score' is null or a specific status)
+$quizzes_to_grade_query = "
+    SELECT COUNT(DISTINCT qs.id) AS count_quizzes
+    FROM quiz_submissions qs
+    JOIN quizzes q ON qs.quiz_id = q.id
+    JOIN courses c ON q.course_id = c.id
+    WHERE c.teacher_id = ? AND qs.score IS NULL;
+";
+$stmt = $conn->prepare($quizzes_to_grade_query);
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$quizzes_to_grade_result = $stmt->get_result();
+$quizzes_to_grade = $quizzes_to_grade_result->fetch_assoc();
+
+// Fetch quick stats: total students enrolled in teacher's courses
+$total_students_query = "
+    SELECT COUNT(DISTINCT e.user_id) AS total_students
+    FROM enrollments e
+    JOIN courses c ON e.course_id = c.id
+    WHERE c.teacher_id = ?;
+";
+$stmt = $conn->prepare($total_students_query);
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$total_students_result = $stmt->get_result();
+$total_students = $total_students_result->fetch_assoc();
+
+// Calculate average progress of students in teacher's courses
+// This query calculates (completed lessons / total lessons) * 100 for each student in a course, then averages it.
+$avg_progress_query = "
+    SELECT AVG(course_progress) AS avg_overall_progress
+    FROM (
+        SELECT
+            p.user_id,
+            p.course_id,
+            (COUNT(DISTINCT p.lesson_id) * 100.0 / total_lessons.count) AS course_progress
+        FROM
+            progress p
+        JOIN
+            courses c ON p.course_id = c.id
+        JOIN
+            (SELECT course_id, COUNT(id) AS count FROM lessons GROUP BY course_id) AS total_lessons
+            ON p.course_id = total_lessons.course_id
+        WHERE
+            c.teacher_id = ? AND p.is_completed = 1
+        GROUP BY
+            p.user_id, p.course_id
+    ) AS student_course_progress;
+";
+$stmt = $conn->prepare($avg_progress_query);
+$stmt->bind_param("i", $teacher_id);
+$stmt->execute();
+$avg_progress_result = $stmt->get_result();
+$avg_progress = $avg_progress_result->fetch_assoc();
+
+
 ?>
 
 <!DOCTYPE html>
@@ -31,576 +111,302 @@ $role = htmlspecialchars($_SESSION['role']);
             background: linear-gradient(135deg, #f0f2f5 0%, #e0e7ef 100%);
             color: #333;
             line-height: 1.6;
-            min-height: 100vh;
+        }
+
+        .container {
             display: flex;
-            overflow-x: hidden;
-            transition: background 0.4s;
+            min-height: 100vh;
+            flex-direction: column;
+        }
+
+        .header {
+            background-color: #004a8f;
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .header .logo {
+            font-size: 24px;
+            font-weight: 700;
+        }
+
+        .header .user-info {
+            font-size: 16px;
+        }
+
+        .main-wrapper {
+            display: flex;
+            flex: 1;
         }
 
         .sidebar {
             width: 250px;
-            background: linear-gradient(135deg, #2c3e50 60%, #2980b9 100%);
-            color: white;
-            position: fixed;
-            height: 100vh;
+            background-color: #ffffff;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.05);
             padding-top: 20px;
-            box-shadow: 2px 0 20px rgba(44,62,80,0.15);
-            z-index: 100;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            transition: background 0.4s;
-        }
-
-        .sidebar .logo {
-            text-align: center;
-            padding: 20px 0;
-            margin-bottom: 30px;
-            width: 100%; /* Ensure logo area takes full width */
-        }
-
-        .sidebar .logo img {
-            display: block;
-            width: 70%; /* Smaller logo */
-            max-width: 150px; /* Max size for logo */
-            height: auto;
-            margin: auto;
         }
 
         .sidebar ul {
             list-style: none;
-            width: 100%;
-            padding: 0 15px; /* Padding for list items */
         }
 
         .sidebar ul li a {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            color: white;
+            display: block;
+            padding: 15px 30px;
+            color: #333;
             text-decoration: none;
-            transition: background 0.2s, color 0.2s, transform 0.2s;
-            border-radius: 8px;
-            margin-bottom: 10px;
             font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-        .sidebar ul li a:hover,
-        .sidebar ul li a.active {
-            background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
-            color: #2c3e50;
-            transform: translateX(8px) scale(1.05);
-            box-shadow: 0 2px 8px rgba(243,156,18,0.15);
-        }
-        .sidebar ul li a i {
-            margin-right: 12px;
-            font-size: 1.2em;
-            color: #f1c40f;
-            transition: color 0.2s;
-        }
-        .sidebar ul li a:hover i,
-        .sidebar ul li a.active i {
-            color: #2c3e50;
+            transition: background-color 0.3s, color 0.3s;
         }
 
-        .main-wrapper {
-            flex-grow: 1;
-            margin-left: 250px;
-            padding: 30px;
-            background: transparent;
-            transition: background 0.4s;
+        .sidebar ul li a:hover,
+        .sidebar ul li a.active {
+            background-color: #e9f5ff;
+            color: #004a8f;
+            border-left: 5px solid #004a8f;
+        }
+
+        .sidebar ul li a i {
+            margin-right: 10px;
         }
 
         .main-content {
-            background: rgba(255,255,255,0.95);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(44,62,80,0.10);
-            padding: 40px 30px 30px 30px;
-            position: relative;
-            overflow: hidden;
+            flex: 1;
+            padding: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid for content cards */
+            gap: 20px;
         }
 
-        .dashboard-header {
+        .card {
+            background-color: #ffffff;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+            padding: 25px;
+            transition: transform 0.2s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+        }
+
+        .card h2 {
+            color: #004a8f;
+            margin-bottom: 15px;
+            font-size: 20px;
+            border-bottom: 2px solid #e0e7ef;
+            padding-bottom: 10px;
+        }
+
+        .card ul {
+            list-style: none;
+        }
+
+        .card ul li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #eee;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 30px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%);
-            border-radius: 10px 10px 0 0;
-            box-shadow: 0 2px 8px rgba(243,156,18,0.08);
-            padding: 20px 30px;
-        }
-        .dashboard-header h1 {
-            font-size: 2em;
-            color: #2c3e50;
-            margin: 0;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 8px rgba(241,196,15,0.08);
-        }
-        .dashboard-header .user-info {
-            font-size: 1.1em;
-            color: #333;
-            font-weight: 500;
         }
 
-        /* Toggle Dark Mode Button */
-        .toggle-mode-btn {
-            position: absolute;
-            top: 18px;
-            right: 30px;
-            background: #fff;
-            color: #2c3e50;
-            border: none;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
-            cursor: pointer;
-            font-size: 1.3em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s, color 0.3s;
-            z-index: 10;
-        }
-        .toggle-mode-btn:hover {
-            background: #f1c40f;
-            color: #fff;
-        }
-
-        .notifications-section {
-            background-color: #fdfdfd; /* Slightly different background for notifications */
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03); /* Lighter shadow */
-            margin-bottom: 30px;
-            border: 1px solid #e0e0e0;
-        }
-
-        .notifications-section h3 {
-            font-size: 1.3em;
-            color: #2c3e50;
-            margin-bottom: 15px;
-            border-bottom: 1px solid #f0f0f0; /* Lighter border */
-            padding-bottom: 10px;
-            display: flex;
-            align-items: center;
-            font-weight: 500;
-        }
-
-        .notifications-section h3 i {
-            margin-right: 10px;
-            color: #f39c12; /* Accent color for icon */
-        }
-
-        .notifications-section ul {
-            list-style: none;
-            padding-left: 0;
-        }
-
-        .notifications-section ul li {
-            padding: 10px 0;
-            border-bottom: 1px dashed #f2f2f2; /* Dashed border for softer look */
-            font-size: 0.95em;
-            color: #555;
-        }
-
-        .notifications-section ul li:last-child {
+        .card ul li:last-child {
             border-bottom: none;
         }
 
-        .notifications-section ul li strong {
-            color: #444;
-            font-weight: 600;
-            margin-right: 5px;
-        }
-
-        .module-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
-            gap: 28px;
-            margin-top: 35px;
-        }
-        .module-card {
-            background: rgba(255,255,255,0.98);
-            padding: 32px 24px 24px 24px;
-            border-radius: 14px;
-            box-shadow: 0 8px 32px rgba(44,62,80,0.13);
-            text-align: left;
-            transition: transform 0.25s cubic-bezier(.17,.67,.83,.67), box-shadow 0.25s;
-            border: none;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-        }
-        .module-card:hover {
-            transform: translateY(-8px) scale(1.03) rotate(-1deg);
-            box-shadow: 0 16px 40px rgba(243,156,18,0.18);
-            background: linear-gradient(120deg, #f1c40f 0%, #fffbe6 100%);
-        }
-        .module-card img {
-            width: 54px;
-            height: 54px;
-            margin-bottom: 18px;
-            filter: drop-shadow(0 2px 8px rgba(44,62,80,0.10));
-            transition: transform 0.2s;
-        }
-        .module-card:hover img {
-            transform: scale(1.12) rotate(-6deg);
-        }
-        .module-card h4 {
-            font-size: 1.25em;
-            color: #2c3e50;
-            margin-bottom: 10px;
-            font-weight: 700;
-        }
-        .module-card p {
+        .card .course-item {
+            font-weight: 500;
             color: #555;
-            font-size: 1em;
-            margin-bottom: 18px;
-        }
-        .module-card a {
-            display: inline-block;
-            text-decoration: none;
-            color: #fff;
-            background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
-            font-weight: 600;
-            padding: 10px 22px;
-            border-radius: 6px;
-            border: none;
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-            font-size: 1em;
-            box-shadow: 0 2px 8px rgba(243,156,18,0.10);
-        }
-        .module-card a:hover {
-            background: linear-gradient(90deg, #2980b9 0%, #6dd5fa 100%);
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(41,128,185,0.13);
         }
 
-        footer {
+        .card .count {
+            font-size: 28px;
+            font-weight: 700;
+            color: #28a745; /* Green for positive numbers */
             text-align: center;
-            padding: 20px;
-            margin-top: 40px;
-            font-size: 0.85em;
-            color: #777;
-            background-color: #f2f2f2;
-            border-top: 1px solid #eee;
-            border-radius: 0 0 8px 8px;
+            margin-top: 10px;
         }
 
-        footer a {
-            color: #3498db;
+        .card .count.danger {
+            color: #dc3545; /* Red for urgent numbers */
+        }
+
+        .notification-item {
+            background-color: #f9f9f9;
+            border: 1px solid #e0e0e0;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .notification-item strong {
+            color: #004a8f;
+        }
+        .notification-item small {
+            display: block;
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .stats-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px dashed #eee;
+        }
+        .stats-item:last-child {
+            border-bottom: none;
+        }
+        .stats-item span:first-child {
+            font-weight: 500;
+            color: #555;
+        }
+        .stats-item span:last-child {
+            font-size: 18px;
+            font-weight: 700;
+            color: #007bff;
+        }
+        .stats-item span.green {
+            color: #28a745;
+        }
+
+
+        .footer {
+            background-color: #004a8f;
+            color: white;
+            text-align: center;
+            padding: 20px 0;
+            font-size: 14px;
+            box-shadow: 0 -2px 4px rgba(0,0,0,0.1);
+        }
+
+        .footer a {
+            color: #a2d2ff;
             text-decoration: none;
-            margin: 0 8px;
+            margin: 0 10px;
+            transition: color 0.3s;
         }
 
-        footer a:hover {
+        .footer a:hover {
+            color: white;
+        }
+
+        .footer .contact-info {
+            margin-top: 10px;
+            font-size: 13px;
+        }
+        .footer .contact-info p {
+            margin-bottom: 5px;
+        }
+        .footer .contact-info a {
+            color: #a2d2ff;
             text-decoration: underline;
-        }
-
-        footer p {
-            margin: 5px 0;
-        }
-
-        .contact-info {
-            margin-top: 15px;
-        }
-
-        .contact-info p {
-            margin: 3px 0;
-        }
-
-        /* Dark Mode (Optional - Add a class 'dark-mode' to the body) */
-        .dark-mode {
-            background-color: #1a1a1a;
-            color: #f8f9fa;
-        }
-
-        .dark-mode .sidebar {
-            background-color: #333;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.3);
-        }
-
-        .dark-mode .main-wrapper {
-            background-color: #1a1a1a;
-        }
-
-        .dark-mode .main-content {
-            background-color: #222;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-        }
-
-        .dark-mode .dashboard-header h1,
-        .dark-mode .notifications-section h3,
-        .dark-mode .module-card h4 {
-            color: #f8f9fa;
-        }
-
-        .dark-mode .notifications-section,
-        .dark-mode .module-card {
-            background-color: #2a2a2a;
-            border-color: #444;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-        }
-
-        .dark-mode .notifications-section h3 i {
-            color: #f39c12;
-        }
-
-        .dark-mode .notifications-section ul li {
-            border-bottom-color: #3a3a3a;
-            color: #ccc;
-        }
-        .dark-mode .notifications-section ul li strong {
-            color: #eee;
-        }
-
-
-        .dark-mode .module-card a {
-            color: #f39c12;
-            border-color: #f39c12;
-        }
-
-        .dark-mode .module-card a:hover {
-            background-color: #f39c12;
-            color: #222;
-        }
-
-        .dark-mode footer {
-            background-color: #333;
-            color: #ccc;
-            border-top-color: #555;
-        }
-
-        .dark-mode footer a {
-            color: #fbc531;
-        }
-
-        /* Responsive adjustments */
-        @media (max-width: 992px) {
-            .sidebar {
-                width: 220px;
-            }
-            .main-wrapper {
-                margin-left: 220px;
-            }
-            .dashboard-header h1 {
-                font-size: 1.8em;
-            }
-            .module-card h4 {
-                font-size: 1.3em;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                box-shadow: none;
-                padding-top: 0;
-            }
-            .sidebar .logo {
-                padding: 15px 0;
-            }
-            .sidebar .logo img {
-                width: 50%;
-                max-width: 120px;
-            }
-            .sidebar ul {
-                display: flex;
-                flex-wrap: wrap;
-                justify-content: center;
-                padding: 10px 0;
-            }
-            .sidebar ul li {
-                width: 48%; /* Two items per row */
-                margin-bottom: 5px;
-            }
-            .sidebar ul li a {
-                justify-content: center;
-                padding: 10px;
-                text-align: center;
-            }
-            .sidebar ul li a i {
-                margin-right: 0;
-                margin-bottom: 5px;
-                font-size: 1em;
-            }
-            .sidebar ul li a span { /* Added span for text to stack */
-                display: block;
-                font-size: 0.8em;
-            }
-
-            .main-wrapper {
-                margin-left: 0;
-                padding: 20px;
-            }
-
-            .dashboard-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-            .dashboard-header h1 {
-                margin-bottom: 10px;
-                font-size: 1.8em;
-            }
-            .dashboard-header .user-info {
-                font-size: 0.9em;
-            }
-
-            .module-grid {
-                grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-                gap: 15px;
-            }
-
-            .module-card {
-                padding: 20px;
-            }
-            .module-card h4 {
-                font-size: 1.2em;
-            }
-            .module-card p {
-                font-size: 0.85em;
-            }
-            .module-card a {
-                font-size: 0.85em;
-                padding: 6px 12px;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .sidebar ul li {
-                width: 95%; /* One item per row */
-            }
-            .sidebar ul li a {
-                justify-content: flex-start;
-            }
-            .sidebar ul li a i {
-                margin-right: 10px;
-                margin-bottom: 0;
-            }
         }
     </style>
 </head>
 <body>
-
-    <div class="sidebar">
-        <div class="logo">
-            <img src="https://cdn.haitrieu.com/wp-content/uploads/2023/02/Logo-Truong-cao-dang-Quoc-te-BTEC-FPT.png" alt="BTEC Logo">
-        </div>
-        <ul>
-            <li><a href="teacher_courses.php"><i class="fas fa-book"></i> <span>My Courses</span></a></li>
-            <li><a href="teacher_search_courses.php"><i class="fas fa-search"></i> <span>Search Courses</span></a></li>
-            <li><a href="teacher_quiz_results.php"><i class="fas fa-chart-bar"></i> <span>View Quiz Results</span></a></li>
-            <li><a href="teacher_assignments.php"><i class="fas fa-tasks"></i> <span>Manage Assignments</span></a></li>
-            <li><a href="teacher_notifications.php"><i class="fas fa-bell"></i> <span>Send Notifications</span></a></li>
-            <li><a href="teacher_view_notifications.php"><i class="fas fa-envelope-open-text"></i> <span>View Notifications</span></a></li>
-            <li><a href="teacher_quizzes.php"><i class="fas fa-question-circle"></i> <span>Manage Quizzes</span></a></li>
-            <li><a href="teacher_profile.php"><i class="fas fa-user"></i> <span>My Profile</span></a></li>
-            <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Logout</span></a></li>
-        </ul>
-    </div>
-
-    <div class="main-wrapper">
-        <div class="main-content">
-            <div class="dashboard-header">
-                <h1>Welcome, <?= $fullname; ?></h1>
-                <div class="user-info">
-                    <i class="fas fa-user-tie"></i> Role: <?= $role; ?>
-                </div>
+    <div class="container">
+        <header class="header">
+            <div class="logo">BTEC FPT LMS</div>
+            <div class="user-info">
+                Welcome, <?= $fullname ?> (<?= ucfirst($role) ?>) | <a href="logout.php" style="color: white;">Logout</a>
             </div>
+        </header>
 
-            <?php if (isset($sys_notif_result) && $sys_notif_result->num_rows > 0): ?>
-                <section class="notifications-section">
-                    <h3><i class="fas fa-bullhorn"></i> Announcements</h3>
+        <div class="main-wrapper">
+            <aside class="sidebar">
+                <nav>
                     <ul>
-                        <?php while ($notif = $sys_notif_result->fetch_assoc()): ?>
-                            <li><strong><?= date('M d, Y', strtotime($notif['created_at'])); ?></strong> - <?= htmlspecialchars($notif['message']); ?></li>
-                        <?php endwhile; ?>
+                        <li><a href="teacher_dashboard.php" class="active"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                        <li><a href="teacher_courses.php"><i class="fas fa-book"></i> Courses</a></li>
+                        <li><a href="teacher_search_courses.php"><i class="fas fa-book"></i>Search Courses</a></li>
+                        <li><a href="teacher_assignments.php"><i class="fas fa-tasks"></i> Assignments</a></li>
+                        <li><a href="teacher_quizzes.php"><i class="fas fa-question-circle"></i> Quizzes</a></li>
+                        <li><a href="teacher_notifications.php"><i class="fas fa-users"></i> Send Notifications</a></li>
+                        <li><a href="teacher_view_notifications.php"><i class="fas fa-users"></i> View Notifications</a></li>
+                        <li><a href="teacher_forum_courses.php"><i class="fas fa-clipboard-list"></i> Course Forum</a></li>
+                        <li><a href="teacher_profile.php"><i class="fas fa-user-circle"></i> Profile</a></li>
+                        <li><a href="logout.php"><i class="fas fa-user-circle"></i> Logout</a></li>
                     </ul>
-                    <?php if (isset($conn) && $conn->query("SELECT message FROM system_notifications")->num_rows > 5): ?>
-                        <p style="margin-top: 10px; text-align: right;"><a href="teacher_view_notifications.php">View All Announcements</a></p>
+                </nav>
+            </aside>
+
+            <main class="main-content">
+                <div class="card">
+                    <h2><i class="fas fa-book-open"></i> Courses You Teach</h2>
+                    <ul>
+                        <?php if ($courses_taught): ?>
+                            <?php foreach ($courses_taught as $course): ?>
+                                <li><span class="course-item"><?= htmlspecialchars($course['title']) ?></span></li>
+                            <?php endforeach; ?>
+                        <?php else: ?>
+                            <li>No courses assigned yet.</li>
+                        <?php endif; ?>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-clipboard-check"></i> To Grade</h2>
+                    <ul>
+                        <li>
+                            Assignments:
+                            <span class="count <?= ($assignments_to_grade['count_assignments'] > 0) ? 'danger' : ''; ?>">
+                                <?= htmlspecialchars($assignments_to_grade['count_assignments']) ?>
+                            </span>
+                        </li>
+                        <li>
+                            Quizzes:
+                            <span class="count <?= ($quizzes_to_grade['count_quizzes'] > 0) ? 'danger' : ''; ?>">
+                                <?= htmlspecialchars($quizzes_to_grade['count_quizzes']) ?>
+                            </span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="card">
+                    <h2><i class="fas fa-bell"></i> Notifications</h2>
+                    <?php if ($sys_notif_result->num_rows > 0): ?>
+                        <?php while($notification = $sys_notif_result->fetch_assoc()): ?>
+                            <div class="notification-item">
+                                <strong>System Notification:</strong> <?= htmlspecialchars($notification['message']) ?>
+                                <small><?= date("M d, Y H:i", strtotime($notification['created_at'])) ?></small>
+                            </div>
+                        <?php endwhile; ?>
+                    <?php else: ?>
+                        <p>No system notifications.</p>
                     <?php endif; ?>
-                </section>
-            <?php endif; ?>
-
-            <section class="module-grid">
-                <div class="module-card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3135/3135755.png" alt="Courses">
-                    <h4>Manage My Courses</h4>
-                    <p>View and manage the courses you are teaching.</p>
-                    <a href="teacher_courses.php">Go to Courses</a>
+                    <div class="notification-item" style="border-left: 3px solid #007bff;">
+                        <strong>Student Notification:</strong> You have a new message from John Doe in "Math 101".
+                        <small>Jun 12, 2025 10:30 AM</small>
+                    </div>
                 </div>
 
-                <div class="module-card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2910/2910768.png" alt="Search">
-                    <h4>Search Courses</h4>
-                    <p>Find other available courses in the system.</p>
-                    <a href="teacher_search_courses.php">Search Courses</a>
-                </div>
-
-                <div class="module-card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2712/2712200.png" alt="Results">
-                    <h4>View Quiz Results</h4>
-                    <p>See how your students performed on quizzes.</p>
-                    <a href="teacher_quiz_results.php">View Results</a>
-                </div>
-
-                <div class="module-card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/870/870687.png" alt="Assignments">
-                    <h4>Manage Assignments</h4>
-                    <p>Create, edit, and grade assignments for your courses.</p>
-                    <a href="teacher_assignments.php">Manage Assignments</a>
-                </div>
-
-                <div class="module-card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/107/107827.png" alt="Notifications">
-                    <h4>Send Notifications</h4>
-                    <p>Communicate important information to your students.</p>
-                    <a href="teacher_notifications.php">Send Notification</a>
-                </div>
-
-                <div class="module-card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/2782/2782291.png" alt="View Notifications">
-                    <h4>View Notifications</h4>
-                    <p>See the history of notifications you've sent.</p>
-                    <a href="teacher_view_notifications.php">View Notifications</a>
-                </div>
-
-                <div class="module-card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3248/3248341.png" alt="Quizzes">
-                    <h4>Manage Quizzes</h4>
-                    <p>Create and edit quizzes for your courses.</p>
-                    <a href="teacher_quizzes.php">Manage Quizzes</a>
-                </div>
-
-                <div class="module-card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/847/847969.png" alt="Profile">
-                    <h4>My Profile</h4>
-                    <p>View your account.</p>
-                    <a href="teacher_profile.php">My Profile</a>
-                </div>
-
-                <div class="module-card">
-                    <img src="https://cdn-icons-png.flaticon.com/512/3361/3361953.png" alt="Logout">
-                    <h4>Logout</h4>
-                    <p>Securely exit your teacher account.</p>
-                    <a href="logout.php">Logout</a>
-                </div>
-            </section>
+                <div class="card">
+                    <h2><i class="fas fa-chart-line"></i> Quick Stats</h2>
+                    <div class="stats-item">
+                        <span>Total Students Enrolled:</span>
+                        <span class="green"><?= htmlspecialchars($total_students['total_students']) ?></span>
+                    </div>
+                    <div class="stats-item">
+                        <span>Average Student Progress:</span>
+                        <span class="green"><?= round(htmlspecialchars($avg_progress['avg_overall_progress'] ?? 0), 2) ?>%</span>
+                    </div>
+                    <div class="stats-item">
+                        <span>Active Courses:</span>
+                        <span class="green"><?= count($courses_taught) ?></span>
+                    </div>
+                    </div>
+            </main>
         </div>
 
-        <button class="toggle-mode-btn" id="toggleModeBtn" title="Toggle dark/light mode">
-            <i class="fas fa-moon"></i>
-        </button>
-
-        <hr style ="margin-top:30px; border: 0; height: 1px; background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));">
-        <footer>
+        <footer class="footer">
             <a href="https://www.facebook.com/btecfptdn/?locale=vi_VN" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
             |
             <a href="https://international.fpt.edu.vn/" target="_blank"><i class="fas fa-globe"></i> Website</a>
@@ -620,14 +426,19 @@ $role = htmlspecialchars($_SESSION['role']);
     </div>
 
     <script>
-        // Toggle dark/light mode
-        const btn = document.getElementById('toggleModeBtn');
-        btn.onclick = function() {
-            document.body.classList.toggle('dark-mode');
-            btn.innerHTML = document.body.classList.contains('dark-mode')
-                ? '<i class="fas fa-sun"></i>'
-                : '<i class="fas fa-moon"></i>';
-        };
+        // JavaScript for sidebar active link
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname.split('/').pop();
+            const sidebarLinks = document.querySelectorAll('.sidebar ul li a');
+
+            sidebarLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
     </script>
 </body>
 </html>

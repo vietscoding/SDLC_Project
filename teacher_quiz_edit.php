@@ -12,6 +12,7 @@ $user_id = $_SESSION['user_id'];
 
 $quiz_title = '';
 $course_id = 0;
+$deadline = ''; // Thêm biến deadline
 
 // Lấy danh sách khóa học giáo viên quản lý để chọn
 $courses_result = $conn->query("SELECT id, title FROM courses WHERE teacher_id = $user_id");
@@ -19,37 +20,44 @@ $courses_result = $conn->query("SELECT id, title FROM courses WHERE teacher_id =
 // Nếu sửa, lấy dữ liệu quiz hiện tại
 if ($action === 'edit' && $quiz_id > 0) {
     $stmt = $conn->prepare("
-        SELECT q.title, q.course_id 
+        SELECT q.title, q.course_id, q.deadline
         FROM quizzes q
         JOIN courses c ON q.course_id = c.id
         WHERE q.id = ? AND c.teacher_id = ?
     ");
     $stmt->bind_param("ii", $quiz_id, $user_id);
     $stmt->execute();
-    $stmt->bind_result($quiz_title, $course_id);
+    $stmt->bind_result($quiz_title, $course_id, $deadline);
     if (!$stmt->fetch()) {
         echo "Quiz not found or you don't have permission.";
         exit;
     }
     $stmt->close();
+    // Định dạng deadline cho input type="datetime-local"
+    if ($deadline) {
+        $deadline = date('Y-m-d\TH:i', strtotime($deadline));
+    }
 }
 
 // Xử lý submit form
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $quiz_title = trim($_POST['title']);
     $course_id = intval($_POST['course_id']);
+    $deadline = $_POST['deadline'] ?? '';
 
-    if (empty($quiz_title) || $course_id <= 0) {
-        $error = "Please enter quiz title and select a course.";
+    if (empty($quiz_title) || $course_id <= 0 || empty($deadline)) {
+        $error = "Please enter quiz title, select a course and set a deadline.";
     } else {
+        // Định dạng lại deadline về dạng Y-m-d H:i:s cho MySQL
+        $deadline_mysql = date('Y-m-d H:i:s', strtotime($deadline));
         if ($action === 'add') {
-            $stmt = $conn->prepare("INSERT INTO quizzes (course_id, title) VALUES (?, ?)");
-            $stmt->bind_param("is", $course_id, $quiz_title);
+            $stmt = $conn->prepare("INSERT INTO quizzes (course_id, title, deadline) VALUES (?, ?, ?)");
+            $stmt->bind_param("iss", $course_id, $quiz_title, $deadline_mysql);
             $stmt->execute();
             $stmt->close();
         } elseif ($action === 'edit') {
-            $stmt = $conn->prepare("UPDATE quizzes SET title = ?, course_id = ? WHERE id = ?");
-            $stmt->bind_param("sii", $quiz_title, $course_id, $quiz_id);
+            $stmt = $conn->prepare("UPDATE quizzes SET title = ?, course_id = ?, deadline = ? WHERE id = ?");
+            $stmt->bind_param("sisi", $quiz_title, $course_id, $deadline_mysql, $quiz_id);
             $stmt->execute();
             $stmt->close();
         }
@@ -524,6 +532,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             </option>
                         <?php endwhile; ?>
                     </select>
+                </div>
+                <div class="form-group">
+                    <label for="deadline"><i class="fas fa-clock"></i> Deadline:</label>
+                    <input type="datetime-local" id="deadline" name="deadline" value="<?= htmlspecialchars($deadline) ?>" required>
                 </div>
                 <div class="form-actions">
                     <button type="submit">

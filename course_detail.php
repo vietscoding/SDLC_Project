@@ -27,7 +27,7 @@ $stmt->close();
 
 // Handle enrollment
 if (isset($_POST['enroll'])) {
-    $insert_enrollment = $conn->prepare("INSERT INTO enrollments (user_id, course_id) VALUES (?, ?)");
+    $insert_enrollment = $conn->prepare("INSERT INTO enrollments (user_id, course_id, status) VALUES (?, ?, 'pending')");
     $insert_enrollment->bind_param("ii", $_SESSION['user_id'], $course_id);
     if ($insert_enrollment->execute()) {
         // Sau khi enroll thành công → chèn notification cho học viên
@@ -55,16 +55,17 @@ if (isset($_POST['enroll'])) {
 
 
 // Check if user already enrolled
-$enrolled = false;
-$check_enrollment = $conn->prepare("SELECT id FROM enrollments WHERE user_id = ? AND course_id = ?");
+$enrolled_status = null;
+$check_enrollment = $conn->prepare("SELECT status FROM enrollments WHERE user_id = ? AND course_id = ?");
 $check_enrollment->bind_param("ii", $_SESSION['user_id'], $course_id);
 $check_enrollment->execute();
 $check_enrollment->store_result();
 
 if ($check_enrollment->num_rows > 0) {
-        $enrolled = true;
+    $check_enrollment->bind_result($enrolled_status);
+    $check_enrollment->fetch();
 }
-$check_enrollment->close();
+
 
 // Fetch course info
 $stmt = $conn->prepare("SELECT title, description FROM courses WHERE id = ?");
@@ -558,43 +559,49 @@ $lessons_result = $lesson_query->get_result();
             </button>
             <p class="course-description"><?= htmlspecialchars($description); ?></p>
             <section class="lessons-section">
-                <h3><i class="fas fa-list-alt"></i> Lessons:</h3>
-                <?php if ($lessons_result->num_rows > 0): ?>
-                    <ul class="lessons-list">
-                        <?php while ($lesson = $lessons_result->fetch_assoc()): ?>
-                            <li>
-                                <?= htmlspecialchars($lesson['title']); ?>
-                                <a href="lesson.php?id=<?= $lesson['id']; ?>">View Lesson</a>
-                            </li>
-                        <?php endwhile; ?>
-                    </ul>
-                <?php else: ?>
-                    <p>No lessons available in this course.</p>
-                <?php endif; ?>
-            </section>
+    <h3><i class="fas fa-list-alt"></i> Lessons:</h3>
+    <?php if ($lessons_result->num_rows > 0): ?>
+        <ul class="lessons-list">
+            <?php while ($lesson = $lessons_result->fetch_assoc()): ?>
+                <li>
+                    <?= htmlspecialchars($lesson['title']); ?>
+                    <?php if ($enrolled_status == 'approved'): ?>
+                        <a href="lesson.php?id=<?= $lesson['id']; ?>">View Lesson</a>
+                    <?php else: ?>
+                        <span style="color: #ccc; margin-left:12px;">(Enroll approved to access)</span>
+                    <?php endif; ?>
+                </li>
+            <?php endwhile; ?>
+        </ul>
+    <?php else: ?>
+        <p>No lessons available in this course.</p>
+    <?php endif; ?>
+</section>
+
             <div class="course-actions">
                 <div class="enroll-section">
-                    <?php if ($enrolled): ?>
-                        <p class="enrolled-message" style="color: #22c55e; font-weight: 600;">
-                            <i class="fas fa-check-circle"></i> You are already enrolled in this course.
-                        </p>
-                        <div class="quick-actions-row">
-                            <a class="quiz-forum-btn" href="quiz_list.php?course_id=<?= $course_id ?>">View Quizzes</a>
-                            <a class="quiz-forum-btn" href="forum.php?course_id=<?= $course_id ?>">Go to Course Forum</a>
-                            <a class="quiz-forum-btn" href="student_dashboard.php"><i class="fas fa-home"></i> Back to Dashboard</a>
-                            <a class="quiz-forum-btn" href="logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
-                        </div>
-                    <?php else: ?>
+                    <?php if ($enrolled_status == 'approved'): ?>
+    <p class="enrolled-message" style="color: #22c55e; font-weight: 600;">
+        <i class="fas fa-check-circle"></i> You are enrolled in this course.
+    </p>
+    <div class="quick-actions-row">
+        <a class="quiz-forum-btn" href="quiz_list.php?course_id=<?= $course_id ?>">View Quizzes</a>
+        
+    </div>
+
+<?php elseif ($enrolled_status == 'pending'): ?>
+    <p style="color: orange; font-weight: 600;">
+        <i class="fas fa-clock"></i> Enrollment pending approval.
+    </p>
+
+<?php else: ?>
     <form method="post" action="" style="display:inline;">
         <button type="submit" name="enroll" class="quiz-forum-btn" style="margin-right: 10px;">
             <i class="fas fa-user-plus"></i> Enroll in this course
         </button>
     </form>
-    <div class="quick-actions-row" style="margin-top:18px;">
-        <a class="quiz-forum-btn" href="quiz_list.php?course_id=<?= $course_id ?>">View Quizzes</a>
-        <a class="quiz-forum-btn" href="forum.php?course_id=<?= $course_id ?>">Go to Course Forum</a>
-    </div>
-                    <?php endif; ?>
+<?php endif; ?>
+
                 </div>
             </div>
             <!-- XÓA PHẦN NÀY: -->

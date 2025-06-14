@@ -518,6 +518,7 @@ $result = $stmt->get_result();
                                     <a href="teacher_enrollments.php?course_id=<?= $row['id'] ?>"><i class="fas fa-users"></i> View Enrollments</a>
                                     <a href="teacher_analytics.php?course_id=<?= $row['id'] ?>"><i class="fas fa-chart-pie"></i> View Analytics</a>
                                     <a href="teacher_progress.php?course_id=<?= $row['id'] ?>"><i class="fas fa-chart-line"></i> View Progress</a>
+                                    <a href="teacher_enroll_approval.php?course_id=<?= $row['id'] ?>"><i class="fas fa-user-check"></i> Approve Enrollments</a>
                                 </div>
                             </div>
                         </li>

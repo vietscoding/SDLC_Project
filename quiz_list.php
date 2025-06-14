@@ -17,13 +17,14 @@ $course_stmt->execute();
 $course_stmt->bind_result($course_title);
 $course_stmt->fetch();
 $course_stmt->close();
-// Lấy danh sách quizzes
-$stmt = $conn->prepare("SELECT id, title FROM quizzes WHERE course_id = ?");
+// Lấy danh sách quizzes kèm deadline
+$stmt = $conn->prepare("SELECT id, title, deadline FROM quizzes WHERE course_id = ?");
 $stmt->bind_param("i", $course_id);
 $stmt->execute();
 $result = $stmt->get_result();
 $fullname = htmlspecialchars($_SESSION['fullname']);
 $role = htmlspecialchars($_SESSION['role']);
+$user_id = $_SESSION['user_id']; // Lấy user_id để kiểm tra đã làm quiz chưa
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -415,9 +416,42 @@ $role = htmlspecialchars($_SESSION['role']);
             <?php if ($result->num_rows > 0): ?>
                 <ul class="quiz-list-container">
                     <?php while ($quiz = $result->fetch_assoc()): ?>
+                        <?php
+                            // Kiểm tra đã làm quiz chưa
+                            $quiz_id = $quiz['id'];
+                            $done_stmt = $conn->prepare("SELECT COUNT(*) FROM quiz_submissions WHERE quiz_id = ? AND user_id = ?");
+                            $done_stmt->bind_param("ii", $quiz_id, $user_id);
+                            $done_stmt->execute();
+                            $done_stmt->bind_result($has_done);
+                            $done_stmt->fetch();
+                            $done_stmt->close();
+
+                            // Kiểm tra deadline
+                            $now = date('Y-m-d H:i:s');
+                            $deadline = $quiz['deadline'];
+                            $is_expired = ($deadline && $now > $deadline);
+                        ?>
                         <li class="quiz-item">
-                            <span class="quiz-title"><?= htmlspecialchars($quiz['title']) ?></span>
-                            <a href="quiz.php?id=<?= $quiz['id'] ?>&course_id=<?= $course_id ?>"><i class="fas fa-pen"></i> Take Quiz</a>
+                            <div>
+                                <span class="quiz-title"><?= htmlspecialchars($quiz['title']) ?></span>
+                                <br>
+                                <span style="font-size:0.98em; color:#555;">
+                                    <i class="fas fa-clock"></i>
+                                    Deadline: 
+                                    <?= $quiz['deadline'] ? date('H:i d/m/Y', strtotime($quiz['deadline'])) : 'No deadline' ?>
+                                </span>
+                            </div>
+                            <?php if ($is_expired): ?>
+                                <span style="color:#dc3545; font-weight:600; margin-left:20px;">
+                                    <i class="fas fa-clock"></i> Deadline passed
+                                </span>
+                            <?php elseif ($has_done): ?>
+                                <span style="color:#28a745; font-weight:600; margin-left:20px;">
+                                    <i class="fas fa-check-circle"></i> Completed
+                                </span>
+                            <?php else: ?>
+                                <a href="quiz.php?id=<?= $quiz['id'] ?>&course_id=<?= $course_id ?>"><i class="fas fa-pen"></i> Take Quiz</a>
+                            <?php endif; ?>
                         </li>
                     <?php endwhile; ?>
                 </ul>

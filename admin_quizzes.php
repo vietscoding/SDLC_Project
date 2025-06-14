@@ -124,6 +124,23 @@ $result = $conn->query("
             color: #e74c3c; /* Red icon for admin quizzes */
         }
 
+        .add-quiz-btn {
+            display: inline-block;
+            background: #e74c3c;
+            color: #fff;
+            padding: 10px 22px;
+            border-radius: 6px;
+            font-weight: 600;
+            text-decoration: none;
+            font-size: 1em;
+            margin-left: auto;
+            transition: background 0.2s;
+        }
+
+        .add-quiz-btn i {
+            margin-right: 5px;
+        }
+
         .quizzes-table {
             width: 100%;
             border-collapse: collapse;
@@ -324,6 +341,20 @@ $result = $conn->query("
 <div class="main-content">
     <div class="manage-quizzes-header">
         <h2><i class="fas fa-question-circle"></i> Manage Quizzes</h2>
+        <a href="admin_edit_quiz.php" class="add-quiz-btn" style="
+            display:inline-block;
+            background:#e74c3c;
+            color:#fff;
+            padding:10px 22px;
+            border-radius:6px;
+            font-weight:600;
+            text-decoration:none;
+            font-size:1em;
+            margin-left:auto;
+            transition:background 0.2s;
+        ">
+            <i class="fas fa-plus"></i> Add Quiz
+        </a>
     </div>
 
     <?php if ($result->num_rows > 0): ?>
@@ -334,6 +365,7 @@ $result = $conn->query("
                     <th>Quiz Title</th>
                     <th>Course</th>
                     <th>Actions</th>
+                    <th>Questions</th> <!-- Thêm cột này -->
                 </tr>
             </thead>
             <tbody>
@@ -345,6 +377,9 @@ $result = $conn->query("
                         <td class="quiz-actions">
                             <a href="admin_edit_quiz.php?quiz_id=<?= $row['id'] ?>"><i class="fas fa-edit"></i> Edit</a>
                             <a href="admin_delete_quiz.php?quiz_id=<?= $row['id'] ?>" onclick="return confirm('Delete this quiz?')"><i class="fas fa-trash-alt"></i> Delete</a>
+                        </td>
+                        <td>
+                            <a href="admin_quiz_questions.php?quiz_id=<?= $row['id'] ?>"><i class="fas fa-list"></i> Manage Questions</a>
                         </td>
                     </tr>
                 <?php endwhile; ?>

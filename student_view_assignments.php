@@ -29,6 +29,7 @@ $courses_result = $stmt->get_result();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <style>
+        /* Existing CSS styles remain unchanged */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
         body {
             font-family: 'Roboto', sans-serif;
@@ -266,6 +267,45 @@ $courses_result = $stmt->get_result();
             font-style: italic;
             color: #777;
         }
+        .quiz-scores { /* New style for quiz scores section */
+            margin-top: 20px;
+            padding: 15px;
+            border: 1px solid #cce5ff;
+            border-radius: 8px;
+            background-color: #e6f3ff;
+        }
+        .quiz-scores h4 {
+            font-size: 1.1em;
+            color: #0056b3;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #a6d4ff;
+            padding-bottom: 5px;
+        }
+        .quiz-scores ul {
+            list-style: none;
+            padding: 0;
+        }
+        .quiz-scores li {
+            padding: 8px 0;
+            border-bottom: 1px dashed #cce5ff;
+            color: #333;
+        }
+        .quiz-scores li:last-child {
+            border-bottom: none;
+        }
+        .quiz-scores .quiz-title {
+            font-weight: bold;
+            color: #333;
+        }
+        .quiz-scores .quiz-score {
+            font-weight: bold;
+            color: #007bff;
+            margin-left: 10px;
+        }
+        .quiz-scores .no-quiz-score {
+            font-style: italic;
+            color: #6c757d;
+        }
         .navigation-links {
             margin-top: 30px;
             font-size: 1.1em;
@@ -389,6 +429,29 @@ $courses_result = $stmt->get_result();
         .dark-mode .no-assignments {
             color: #fde68a;
         }
+        .dark-mode .quiz-scores { /* Dark mode styles for quiz scores */
+            background-color: #222;
+            border-color: #fbbf24;
+            color: #fde68a;
+        }
+        .dark-mode .quiz-scores h4 {
+            color: #a7f3d0;
+            border-bottom-color: #fbbf24;
+        }
+        .dark-mode .quiz-scores li {
+            border-bottom-color: #fbbf24;
+            color: #fde68a;
+        }
+        .dark-mode .quiz-scores .quiz-title {
+            color: #a7f3d0;
+        }
+        .dark-mode .quiz-scores .quiz-score {
+            color: #86efac;
+        }
+        .dark-mode .quiz-scores .no-quiz-score {
+            font-style: italic;
+            color: #999;
+        }
         .dark-mode .navigation-links a {
             color: #fbbf24;
             background: #1e293b;
@@ -492,19 +555,19 @@ $courses_result = $stmt->get_result();
                     $assign_stmt->execute();
                     $assignments = $assign_stmt->get_result();
                     ?>
-                    <?php if ($assignments->num_rows > 0): ?>
+                    <?php if ($assignments->num_rows > 0): /* */ ?>
                         <ul class="assignment-list">
-                        <?php while ($a = $assignments->fetch_assoc()): ?>
+                        <?php while ($a = $assignments->fetch_assoc()): /* */ ?>
                             <li class="assignment-item">
                                 <strong><?= htmlspecialchars($a['title']) ?></strong>
                                 <span class="assignment-due-date">(Due: <?= date('Y-m-d H:i', strtotime($a['due_date'])) ?>)</span>
-                                <?php if ($a['submitted_text'] || $a['submitted_file']): ?>
+                                <?php if ($a['submitted_text'] || $a['submitted_file']): /* */ ?>
                                     <div class="submission-info">
                                         <strong>Your Submission:</strong>
-                                        <?php if ($a['submitted_text']): ?>
+                                        <?php if ($a['submitted_text']): /* */ ?>
                                             <p class="submission-text"><?= nl2br(htmlspecialchars($a['submitted_text'])) ?></p>
                                         <?php endif; ?>
-                                        <?php if ($a['submitted_file']): ?>
+                                        <?php if ($a['submitted_file']): /* */ ?>
                                             <p class="submission-file"><i class="fas fa-file"></i> <a href="<?= htmlspecialchars($a['submitted_file']) ?>" target="_blank">Download Submission</a></p>
                                         <?php endif; ?>
                                         <p class="submission-date">Submitted at: <?= $a['submitted_at'] ? date('Y-m-d H:i', strtotime($a['submitted_at'])) : 'N/A' ?></p>
@@ -525,6 +588,37 @@ $courses_result = $stmt->get_result();
                         <p class="no-assignments">No assignments in this course.</p>
                     <?php endif; ?>
                     <?php $assign_stmt->close(); ?>
+
+                    <div class="quiz-scores">
+    <h4>Quiz Scores</h4>
+    <?php
+    // Fetch quiz scores for the current course and user
+    $quiz_stmt = $conn->prepare("
+        SELECT q.title, qs.score
+        FROM quizzes q
+        LEFT JOIN quiz_submissions qs
+            ON q.id = qs.quiz_id AND qs.user_id = ?
+        WHERE q.course_id = ?
+        ORDER BY q.title ASC
+    ");
+    $quiz_stmt->bind_param("ii", $user_id, $course_id);
+    $quiz_stmt->execute();
+    $quizzes = $quiz_stmt->get_result();
+    ?>
+    <?php if ($quizzes->num_rows > 0): ?>
+        <ul>
+        <?php while ($q = $quizzes->fetch_assoc()): ?>
+            <li>
+                <span class="quiz-title"><?= htmlspecialchars($q['title']) ?>:</span>
+                <span class="quiz-score"><?= $q['score'] !== null ? htmlspecialchars($q['score']) : '<span class="no-quiz-score">N/A</span>' ?></span>
+            </li>
+        <?php endwhile; ?>
+        </ul>
+    <?php else: ?>
+        <p class="no-quiz-score">No quizzes for this course yet.</p>
+    <?php endif; ?>
+    <?php $quiz_stmt->close(); ?>
+</div>
                 </div>
             <?php endwhile; ?>
             <div class="navigation-links">
