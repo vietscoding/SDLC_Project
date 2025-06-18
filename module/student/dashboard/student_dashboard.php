@@ -6,12 +6,13 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'student') {
 }
 include "../../../includes/db_connect.php";
 $user_id = $_SESSION['user_id']; // Get current user ID
-
+error_log("Current Script Name: " . basename($_SERVER['PHP_SELF']));
 // Fetch system notifications (already existing)
 $sys_notif_result = $conn->query("SELECT message, created_at FROM system_notifications ORDER BY created_at DESC LIMIT 5");
 
 $fullname = htmlspecialchars($_SESSION['fullname']);
 $role = htmlspecialchars($_SESSION['role']);
+
 
 // --- Data for New Modules ---
 
