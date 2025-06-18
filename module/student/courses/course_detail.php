@@ -6,7 +6,7 @@ if (!isset($_SESSION['user_id'])) {
 }
 $user_id = $_SESSION['user_id'];
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 $course_id = $_GET['course_id'];
 if (!isset($_GET['course_id'])) {
     echo "Missing course ID.";
@@ -98,12 +98,12 @@ $role = htmlspecialchars($_SESSION['role']);
     <title><?= $title; ?> | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/student/course_detail.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/student/course_detail.css">
    
 </head>
 <body>
-    <?php include "includes/student_sidebar.php"; ?>
+    <?php include "../../../includes/student_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="course-detail-header">
@@ -144,7 +144,7 @@ $role = htmlspecialchars($_SESSION['role']);
                         <i class="fas fa-check-circle"></i> You are enrolled in this course.
                     </p>
                     <div class="quick-actions-row">
-                        <a class="quiz-forum-btn" href="quiz_list.php?course_id=<?= $course_id ?>"><i class="fas fa-question-circle"></i> View Quizzes</a>
+                        <a class="quiz-forum-btn" href="../quiz/quiz_list.php?course_id=<?= $course_id ?>"><i class="fas fa-question-circle"></i> View Quizzes</a>
                         </div>
 
                 <?php elseif ($enrolled_status == 'pending'): ?>
@@ -167,10 +167,10 @@ $role = htmlspecialchars($_SESSION['role']);
             <a href="student_search_courses.php"><i class="fas fa-search"></i> Search Courses</a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
 
-    <script src="js/student_sidebar.js"></script>
+    <script src="../../../js/student_sidebar.js"></script>
 
 </body>
 </html>

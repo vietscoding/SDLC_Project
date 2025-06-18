@@ -1,6 +1,6 @@
 <?php
 session_start();
-include "includes/db_connect.php";
+include "../includes/db_connect.php";
 
 $error = "";
 
@@ -32,13 +32,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         // Redirect based on role
         if ($role == 'student') {
-            header("Location: student_dashboard.php");
+            header("Location: ../module/student/dashboard/student_dashboard.php");
             exit;
         } elseif ($role == 'teacher') {
-            header("Location: teacher_dashboard.php");
+            header("Location: ../module/teacher/dashboard/teacher_dashboard.php");
             exit;
         } elseif ($role == 'admin') {
-            header("Location: admin_dashboard.php");
+            header("Location: ../module/admin/dashboard/admin_dashboard.php");
             exit;
         }
     }
@@ -63,182 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Log In | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-    <style>
-        *, *::before, *::after {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Roboto', sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            /* Đổi màu nền phía sau form */
-            background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 50%, #fbc2eb 100%);
-        }
-
-        .login-container {
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            display: flex;
-            width: 800px; /* Adjust as needed */
-            max-width: 95%;
-        }
-
-        .login-panel {
-            flex: 1;
-            padding: 40px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .logo {
-            display: flex;
-            align-items: center;
-            margin-bottom: 30px;
-            color: #525252;
-            font-weight: 500;
-            font-size: 1.2rem;
-        }
-
-        .logo img {
-            width: 24px;
-            height: 24px;
-            margin-right: 10px;
-            /* Style your logo image */
-        }
-
-        h2 {
-            color: #262626;
-            margin-bottom: 20px;
-            font-size: 2rem;
-            font-weight: 700;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 8px;
-            color: #525252;
-            font-weight: 500;
-            font-size: 0.9rem;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px 16px;
-            border: 1px solid #d4d4d4;
-            border-radius: 6px;
-            font-size: 1rem;
-            color: #262626;
-            transition: border-color 0.3s ease;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #3b82f6; /* Blue focus color */
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.25);
-        }
-
-        .remember-forgot {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 25px;
-            font-size: 0.9rem;
-            color: #525252;
-        }
-
-        .remember-me {
-            display: flex;
-            align-items: center;
-        }
-
-        .remember-me input {
-            margin-right: 8px;
-        }
-
-        .forgot-password a {
-            color: #3b82f6;
-            text-decoration: none;
-        }
-
-        .forgot-password a:hover {
-            text-decoration: underline;
-        }
-
-        button.login-btn {
-            background-color: #3b82f6;
-            color: #fff;
-            padding: 12px 24px;
-            border: none;
-            border-radius: 6px;
-            font-size: 1rem;
-            font-weight: 500;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-            width: 100%;
-        }
-
-        button.login-btn:hover {
-            background-color: #2563eb;
-        }
-
-        .signup-link {
-            margin-top: 30px;
-            text-align: center;
-            font-size: 0.9rem;
-            color: #525252;
-        }
-
-        .signup-link a {
-            color: #3b82f6;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .signup-link a:hover {
-            text-decoration: underline;
-        }
-
-        .illustration-panel {
-            flex: 1;
-            background-color: #e0f2fe; /* Light blue for illustration */
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .illustration-panel img {
-            max-width: 100%;
-            height: auto;
-            display: block;
-        }
-
-        @media (max-width: 768px) {
-            .login-container {
-                flex-direction: column;
-                width: 100%;
-                max-width: 100%;
-            }
-
-            .illustration-panel {
-                display: none; /* Hide illustration on smaller screens */
-            }
-
-            .login-panel {
-                padding: 30px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="../css/common/login.css">
 </head>
 <body>
     

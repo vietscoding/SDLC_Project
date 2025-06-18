@@ -1,10 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'student') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 $user_id = $_SESSION['user_id']; // Get current user ID
 
 // Fetch system notifications (already existing)
@@ -149,12 +149,12 @@ foreach ($courses_in_progress as $course) {
     <title>Student Dashboard | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/student/student_dashboard.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/student/student_dashboard.css">
 </head>
 <body>
 
-    <?php include "includes/student_sidebar.php"; ?>
+    <?php include "../../../includes/student_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="student-dashboard-header">
@@ -172,7 +172,7 @@ foreach ($courses_in_progress as $course) {
                         <?php foreach ($courses_in_progress as $course): ?>
                             <li>
                                 <span><?= htmlspecialchars($course['title']); ?></span>
-                                <a href="course_detail.php?course_id=<?= $course['id']; ?>" class="btn">Details</a>
+                                <a href="../courses/course_detail.php?course_id=<?= $course['id']; ?>" class="btn">Details</a>
                             </li>
                         <?php endforeach; ?>
                     </ul>
@@ -244,16 +244,16 @@ foreach ($courses_in_progress as $course) {
                 // Reset the pointer for sys_notif_result to reuse it
                 $sys_notif_result->data_seek(0);
                 if ($conn->query("SELECT message FROM system_notifications")->num_rows > 5): ?>
-                    <p class="view-all-link"><a href="notifications.php">View All Announcements</a></p>
+                    <p class="view-all-link"><a href="../notification/notifications.php">View All Announcements</a></p>
                 <?php endif; ?>
             </div>
         <?php endif; ?>
         
         <div class="logout-link">
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
+            <a href="../../../common/logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/student_sidebar.js"></script> </body>
+    <script src="../../../js/student_sidebar.js"></script> </body>
 </html>
