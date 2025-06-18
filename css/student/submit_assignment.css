@@ -1,0 +1,351 @@
+ .main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        .submit-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .submit-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .submit-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Adjusted styling for content sections */
+        .assignment-info,
+        .submission-form-container { /* Renamed for clarity, will wrap form */
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            border: 1px solid var(--border-color);
+            margin-bottom: 30px;
+        }
+
+        /* No hover effect on general info container, only on interactive elements if any */
+        .assignment-info {
+            margin-top: 20px;
+        }
+
+        .assignment-info p {
+            margin-bottom: 8px;
+            color: var(--text-medium);
+            font-size: 1em;
+        }
+
+        .assignment-info strong {
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .assignment-description {
+            white-space: pre-line;
+            color: var(--text-dark);
+        }
+
+        .error-message,
+        .success-message {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 500;
+            border: 1px solid transparent;
+            display: flex;
+            align-items: center;
+        }
+
+        .error-message {
+            background-color: var(--error-bg);
+            color: var(--error-text);
+            border-color: var(--error-border);
+        }
+
+        .success-message {
+            background-color: var(--success-bg);
+            color: var(--success-text);
+            border-color: var(--success-border);
+        }
+
+        .error-message i,
+        .success-message i {
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+
+        .submission-form label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--text-dark);
+            font-size: 1.05em;
+        }
+
+        .submission-form textarea {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+            line-height: 1.6;
+            background-color: var(--background-input);
+            color: var(--text-dark);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .submission-form textarea:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(var(--primary-rgb), 0.2);
+            outline: none;
+        }
+
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
+            display: inline-flex; /* Use flex for alignment */
+            align-items: center;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background-color: var(--background-input);
+            padding: 8px 12px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .file-upload-wrapper:hover {
+            background-color: var(--hover-light);
+            border-color: var(--primary-color);
+        }
+
+        .file-upload-wrapper input[type=file] {
+            font-size: 100px;
+            position: absolute;
+            left: 0;
+            top: 0;
+            opacity: 0;
+            cursor: pointer;
+        }
+
+        .file-upload-button {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.95em;
+            font-weight: 500;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 2px 8px rgba(var(--primary-rgb), 0.2);
+        }
+
+        .file-upload-button i {
+            margin-right: 8px;
+        }
+
+        .file-upload-text {
+            display: inline-block;
+            margin-left: 15px;
+            color: var(--text-medium);
+            font-size: 0.95em;
+            flex-grow: 1; /* Allows text to take available space */
+        }
+
+        .submission-form button[type="submit"] {
+            background-color: var(--accent-color);
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: transform 0.2s ease, box-shadow 0.3s ease; /* Removed background-color transition */
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .submission-form button[type="submit"]:hover {
+            /* Removed background-color change on hover */
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(var(--accent-rgb), 0.3);
+        }
+        
+        .submission-form button[type="submit"] i {
+            margin-right: 10px;
+        }
+
+        /* Navigation Links */
+        .navigation-links {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+            border: 2px solid transparent;
+        }
+
+        .navigation-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4);
+        }
+
+        .navigation-links a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Toggle Mode Button - Repositioned for consistency */
+        .toggle-mode-btn {
+            position: absolute;
+            top: 20px; /* Adjust as needed */
+            right: 30px; /* Adjust as needed */
+            background-color: var(--secondary-color); /* Matches theme */
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .toggle-mode-btn:hover {
+            background-color: var(--secondary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Dark Mode Adjustments */
+       
+
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 25px;
+            }
+            .submit-header h2 {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 80px; /* Adjust for potential fixed header/sidebar on mobile */
+            }
+            .submit-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .submit-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            .toggle-mode-btn {
+                top: 70px; /* Adjust position for mobile, below header */
+                right: 20px;
+            }
+            .assignment-info,
+            .submission-form-container {
+                padding: 20px;
+                margin-bottom: 25px;
+            }
+            .submission-form textarea {
+                margin-bottom: 15px;
+            }
+            .file-upload-wrapper {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 15px;
+                width: 100%;
+            }
+            .file-upload-button {
+                margin-bottom: 10px;
+            }
+            .file-upload-text {
+                margin-left: 0;
+            }
+            .submission-form button[type="submit"] {
+                width: 100%;
+                justify-content: center;
+                padding: 10px 20px;
+            }
+            .navigation-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .navigation-links a {
+                width: 90%; /* Make buttons full width on small screens */
+                justify-content: center;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .submit-header h2 {
+                font-size: 1.5em;
+            }
+            .toggle-mode-btn {
+                top: 60px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.1em;
+            }
+            .navigation-links a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }

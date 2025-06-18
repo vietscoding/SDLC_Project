@@ -1,0 +1,320 @@
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        /* Main Content Area (phải khớp với sidebar width) */
+        .main-content {
+            margin-left: 280px; /* Phải khớp với sidebar width trong style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive cho main-content */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0; /* Loại bỏ margin khi sidebar ẩn */
+                padding-top: 80px; /* Tạo khoảng trống cho nút burger */
+            }
+        }
+
+        /* Header tương tự admin-dashboard-header */
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Container cho phần search và thêm mới, tương tự system-overview */
+        .progress-overview { /* Renamed for teacher context */
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .progress-overview > h3 {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            width: calc(100% - 60px);
+            margin-bottom: 20px; /* Adjust spacing below heading */
+        }
+
+        .progress-overview > h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .progress-content { /* Renamed for teacher context */
+            margin-top: 60px; /* Để tạo khoảng trống cho tiêu đề h3 */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Unified style for back buttons */
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+            margin-top: 40px; /* Adjust spacing as needed */
+            text-align: center; /* For centering if it's the only element in a div */
+        }
+
+        .back-button i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        /* Message Box Styling (from My Courses) - keeping it in case of future use */
+        .success-message, .error-message, .warning-message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            border: 1px solid transparent; /* Default transparent border */
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        .warning-message {
+            background-color: #fff3cd;
+            color: #85640c;
+            border-color: #ffeeba;
+        }
+
+        .success-message i, .error-message i, .warning-message i {
+            margin-right: 8px;
+        }
+
+        /* Dark Mode */
+        
+
+        /* Specific styles for Course Details from teacher_course_detail.php, adapted to new design */
+        .course-info-section .course-details-list {
+            list-style: none;
+            padding: 0;
+            margin-bottom: 15px;
+        }
+
+        .course-info-section .course-details-list li {
+            padding: 10px 0;
+            color: var(--text-dark);
+            display: flex;
+            gap: 10px;
+            font-size: 1.05em;
+        }
+
+        .course-info-section .course-details-list li strong {
+            font-weight: 600;
+            color: var(--text-dark);
+            min-width: 120px; /* Align labels */
+        }
+
+        .course-description {
+            margin-top: 15px;
+            padding: 20px;
+            background-color: var(--background-light); /* Lighter background for description */
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            color: var(--text-medium);
+            line-height: 1.7;
+            box-shadow: inset 0 1px 3px var(--shadow-light);
+            font-size: 0.95em;
+        }
+
+        .manage-links {
+            list-style: none;
+            padding: 0;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* Responsive grid */
+            gap: 15px;
+            margin-top: 20px; /* Space from the section heading */
+        }
+
+        .manage-links li a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 18px 20px; /* Larger padding for better click area */
+            background-color: var(--primary-color);
+            color: #fff;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            gap: 12px;
+            font-size: 1.1em;
+        }
+        .manage-links li a:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+        }
+        .manage-links li a i {
+            font-size: 1.3em;
+        }
+
+        /* Dark Mode for course specific elements */
+        .dark-mode .course-info-section .course-details-list li {
+            color: #ccc;
+        }
+        .dark-mode .course-info-section .course-details-list li strong {
+            color: #eee;
+        }
+        .dark-mode .course-description {
+            background-color: #2c3e50; /* Darker background for description */
+            color: #bdc3c7;
+            border-color: #444;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.15);
+        }
+        .dark-mode .manage-links li a {
+            background-color: var(--accent-color); /* Use accent for buttons in dark mode */
+            color: var(--text-dark); /* Dark text on accent background */
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.2);
+        }
+        .dark-mode .manage-links li a:hover {
+            background-color: #e08e0b;
+            box-shadow: 0 6px 20px rgba(243, 156, 18, 0.3);
+        }
+        .dark-mode .manage-links li a i {
+             color: var(--text-dark); /* Icon color matches text for consistency */
+        }
+        .navigation-links {
+            margin-top: 40px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding-bottom: 20px;
+        }
+        /* This is effectively the same as .back-button, can be merged or kept separate if intent is different */
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            color: white; /* Changed to white for consistency with back-button */
+            background-color: #6c757d; /* Changed to match back-button */
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1em;
+            border-radius: 8px; /* Changed to 8px for consistency */
+            padding: 12px 25px; /* Changed to match back-button */
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2); /* Changed to match back-button */
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            border: none;
+            outline: none;
+            gap: 10px; /* Changed to match back-button */
+        }
+        .navigation-links a:hover {
+            background-color: #5a6268; /* Changed to match back-button */
+            color: #fff;
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3); /* Changed to match back-button */
+            transform: translateY(-3px); /* Changed to match back-button */
+        }
+        .navigation-links a i {
+            margin-right: 0px; /* Reset margin as gap handles it */
+            font-size: 1.1em;
+        }
+
+        /* Responsive for Course Details */
+        @media (max-width: 992px) {
+            .manage-links {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            .course-info-section .course-details-list li {
+                flex-direction: column;
+                gap: 5px;
+                padding: 8px 0;
+            }
+            .course-info-section .course-details-list li strong {
+                min-width: unset;
+            }
+            .manage-links {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
+            .manage-links li a {
+                padding: 15px 15px;
+                font-size: 1em;
+            }
+            .navigation-links {
+                flex-direction: column;
+                gap: 15px;
+            }
+            .navigation-links a {
+                width: 100%;
+                justify-content: center;
+                font-size: 0.95em;
+                padding: 10px 0;
+            }
+        }

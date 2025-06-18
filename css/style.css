@@ -6,10 +6,10 @@
     --accent-color: #dc3545; /* Red (for BTEC) */
     --background-light: #f4f7fa;
     --background-card: #ffffff;
-    --text-dark: #333d47;
+    --text-dark: #212529;
     --text-medium: #6c757d;
     --text-light: #ced4da;
-    --border-color: #e9ecef;
+    --border-color: #eee6e6;
     --shadow-light: rgba(0, 0, 0, 0.05);
     --shadow-medium: rgba(0, 0, 0, 0.1);
 }

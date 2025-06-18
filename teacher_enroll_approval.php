@@ -59,58 +59,60 @@ $result = $pending->get_result();
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Approve Enrollments | <?= htmlspecialchars($course_title) ?></title>
+    <title>Approve Enrollments for <?= htmlspecialchars($course_title) ?> | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <style>
-        body { font-family: Arial, sans-serif; padding: 20px; }
-        h2 { color: #2c3e50; }
-        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
-        th, td { padding: 10px; border: 1px solid #ccc; text-align: left; }
-        th { background-color: #f1c40f; color: #2c3e50; }
-        a.button {
-            padding: 6px 14px;
-            border-radius: 5px;
-            text-decoration: none;
-            margin-right: 8px;
-        }
-        .approve { background: #27ae60; color: #fff; }
-        .reject { background: #e74c3c; color: #fff; }
-        .back { background: #3498db; color: #fff; padding: 8px 18px; display: inline-block; margin-top: 20px; }
-    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/teacher/teacher_enroll_approval.css">
 </head>
 <body>
+    <?php include "includes/teacher_sidebar.php"; ?>
 
-<h2>Pending Enrollments for "<?= htmlspecialchars($course_title) ?>"</h2>
+    <div class="main-content">
+        <div class="admin-page-header">
+            <h2><i class="fas fa-user-check"></i> Approve Enrollments</h2>
+        </div>
 
-<?php if ($result->num_rows > 0): ?>
-    <table>
-        <thead>
-            <tr>
-                <th>Student</th>
-                <th>Email</th>
-                <th>Enrolled At</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php while ($row = $result->fetch_assoc()): ?>
-            <tr>
-                <td><?= htmlspecialchars($row['fullname']) ?></td>
-                <td><?= htmlspecialchars($row['email']) ?></td>
-                <td><?= $row['enrolled_at'] ?></td>
-                <td>
-                    <a href="?course_id=<?= $course_id ?>&approve=<?= $row['id'] ?>" class="button approve"><i class="fas fa-check"></i> Approve</a>
-                    <a href="?course_id=<?= $course_id ?>&reject=<?= $row['id'] ?>" class="button reject"><i class="fas fa-times"></i> Reject</a>
-                </td>
-            </tr>
-        <?php endwhile; ?>
-        </tbody>
-    </table>
-<?php else: ?>
-    <p>No pending enrollment requests.</p>
-<?php endif; ?>
+        <div class="enrollment-approval-overview">
+            <h3><i class="fas fa-clipboard-list"></i> Pending Enrollments for "<?= htmlspecialchars($course_title) ?>"</h3>
+            <div class="enrollment-approval-content">
+            </div>
+        </div>
 
-<a href="teacher_courses.php" class="back"><i class="fas fa-arrow-left"></i> Back to My Courses</a>
+        <?php if ($result->num_rows > 0): ?>
+            <table class="enrollments-table">
+                <thead>
+                    <tr>
+                        <th>Student</th>
+                        <th>Email</th>
+                        <th>Enrolled At</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td data-label="Student"><?= htmlspecialchars($row['fullname']) ?></td>
+                            <td data-label="Email"><?= htmlspecialchars($row['email']) ?></td>
+                            <td data-label="Enrolled At"><?= $row['enrolled_at'] ?></td>
+                            <td data-label="Actions" class="enrollment-actions">
+                                <a href="?course_id=<?= $course_id ?>&approve=<?= $row['id'] ?>" class="approve"><i class="fas fa-check"></i> Approve</a>
+                                <a href="?course_id=<?= $course_id ?>&reject=<?= $row['id'] ?>" class="reject"><i class="fas fa-times"></i> Reject</a>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p class="no-pending-enrollments"><i class="fas fa-info-circle"></i> No pending enrollment requests for this course.</p>
+        <?php endif; ?>
 
+        <div class="back-to-courses">
+            <a href="teacher_courses.php"><i class="fas fa-arrow-left"></i> Back to My Courses</a>
+        </div>
+
+        <?php include "includes/footer.php"; ?>
+    </div>
+    <script src="js/teacher_sidebar.js"></script>
 </body>
 </html>

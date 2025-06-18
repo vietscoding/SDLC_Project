@@ -35,15 +35,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <html>
 <head>
     <title>Edit Comment</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/teacher/teacher_edit_comment.css">
 </head>
 <body>
-<h2>Edit Your Comment</h2>
+    <?php include "includes/teacher_sidebar.php"; ?>
 
-<form method="POST">
-    <textarea name="content" rows="5" cols="60" required><?= htmlspecialchars($comment['content']) ?></textarea><br><br>
-    <button type="submit">Update Comment</button>
-    <a href="teacher_view_post.php?post_id=<?= $post_id ?>">Cancel</a>
-</form>
+    <div class="main-content">
+        <div class="admin-page-header">
+            <h2><i class="fas fa-edit"></i> Edit Comment</h2>
+        </div>
 
+        <div class="post-create-container">
+            <form method="POST">
+                <label for="content">Comment Content:</label>
+                <textarea name="content" id="content" rows="5" cols="60" required><?= htmlspecialchars($comment['content']) ?></textarea><br><br>
+                <div class="button-group">
+                    <button type="submit"><i class="fas fa-save"></i> Update Comment</button>
+                    <a href="teacher_view_post.php?post_id=<?= $post_id ?>" class="cancel-button"><i class="fas fa-arrow-left"></i> Cancel</a>
+                </div>
+            </form>
+        </div>
+        <?php include "includes/footer.php"; ?>
+    </div>
+    <script src="js/teacher_sidebar.js"></script>
 </body>
 </html>

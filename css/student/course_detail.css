@@ -1,0 +1,418 @@
+       .main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        .course-detail-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .course-detail-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .course-detail-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .user-info {
+            font-size: 1.1em;
+            color: var(--text-medium);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info i {
+            margin-right: 8px;
+            /* Changed from var(--accent-color) to black */
+            color: black;
+        }
+
+        .toggle-mode-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            background-color: var(--secondary-color);
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .toggle-mode-btn:hover {
+            background-color: var(--secondary-dark);
+            transform: scale(1.05);
+        }
+
+        .course-description {
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            font-size: 1.1em;
+            color: var(--text-dark);
+            line-height: 1.6;
+        }
+
+        .lessons-section {
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            border: 1px solid var(--border-color);
+        }
+
+        .lessons-section h3 {
+            font-size: 1.8em;
+            color: var(--primary-color);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+        }
+
+        .lessons-section h3 i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .lessons-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .lessons-list li {
+            padding: 15px 0;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 1.05em;
+            color: var(--text-dark);
+        }
+
+        .lessons-list li:last-child {
+            border-bottom: none;
+        }
+
+        .lessons-list li a {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 0.9em;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.2);
+            border: 2px solid transparent;
+        }
+
+        .lessons-list li a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.4);
+        }
+
+        .lessons-list li span {
+            color: var(--text-medium);
+            margin-left: 12px;
+            font-size: 0.9em;
+        }
+
+        .course-actions {
+            margin-bottom: 30px;
+        }
+
+        .enroll-section p {
+            font-size: 1.1em;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+        }
+
+        .enroll-section p i {
+            margin-right: 10px;
+        }
+
+        .enroll-section .enrolled-message {
+            /* Changed from var(--success-color) to green */
+            color: green;
+        }
+
+        .enroll-section .pending-message {
+            color: var(--warning-color);
+        }
+
+        .quick-actions-row {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        .quiz-forum-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+            border: 2px solid transparent;
+            cursor: pointer;
+        }
+
+        .quiz-forum-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4);
+        }
+
+        .quiz-forum-btn i {
+            margin-right: 8px;
+        }
+
+        .navigation-links {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+            border: 2px solid transparent;
+        }
+
+        .navigation-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4);
+        }
+
+        .navigation-links a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Dark Mode */
+        body.dark-mode {
+            --background-light: #1a202c;
+            --background-card: #2d3748;
+            --text-dark: #e2e8f0;
+            --text-medium: #a0aec0;
+            --border-color: #4a5568;
+            --shadow-light: rgba(0, 0, 0, 0.3);
+            --shadow-medium: rgba(0, 0, 0, 0.5);
+            --hover-light: #4a5568;
+        }
+
+        body.dark-mode .course-detail-header h2 {
+            color: var(--primary-color);
+        }
+
+        body.dark-mode .user-info {
+            color: var(--text-medium);
+        }
+
+        body.dark-mode .user-info i {
+            /* Ensuring black color in dark mode too for the icon */
+            color: black;
+        }
+
+        body.dark-mode .course-description,
+        body.dark-mode .lessons-section {
+            background-color: var(--background-card);
+            box-shadow: 0 5px 20px var(--shadow-light);
+            border-color: var(--border-color);
+        }
+
+        body.dark-mode .lessons-section h3 {
+            color: var(--primary-color);
+            border-bottom-color: var(--border-color);
+        }
+
+        body.dark-mode .lessons-list li {
+            color: var(--text-dark);
+            border-bottom-color: var(--border-color);
+        }
+
+        body.dark-mode .lessons-list li a,
+        body.dark-mode .quiz-forum-btn {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        body.dark-mode .lessons-list li a:hover,
+        body.dark-mode .quiz-forum-btn:hover {
+            background-color: var(--primary-dark);
+        }
+        body.dark-mode .lessons-list li span {
+            color: var(--text-medium);
+        }
+
+        body.dark-mode .enroll-section .enrolled-message {
+            /* Ensuring green color in dark mode too for the message */
+            color: green;
+        }
+        body.dark-mode .enroll-section .pending-message {
+            color: var(--warning-color-dark);
+        }
+
+        body.dark-mode .navigation-links a {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        body.dark-mode .navigation-links a:hover {
+            background-color: var(--accent-dark);
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 25px;
+            }
+            .course-detail-header h2 {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 80px;
+            }
+            .course-detail-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .course-detail-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            .user-info {
+                font-size: 1em;
+            }
+            .toggle-mode-btn {
+                top: 70px;
+                right: 20px;
+            }
+            .course-description,
+            .lessons-section {
+                padding: 20px;
+            }
+            .lessons-section h3 {
+                font-size: 1.5em;
+            }
+            .lessons-list li {
+                font-size: 1em;
+            }
+            .lessons-list li a {
+                padding: 7px 12px;
+                font-size: 0.85em;
+            }
+            .enroll-section p {
+                font-size: 1em;
+            }
+            .quick-actions-row,
+            .navigation-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .quiz-forum-btn,
+            .navigation-links a {
+                width: 90%;
+                justify-content: center;
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .course-detail-header h2 {
+                font-size: 1.5em;
+            }
+            .toggle-mode-btn {
+                top: 60px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.1em;
+            }
+            .course-description {
+                font-size: 1em;
+            }
+            .lessons-section h3 {
+                font-size: 1.3em;
+            }
+            .lessons-list li {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 5px;
+            }
+            .lessons-list li a {
+                width: 100%;
+                text-align: center;
+            }
+            .lessons-list li span {
+                margin-left: 0;
+            }
+            .enroll-section p {
+                font-size: 0.95em;
+            }
+            .quiz-forum-btn,
+            .navigation-links a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }

@@ -1,0 +1,259 @@
+ *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        /* Main Content Area (phải khớp với sidebar width) */
+        .main-content {
+            margin-left: 280px; /* Phải khớp với sidebar width trong style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive cho main-content */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0; /* Loại bỏ margin khi sidebar ẩn */
+                padding-top: 80px; /* Tạo khoảng trống cho nút burger */
+            }
+        }
+
+        /* Header tương tự admin-dashboard-header */
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Container cho phần form, tương tự lessons-overview */
+        .form-overview { /* Renamed for clarity */
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+        }
+
+        .form-overview > h3 {
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px; /* Tạo khoảng cách với nội dung form */
+        }
+
+        .form-overview > h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .form-content { /* Renamed for clarity */
+            padding-top: 20px; /* Thêm padding-top để tạo khoảng cách */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Form styling */
+        .edit-quiz-form-style { /* Reused class name for consistent styling */
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .edit-quiz-form-style label {
+            font-weight: 500;
+            color: var(--text-dark); /* Changed from #333 to var(--text-dark) for better visibility and consistency */
+            margin-bottom: 5px;
+            display: block;
+            font-size: 0.98em; /* Slightly larger for readability */
+        }
+
+        .edit-quiz-form-style input[type="text"],
+        .edit-quiz-form-style textarea,
+        .edit-quiz-form-style select {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #888 !important;
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 0.95em;
+            color: var(--text-dark);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .edit-quiz-form-style input[type="text"]:focus,
+        .edit-quiz-form-style textarea:focus,
+        .edit-quiz-form-style select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        .edit-quiz-form-style button[type="submit"] {
+            align-self: flex-start;
+            padding: 12px 25px;
+            background-color: #27ae60; /* Green for save */
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.2);
+        }
+
+        .edit-quiz-form-style button[type="submit"]:hover {
+            background-color: #219b56;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3);
+        }
+
+        /* Back Buttons */
+        .back-buttons { /* Unified button styling */
+            margin-top: 40px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .back-buttons a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .back-buttons a.primary-button { /* For specific actions like 'Back to Quizzes' */
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .back-buttons a.primary-button:hover {
+            background-color: #2980b9;
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .back-buttons a:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .back-buttons a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Message Box Styling (from teacher_quiz_edit.php) */
+        .success-message, .error-message, .warning-message {
+            padding: 15px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            border: 1px solid transparent;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .success-message {
+            background-color: #d4edda;
+            color: #155724;
+            border-color: #c3e6cb;
+        }
+
+        .error-message {
+            background-color: #f8d7da;
+            color: #721c24;
+            border-color: #f5c6cb;
+        }
+
+        .warning-message {
+            background-color: #fff3cd;
+            color: #85640c;
+            border-color: #ffeeba;
+        }
+
+        .success-message i, .error-message i, .warning-message i {
+            margin-right: 8px;
+            font-size: 1.2em;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .form-overview {
+                padding: 25px;
+            }
+            .form-overview > h3 {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .form-overview > h3 {
+                text-align: center;
+                margin-bottom: 25px;
+            }
+            .form-content {
+                margin-top: 0;
+            }
+            .back-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-page-header h2 {
+                font-size: 1.5em;
+            }
+        }

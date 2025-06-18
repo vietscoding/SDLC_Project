@@ -1,0 +1,376 @@
+  .main-content {
+            margin-left: 280px;
+            padding: 0; /* Changed to 0, padding moved to inner-content-wrapper */
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+            align-items: center; /* Center the inner-content-wrapper horizontally */
+        }
+
+        .inner-content-wrapper { /* NEW STYLE */
+            max-width: 900px; /* Desired width for your content, similar to Facebook's feed */
+            width: 100%; /* Ensures it takes full available width up to max-width */
+            padding: 30px; /* Original padding for the content inside */
+            box-sizing: border-box; /* Include padding in the width calculation */
+        }
+
+        .admin-dashboard-header {
+            display: flex;
+            justify-content: space-between; /* Đẩy các phần tử ra hai phía */
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-dashboard-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-dashboard-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+        }
+
+        .view-all-posts-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            font-size: 0.95em;
+        }
+
+        .view-all-posts-btn i {
+            margin-right: 8px;
+        }
+
+        .view-all-posts-btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+        }
+
+        /* Forum Posts Section */
+        .forum-posts-section {
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .forum-posts-section > h3 {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            width: calc(100% - 60px);
+            margin-bottom: 20px;
+        }
+
+        .forum-posts-section > h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .posts-container {
+            margin-top: 60px;
+            display: grid;
+            gap: 20px;
+        }
+
+        .forum-post-item {
+            background-color: var(--background-light);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+        }
+
+        .forum-post-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px var(--shadow-medium);
+        }
+
+        .post-meta {
+            font-size: 0.9em;
+            color: var(--text-medium);
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .post-meta strong {
+            color: var(--text-dark);
+        }
+
+        .post-content {
+            font-size: 1em;
+            color: var(--text-dark);
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        .post-media img,
+        .post-media video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            margin-top: 10px;
+            border: 1px solid var(--border-color);
+        }
+
+        .post-attachment {
+            margin-top: 10px;
+        }
+
+        .post-attachment a {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+
+        .post-attachment a:hover {
+            color: var(--accent-color);
+        }
+
+        .post-attachment a i {
+            margin-right: 5px;
+        }
+
+        .post-actions {
+            margin-top: 20px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .post-actions a {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 6px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease; /* Added box-shadow to transition */
+            font-size: 0.9em;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1); /* Added initial shadow for visibility */
+        }
+
+        .post-actions .approve-btn {
+            background-color: var(--success-color, #28a745); /* Fallback color added */
+            color: white;
+        }
+
+        .post-actions .approve-btn:hover {
+            background-color: #218838;
+            box-shadow: 0 4px 10px rgba(40, 167, 69, 0.3); /* Enhanced hover shadow */
+        }
+
+        .post-actions .reject-btn {
+            background-color: var(--danger-color, #dc3545); /* Fallback color added */
+            color: white;
+        }
+
+        .post-actions .reject-btn:hover {
+            background-color: #c82333;
+            box-shadow: 0 4px 10px rgba(220, 53, 69, 0.3); /* Enhanced hover shadow */
+        }
+
+        .post-actions .delete-btn {
+            background-color: var(--text-medium);
+            color: white;
+        }
+
+        .post-actions .delete-btn:hover {
+            background-color: #5a6268;
+            box-shadow: 0 4px 10px rgba(108, 117, 125, 0.3); /* Enhanced hover shadow */
+        }
+
+        .post-actions a i {
+            margin-right: 5px;
+        }
+
+        /* Navigation Links (only for "Back to Dashboard" now) */
+        .navigation-links {
+            margin-top: 20px;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+            max-width: 300px;
+            margin: 0 auto;
+        }
+
+        .navigation-links a:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .navigation-links a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+       
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            /* .main-content margin-left handled by sidebar responsive */
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px; /* Keep this for header clearance */
+                align-items: stretch; /* Allow content to stretch on smaller screens */
+            }
+            .inner-content-wrapper { /* NEW STYLE */
+                padding: 20px; /* Adjust padding for smaller screens */
+                max-width: 100%; /* Let it take full width on smaller screens */
+            }
+            .admin-dashboard-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .admin-dashboard-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+            }
+            .header-actions {
+                margin-top: 10px;
+                width: 100%;
+                justify-content: flex-end; /* Căn phải nút trong header-actions */
+            }
+            .view-all-posts-btn {
+                width: auto;
+                align-self: flex-end; /* Căn phải nút trong chế độ cột */
+            }
+
+            .forum-posts-section {
+                padding: 15px;
+                margin-bottom: 20px;
+            }
+            .forum-posts-section > h3 {
+                position: static;
+                text-align: left;
+                width: auto;
+                margin-bottom: 15px;
+                padding-bottom: 8px;
+                font-size: 1.4em;
+            }
+            .posts-container {
+                margin-top: 0;
+                gap: 15px;
+            }
+            .forum-post-item {
+                padding: 15px;
+            }
+            .post-meta {
+                margin-bottom: 10px;
+                padding-bottom: 8px;
+                font-size: 0.85em;
+            }
+            .post-content {
+                font-size: 0.95em;
+                margin-bottom: 10px;
+            }
+            .post-actions {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .post-actions a {
+                width: 100%;
+                justify-content: center;
+                padding: 10px;
+                font-size: 0.85em;
+            }
+
+            .navigation-links a {
+                width: 100%;
+                padding: 10px 20px;
+                font-size: 0.95em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .inner-content-wrapper { /* NEW STYLE */
+                padding: 15px; /* Further adjust padding for very small screens */
+            }
+            .admin-dashboard-header h2 {
+                font-size: 1.4em;
+            }
+            .forum-posts-section > h3 {
+                font-size: 1.3em;
+            }
+            .forum-post-item {
+                padding: 10px;
+            }
+            .post-meta {
+                font-size: 0.8em;
+            }
+            .post-content {
+                font-size: 0.9em;
+            }
+            .post-actions a {
+                font-size: 0.8em;
+                padding: 8px;
+            }
+            .navigation-links a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+            .view-all-posts-btn {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }

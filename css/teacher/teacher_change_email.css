@@ -1,0 +1,210 @@
+ body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background 0.4s, color 0.4s;
+        }
+        /* Sidebar styles would typically come from includes/teacher_sidebar.php or style.css */
+        /* For this specific file, ensure main-content margin-left matches sidebar width */
+        .main-content {
+            margin-left: 280px; /* Must match sidebar width from teacher_sidebar.php */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px; /* Adjust if header becomes fixed/larger */
+            }
+        }
+
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .form-container { /* Renamed for clarity, analogous to post-create-container */
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 600px; /* Adjusted max-width for email form */
+            align-self: center;
+        }
+
+        .form-container form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-container label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+        }
+
+        .form-container input[type="email"] {
+            width: calc(100% - 24px); /* Adjust for padding */
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 1em;
+            margin-bottom: 20px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        .form-container input[type="email"]:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+            outline: none;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 10px;
+            justify-content: center; /* Center buttons */
+        }
+
+        .button-group button,
+        .button-group a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+            flex-grow: 1; /* Allow buttons to grow */
+            justify-content: center; /* Center text and icon in button */
+            max-width: 200px; /* Limit button width */
+        }
+
+        .button-group a.cancel-button {
+            background-color: #6c757d;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .button-group button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+        }
+        .button-group a.cancel-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .button-group i {
+            margin-right: 8px;
+        }
+
+        .success-message {
+            background: var(--success-color);
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(39, 174, 96, 0.2);
+        }
+        .error-message {
+            background: var(--error-color);
+            color: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 18px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 2px 8px rgba(231, 76, 60, 0.2);
+        }
+        .success-message i, .error-message i {
+            font-size: 1.2em;
+        }
+
+        /* Dark Mode */
+      
+        .toggle-mode-btn {
+            position: absolute;
+            top: 30px; /* Adjust based on new header */
+            right: 30px;
+            background: var(--background-card);
+            color: var(--text-dark);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            box-shadow: 0 2px 8px var(--shadow-light);
+            cursor: pointer;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background 0.3s, color 0.3s, box-shadow 0.3s;
+            z-index: 10;
+        }
+        .toggle-mode-btn:hover {
+            background: var(--primary-color);
+            color: white;
+            box-shadow: 0 4px 12px rgba(52, 152, 219, 0.2);
+        }
+      
+
+        @media (max-width: 600px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .form-container {
+                padding: 20px;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .button-group button,
+            .button-group a {
+                width: 100%;
+            }
+            .toggle-mode-btn {
+                top: 20px;
+                right: 20px;
+            }
+        }

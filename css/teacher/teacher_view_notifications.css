@@ -1,0 +1,183 @@
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        /* Main Content Area (phải khớp với sidebar width) */
+        .main-content {
+            margin-left: 280px; /* Phải khớp với sidebar width trong style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive cho main-content */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0; /* Loại bỏ margin khi sidebar ẩn */
+                padding-top: 80px; /* Tạo khoảng trống cho nút burger */
+            }
+        }
+
+        /* Header tương tự admin-dashboard-header */
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Container cho phần thông báo */
+        .notification-section {
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            border-left: 5px solid var(--primary-color); /* Added accent border */
+        }
+
+        .notification-section h3 {
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .notification-section h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .notification-section ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .notification-section li {
+            padding: 10px 0;
+            font-size: 0.95em;
+            color: var(--text-medium);
+            border-bottom: 1px dashed var(--border-color);
+        }
+
+        .notification-section li:last-child {
+            border-bottom: none;
+        }
+
+        .notification-section li strong {
+            color: var(--text-dark);
+            margin-right: 5px;
+        }
+
+        .notification-section p {
+            color: var(--text-medium);
+            font-style: italic;
+            padding: 10px 0;
+        }
+
+        /* Back Buttons */
+        .back-buttons {
+            margin-top: 40px;
+            text-align: center;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        .back-buttons a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .back-buttons a.primary-button {
+            background-color: var(--primary-color);
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
+        }
+
+        .back-buttons a.primary-button:hover {
+            background-color: #2980b9;
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
+        }
+
+        .back-buttons a:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .back-buttons a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .notification-section {
+                padding: 25px;
+            }
+            .notification-section h3 {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .notification-section h3 {
+                text-align: center;
+                justify-content: center;
+            }
+            .back-buttons {
+                flex-direction: column;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-page-header h2 {
+                font-size: 1.5em;
+            }
+        }

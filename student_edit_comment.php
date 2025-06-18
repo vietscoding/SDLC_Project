@@ -25,19 +25,47 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 }
 
 $comment = $check->fetch_assoc();
+
+// For the header, we'll display the Post ID directly since 'title' might not exist in 'posts'
+$header_text = "Editing Comment for Post ID: " . htmlspecialchars($post_id);
+
 ?>
 <!DOCTYPE html>
 <html>
-<head><title>Edit Comment</title></head>
+<head>
+    <meta charset="UTF-8">
+    <title>Edit Comment | BTEC FPT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/student/student_edit_comment.css">
+   
+</head>
 <body>
+    <?php include "includes/student_sidebar.php"; ?>
 
-<h2>Edit Comment</h2>
-<form method="POST">
-    <textarea name="new_content" rows="3" cols="60" required><?= htmlspecialchars($comment['content']) ?></textarea><br>
-    <button type="submit">Save</button>
-</form>
+    <div class="main-content">
+        <div class="admin-page-header">
+            <h2><i class="fas fa-comment-dots"></i> <?= $header_text ?></h2>
+        </div>
 
-<p><a href="student_view_post.php?post_id=<?= $post_id ?>">← Back to Post</a></p>
+        <div class="comment-form-container">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="new_content">Comment Content:</label>
+                    <textarea name="new_content" id="new_content" rows="8" required><?= htmlspecialchars($comment['content']) ?></textarea>
+                </div>
 
+                <div class="button-group">
+                    <button type="submit" class="submit-btn"><i class="fas fa-save"></i> Save Comment</button>
+                    <a href="student_view_post.php?post_id=<?= $post_id ?>" class="cancel-btn"><i class="fas fa-times-circle"></i> Cancel</a>
+                </div>
+            </form>
+        </div>
+
+        <?php include "includes/footer.php"; ?>
+    </div>
+
+    <script src="js/student_sidebar.js"></script>
 </body>
 </html>

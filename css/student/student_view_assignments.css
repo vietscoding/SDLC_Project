@@ -1,0 +1,393 @@
+ .main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        .grades-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .grades-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .grades-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Enhanced Course Section Styling */
+        .course-section {
+            background-color: var(--background-card); /* Lighter card background */
+            border: 1px solid var(--border-color); /* Subtle border */
+            
+            padding: 30px; /* More padding */
+            margin-bottom: 40px;
+            box-shadow: 0 8px 25px var(--shadow-light); /* Softer, larger shadow */
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .course-section:hover {
+            transform: translateY(-5px); /* Slight lift on hover */
+            box-shadow: 0 12px 35px var(--shadow-medium); /* Enhanced shadow on hover */
+        }
+
+        .course-section h3 {
+            font-size: 1.8em;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--primary-color-light); /* Stronger, colored border */
+            display: flex;
+            align-items: center;
+            font-weight: 700;
+        }
+
+        .course-section h3 i {
+            margin-right: 10px;
+            color: var(--accent-color);
+            font-size: 1.2em;
+        }
+
+        .assignment-list-container {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        .assignment-item {
+            background-color: var(--background-light); /* Changed to light background for individual items */
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assignment-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            background-color: var(--hover-light);
+        }
+
+        .assignment-item .assignment-title {
+            color: var(--text-dark);
+            font-size: 1.2em;
+            font-weight: 600;
+            margin-bottom: 10px;
+            display: block;
+            border-bottom: 1px dotted var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .assignment-item .assignment-due-date {
+            color: var(--text-medium);
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .submission-info {
+            background-color: var(--background-color); /* Slightly different background for info */
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            margin-bottom: 15px;
+        }
+
+        .submission-info strong {
+            color: var(--primary-color);
+            font-size: 0.95em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .submission-info p {
+            color: var(--text-dark);
+            font-size: 0.9em;
+            line-height: 1.5;
+            margin-bottom: 5px;
+        }
+
+        .submission-info a {
+            color: var(--accent-color);
+            text-decoration: none;
+            font-weight: 500;
+        }
+
+        .submission-info a:hover {
+            text-decoration: underline;
+        }
+
+        .grade-feedback {
+            background-color: var(--background-color); /* Slightly different background for info */
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px dashed var(--border-color);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .grade-feedback strong {
+            color: var(--primary-color);
+            font-size: 0.95em;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .grade-value {
+            font-size: 1.1em;
+            font-weight: 700;
+            color: var(--success-color); /* Use a success color for grades */
+            margin-bottom: 5px;
+        }
+
+        .no-grade, .no-feedback, .no-submission {
+            font-style: italic;
+            color: var(--text-medium);
+            font-size: 0.9em;
+        }
+
+        .feedback-text {
+            color: var(--text-dark);
+            font-size: 0.9em;
+            line-height: 1.5;
+        }
+
+        .quiz-scores {
+            background-color: var(--background-light); /* Consistency with assignment items */
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            border: 1px solid var(--border-color);
+            margin-top: 25px;
+        }
+
+        .quiz-scores h4 {
+            font-size: 1.4em;
+            color: var(--accent-color);
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+        
+        .quiz-scores h4 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+        }
+
+        .quiz-scores ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .quiz-scores li {
+            padding: 10px 0;
+            border-bottom: 1px dotted var(--border-color);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .quiz-scores li:last-child {
+            border-bottom: none;
+        }
+
+        .quiz-scores .quiz-title {
+            font-weight: 500;
+            color: var(--text-dark);
+        }
+
+        .quiz-scores .quiz-score {
+            font-weight: 700;
+            color: var(--success-color);
+            font-size: 1.05em;
+        }
+
+        .quiz-scores .no-quiz-score {
+            font-style: italic;
+            color: var(--text-medium);
+        }
+
+        .no-assignments, .no-courses {
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            text-align: center;
+            color: var(--text-medium);
+            font-size: 1.1em;
+            margin-top: 20px;
+            border: 1px solid var(--border-color); /* Added border for consistency */
+        }
+
+        /* Navigation Links below sections */
+        .navigation-links {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+            border: 2px solid transparent;
+        }
+
+        .navigation-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4);
+        }
+
+        .navigation-links a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Toggle Mode Button - Repositioned for consistency */
+        .toggle-mode-btn {
+            position: absolute;
+            top: 20px; /* Adjust as needed */
+            right: 30px; /* Adjust as needed */
+            background-color: var(--secondary-color); /* Matches theme */
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .toggle-mode-btn:hover {
+            background-color: var(--secondary-dark);
+            transform: scale(1.05);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .assignment-list-container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+            }
+            .course-section {
+                padding: 25px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 80px; /* Adjust for potential fixed header/sidebar on mobile */
+            }
+            .grades-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .grades-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            .toggle-mode-btn {
+                top: 70px; /* Adjust position for mobile, below header */
+                right: 20px;
+            }
+            .course-section {
+                padding: 20px;
+            }
+            .course-section h3 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+            .assignment-list-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            .assignment-item {
+                padding: 20px;
+            }
+            .assignment-item .assignment-title {
+                font-size: 1.1em;
+            }
+            .submission-info p, .feedback-text {
+                font-size: 0.85em;
+            }
+            .navigation-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .navigation-links a {
+                width: 90%; /* Make buttons full width on small screens */
+                justify-content: center;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .grades-header h2 {
+                font-size: 1.5em;
+            }
+            .assignment-list-container {
+                grid-template-columns: 1fr; /* Stack assignments vertically on very small screens */
+            }
+            .toggle-mode-btn {
+                top: 60px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.1em;
+            }
+            .navigation-links a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }

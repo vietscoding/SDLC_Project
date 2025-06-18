@@ -1,0 +1,247 @@
+body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        .main-content {
+            margin-left: 280px; /* Must match sidebar width */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+        }
+
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .forum-posts-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 25px;
+        }
+
+        .post-card {
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .post-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px var(--shadow-medium);
+        }
+
+        .post-author-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+        }
+
+        .post-author-info strong {
+            font-size: 1.1em;
+            color: var(--primary-color); /* Highlight course title */
+            margin-right: 10px;
+        }
+
+        .post-author-info span {
+            font-size: 0.85em;
+            color: var(--text-medium);
+            margin-right: 10px; /* Space between date and actions */
+        }
+
+        .post-content {
+            font-size: 1em;
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            line-height: 1.7;
+        }
+
+        .post-media {
+            margin: 20px 0;
+            text-align: center;
+        }
+        .post-media img, .post-media video {
+            max-width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            max-height: 400px;
+            object-fit: contain;
+        }
+
+        .post-attachment {
+            margin-bottom: 20px;
+        }
+        .post-attachment a {
+            display: inline-flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.2s ease;
+        }
+        .post-attachment a i {
+            margin-right: 8px;
+        }
+        .post-attachment a:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+
+        .post-actions-buttons {
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
+            gap: 15px;
+            padding-top: 15px;
+            border-top: 1px solid var(--border-color);
+            margin-top: 20px;
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+        }
+
+        .action-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 8px 15px;
+            border-radius: 6px;
+            font-size: 0.95em;
+            font-weight: 500;
+            text-decoration: none;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+            cursor: pointer;
+            border: none;
+        }
+
+        .action-button i {
+            margin-right: 8px;
+        }
+
+        .action-button.edit-btn {
+            background-color: #f0ad4e; /* Warning yellow */
+            color: white;
+        }
+
+        .action-button.edit-btn:hover {
+            background-color: #ec971f;
+            transform: translateY(-2px);
+        }
+
+        .action-button.delete-btn {
+            background-color: #d9534f; /* Danger red */
+            color: white;
+        }
+
+        .action-button.delete-btn:hover {
+            background-color: #c9302c;
+            transform: translateY(-2px);
+        }
+
+        .no-posts-message {
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px var(--shadow-light);
+            margin-top: 30px;
+            color: var(--text-medium);
+            font-style: italic;
+            text-align: center;
+            font-size: 1.1em;
+            border: 1px dashed var(--border-color);
+        }
+        .no-posts-message i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .back-button-container {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .back-button i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .back-button:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        /* Responsive adjustments for smaller screens */
+        @media (max-width: 600px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+
+            .post-card {
+                padding: 20px;
+            }
+
+            .post-actions-buttons {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 15px;
+            }
+
+            .action-button {
+                width: 100%;
+                justify-content: center;
+            }
+        }

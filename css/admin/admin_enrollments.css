@@ -1,0 +1,241 @@
+ .main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+        }
+
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .course-management-overview { /* Using this class for the main content block */
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .course-management-overview > h3 {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            width: calc(100% - 60px);
+            margin-bottom: 20px; /* Adjusted for h3 absolute positioning */
+        }
+
+        .course-management-overview > h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .course-management-content { /* Used to space content after the absolute positioned h3 */
+            margin-top: 60px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .enrollment-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+            background-color: var(--background-input); /* Consistent with input fields */
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05); /* Lighter shadow for tables */
+            border-radius: 8px;
+            overflow: hidden; /* Ensures rounded corners apply to content */
+            border: 1px solid var(--border-color); /* Add a subtle border */
+        }
+
+        .enrollment-table thead th {
+            background-color: var(--table-header-bg); /* Define this in style.css or here */
+            color: var(--text-dark-secondary); /* Darker text for headers */
+            padding: 15px;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .enrollment-table tbody td {
+            padding: 15px;
+            border-bottom: 1px solid var(--border-color-light); /* Lighter border for rows */
+            color: var(--text-dark);
+            font-size: 0.9em;
+        }
+
+        .enrollment-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .enrollment-table tbody tr:nth-child(even) {
+            background-color: var(--table-row-even-bg); /* Define this or use a light shade */
+        }
+
+        .enrollment-actions a {
+            background-color: #dc3545; /* Red for remove button */
+            color: white;
+            padding: 8px 15px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 500;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            text-decoration: none; /* Ensure no underline */
+            box-shadow: 0 2px 8px rgba(220, 53, 69, 0.2);
+        }
+
+        .enrollment-actions a:hover {
+            background-color: #c82333;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+        }
+        .enrollment-actions a i {
+            margin-right: 5px;
+            font-size: 0.9em;
+        }
+
+        .no-enrollments {
+            background-color: var(--background-input);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark-secondary);
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 2px 10px var(--shadow-light);
+            margin-top: 15px; /* Adjust spacing */
+        }
+        .no-enrollments i {
+            margin-right: 10px;
+            color: var(--primary-color); /* Use primary color for icon */
+            font-size: 1.1em;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-link a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d; /* Gray color for back button */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .back-link a:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+        .back-link a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+       
+
+        /* Responsive Adjustments (copy from admin_add_course.php) */
+        @media (max-width: 1024px) {
+            .course-management-overview {
+                padding: 25px;
+            }
+            .course-management-overview > h3 {
+                top: 20px;
+                left: 25px;
+                font-size: 1.4em;
+                width: calc(100% - 50px);
+            }
+            .course-management-content {
+                margin-top: 50px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .course-management-overview > h3 {
+                position: static;
+                text-align: center;
+                width: auto;
+                margin-bottom: 25px;
+                padding-bottom: 10px;
+            }
+            .course-management-content {
+                margin-top: 0;
+            }
+            .back-link {
+                margin-top: 20px;
+            }
+            .enrollment-table, .no-enrollments {
+                margin-top: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-page-header h2 {
+                font-size: 1.5em;
+            }
+            .enrollment-table thead th, .enrollment-table tbody td {
+                padding: 10px;
+                font-size: 0.85em;
+            }
+            .enrollment-actions a {
+                padding: 6px 10px;
+                font-size: 0.8em;
+            }
+        }

@@ -1,0 +1,340 @@
+  .main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease, background-color 0.3s ease;
+        }
+
+        .courses-header { /* Reusing courses-header for assignments */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .courses-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .courses-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .user-info {
+            font-size: 1.1em;
+            color: var(--text-medium);
+            display: flex;
+            align-items: center;
+        }
+
+        .user-info i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        /* Course List Container (for grouping assignments by course) */
+        .assignment-course-container {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            display: grid; /* Use grid for a dashboard-like layout */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid columns */
+            gap: 25px; /* Spacing between course cards */
+        }
+
+        .assignment-course-item { /* Styled like course-item */
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .assignment-course-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            background-color: var(--hover-light);
+        }
+
+        .assignment-course-item h3 { /* Course Title */
+            color: var(--primary-color);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 15px;
+            display: block;
+            border-bottom: 2px solid var(--border-color);
+            padding-bottom: 10px;
+        }
+
+        .assignment-list {
+            list-style: none;
+            padding: 0;
+            margin-top: 15px;
+        }
+
+        .assignment-item {
+            background-color: var(--background-light); /* Lighter background for individual assignments */
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            transition: background-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+       
+        .assignment-item:hover {
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .assignment-item strong {
+            color: var(--text-dark);
+            font-size: 1.1em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .assignment-due-date {
+            color: var(--secondary-color);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .assignment-description {
+            color: var(--text-medium);
+            font-size: 0.95em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            white-space: pre-line; /* Preserves line breaks from database */
+        }
+
+        .assignment-file-link {
+            display: flex;
+            align-items: center;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-size: 0.9em;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .assignment-file-link:hover {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        .assignment-file-link i {
+            margin-right: 5px;
+        }
+
+        .submit-assignment-link {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            font-size: 0.95em;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+            border: 2px solid transparent;
+        }
+
+        .submit-assignment-link i {
+            margin-left: 8px;
+        }
+
+        .submit-assignment-link:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4);
+            background-color: var(--accent-color); /* Ensure consistent hover background */
+        }
+
+
+        .no-courses-message { /* Reusing no-courses-message */
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            text-align: center;
+            color: var(--text-medium);
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+
+        .no-assignments { /* Specific for assignments, but styled similarly */
+            font-style: italic;
+            color: var(--text-medium);
+            text-align: center;
+            padding: 15px;
+            border: 1px dashed var(--border-color);
+            border-radius: 8px;
+            margin-top: 15px;
+        }
+
+        /* Navigation Links below courses */
+        .navigation-links {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center; /* Center the navigation links */
+            gap: 20px; /* Space between links */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--primary-color); /* Use primary color for these buttons */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.2);
+            border: 2px solid transparent;
+        }
+
+        .navigation-links a:hover {
+            transform: translateY(-3px); /* Slightly more pronounced lift */
+            box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.4); /* Stronger shadow on hover */
+            background-color: var(--primary-color); /* Ensure consistent hover background */
+        }
+
+        .navigation-links a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Toggle Mode Button - Repositioned for consistency */
+        .toggle-mode-btn {
+            position: absolute;
+            top: 20px; /* Adjust as needed */
+            right: 30px; /* Adjust as needed */
+            background-color: var(--secondary-color); /* Matches theme */
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .toggle-mode-btn:hover {
+            background-color: var(--secondary-dark);
+            transform: scale(1.05);
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .assignment-course-container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 80px; /* Adjust for potential fixed header/sidebar on mobile */
+            }
+            .courses-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .courses-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            .toggle-mode-btn {
+                top: 70px; /* Adjust position for mobile, below header */
+                right: 20px;
+            }
+            .assignment-course-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            .assignment-course-item {
+                padding: 20px;
+            }
+            .assignment-course-item h3 {
+                font-size: 1.3em;
+            }
+            .assignment-item {
+                padding: 12px;
+            }
+            .assignment-item strong {
+                font-size: 1em;
+            }
+            .assignment-description {
+                font-size: 0.9em;
+                margin-bottom: 10px;
+            }
+            .submit-assignment-link {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            .navigation-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .navigation-links a {
+                width: 90%; /* Make buttons full width on small screens */
+                justify-content: center;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .courses-header h2 {
+                font-size: 1.5em;
+            }
+            .assignment-course-container {
+                grid-template-columns: 1fr; /* Stack courses vertically on very small screens */
+            }
+            .toggle-mode-btn {
+                top: 60px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.1em;
+            }
+            .navigation-links a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }

@@ -17,6 +17,22 @@ $stmt = $conn->prepare("
 $stmt->bind_param("i", $_SESSION['user_id']);
 $stmt->execute();
 $result = $stmt->get_result();
+
+// Handle quiz deletion
+if (isset($_GET['delete_id'])) {
+    $delete_id = $_GET['delete_id'];
+    $delete_stmt = $conn->prepare("DELETE FROM quizzes WHERE id = ?");
+    $delete_stmt->bind_param("i", $delete_id);
+    if ($delete_stmt->execute()) {
+        header("Location: teacher_quizzes.php?success=Quiz deleted successfully!");
+        exit();
+    } else {
+        header("Location: teacher_quizzes.php?error=Failed to delete quiz.");
+        exit();
+    }
+    $delete_stmt->close();
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -24,555 +40,405 @@ $result = $stmt->get_result();
     <meta charset="UTF-8">
     <title>Manage Quizzes | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
-    <style>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/style.css"> <style>
+        /* Root variables (should ideally be in style.css or a dedicated CSS file) */
+      
+        /* Reset and Base Styles (from teacher_courses.php & teacher_dashboard.php combined) */
         *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         body {
-            font-family: 'Roboto', sans-serif;
-            background: linear-gradient(135deg, #f0f2f5 0%, #e0e7ef 100%);
-            color: #333;
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-dark);
             line-height: 1.6;
             min-height: 100vh;
             display: flex;
             overflow-x: hidden;
-            transition: background 0.4s;
+            transition: background 0.4s, color 0.4s;
         }
-        .sidebar {
-            width: 250px;
-            background: linear-gradient(135deg, #2c3e50 60%, #2980b9 100%);
-            color: white;
-            position: fixed;
-            height: 100vh;
-            padding-top: 20px;
-            box-shadow: 2px 0 20px rgba(44,62,80,0.15);
-            z-index: 100;
+
+        /* Main Content Area (phải khớp với sidebar width) */
+        .main-content {
+            margin-left: 280px; /* Phải khớp với sidebar width trong style.css */
+            padding: 30px;
+            flex-grow: 1;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            transition: background 0.4s;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
         }
-        .sidebar .logo {
-            text-align: center;
-            padding: 20px 0;
-            margin-bottom: 30px;
-            width: 100%;
+
+        /* Responsive cho main-content */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0; /* Loại bỏ margin khi sidebar ẩn */
+                padding-top: 80px; /* Tạo khoảng trống cho nút burger */
+            }
         }
-        .sidebar .logo img {
-            display: block;
-            width: 70%;
-            max-width: 150px;
-            height: auto;
-            margin: auto;
-        }
-        .sidebar ul {
-            list-style: none;
-            width: 100%;
-            padding: 0 15px;
-        }
-        .sidebar ul li a {
-            display: flex;
-            align-items: center;
-            padding: 12px 15px;
-            color: white;
-            text-decoration: none;
-            transition: background 0.2s, color 0.2s, transform 0.2s;
-            border-radius: 8px;
-            margin-bottom: 10px;
-            font-weight: 500;
-            letter-spacing: 0.5px;
-        }
-        .sidebar ul li a:hover,
-        .sidebar ul li a.active {
-            background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
-            color: #2c3e50;
-            transform: translateX(8px) scale(1.05);
-            box-shadow: 0 2px 8px rgba(243,156,18,0.15);
-        }
-        .sidebar ul li a i {
-            margin-right: 12px;
-            font-size: 1.2em;
-            color: #f1c40f;
-            transition: color 0.2s;
-        }
-        .sidebar ul li a:hover i,
-        .sidebar ul li a.active i {
-            color: #2c3e50;
-        }
-        .sidebar ul li a span {
-            flex-grow: 1;
-        }
-        .main-wrapper {
-            flex-grow: 1;
-            margin-left: 250px;
-            padding: 30px;
-            background: transparent;
-            transition: background 0.4s;
-        }
-        .main-content {
-            background: rgba(255,255,255,0.95);
-            border-radius: 16px;
-            box-shadow: 0 8px 32px rgba(44,62,80,0.10);
-            padding: 40px 30px 30px 30px;
-            position: relative;
-            overflow: hidden;
-        }
-        .toggle-mode-btn {
-            position: absolute;
-            top: 18px;
-            right: 30px;
-            background: #fff;
-            color: #2c3e50;
-            border: none;
-            border-radius: 50%;
-            width: 38px;
-            height: 38px;
-            box-shadow: 0 2px 8px rgba(44,62,80,0.10);
-            cursor: pointer;
-            font-size: 1.3em;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            transition: background 0.3s, color 0.3s;
-            z-index: 10;
-        }
-        .toggle-mode-btn:hover {
-            background: #f1c40f;
-            color: #fff;
-        }
-        .quizzes-header {
+
+        /* Header tương tự admin-dashboard-header */
+        .admin-page-header {
             display: flex;
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
-            padding-bottom: 15px;
-            background: linear-gradient(90deg, #f1c40f 0%, #f39c12 100%);
-            border-radius: 10px 10px 0 0;
-            box-shadow: 0 2px 8px rgba(243,156,18,0.08);
-            padding: 20px 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
         }
-        .quizzes-header h2 {
-            font-size: 2em;
-            color: #2c3e50;
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
             margin: 0;
-            font-weight: 700;
-            letter-spacing: 1px;
-            text-shadow: 0 2px 8px rgba(241,196,15,0.08);
-        }
-        .quizzes-header h2 i {
-            margin-right: 10px;
-            color: #f39c12;
-        }
-        .add-quiz-link {
-            background: linear-gradient(90deg, #28a745 0%, #6dd5fa 100%);
-            color: #fff;
-            padding: 10px 22px;
-            border: none;
-            border-radius: 6px;
-            cursor: pointer;
-            font-size: 1em;
+            display: flex;
+            align-items: center;
             font-weight: 600;
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.15s;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Container cho phần search và thêm mới, tương tự system-overview */
+        .my-quizzes-overview { /* Renamed for teacher context */
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .my-quizzes-overview > h3 {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            width: calc(100% - 60px);
+            margin-bottom: 20px; /* Adjust spacing below heading */
+        }
+
+        .my-quizzes-overview > h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .my-quizzes-content { /* Renamed for teacher context */
+            margin-top: 60px; /* Để tạo khoảng trống cho tiêu đề h3 */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        /* Add Quiz Button */
+        .add-new-button {
             display: inline-flex;
             align-items: center;
-            gap: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
             text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(52, 152, 219, 0.2);
         }
-        .add-quiz-link:hover {
-            background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
-            color: #2c3e50;
-            box-shadow: 0 4px 16px rgba(243,156,18,0.13);
-            transform: translateY(-2px) scale(1.04);
+
+        .add-new-button:hover {
+            background-color: #2980b9;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3);
         }
-        .add-quiz-link i {
-            margin-right: 8px;
+
+        .add-new-button i {
+            margin-right: 10px;
+            font-size: 1.1em;
         }
+
+
+        /* Bảng Quizzes vẫn giữ nguyên nhưng với style tốt hơn */
         .quizzes-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
-            background: rgba(255,255,255,0.98);
-            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-            border-radius: 8px;
+            margin-top: 30px;
+            background-color: var(--background-card);
+            box-shadow: 0 5px 20px var(--shadow-light);
+            border-radius: 12px;
             overflow: hidden;
         }
+
         .quizzes-table thead th {
-            background-color: #e9ecef;
-            color: #555;
+            background-color: var(--primary-color);
+            color: white;
             padding: 15px 20px;
             text-align: left;
-            border-bottom: 1px solid #dee2e6;
             font-weight: 600;
+            font-size: 1em;
             text-transform: uppercase;
-            font-size: 0.9em;
         }
+
         .quizzes-table tbody td {
             padding: 15px 20px;
-            border-bottom: 1px solid #f2f2f2;
-            color: #444;
-            vertical-align: middle;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dark);
+            font-size: 0.95em;
         }
+
         .quizzes-table tbody tr:last-child td {
             border-bottom: none;
         }
+
         .quizzes-table tbody tr:nth-child(even) {
-            background-color: #f8f9fa;
+            background-color: #f9fbfd;
         }
+
         .quizzes-table tbody tr:hover {
-            background-color: #e9f2f9;
+            background-color: #e9f7ff;
+            transition: background-color 0.2s ease;
         }
+
         .quiz-actions a {
+            color: var(--primary-color);
+            text-decoration: none;
+            margin-right: 12px;
+            transition: color 0.2s ease, transform 0.2s ease;
             display: inline-flex;
             align-items: center;
-            text-decoration: none;
-            color: #3498db;
-            background: #f8f9fa;
-            padding: 8px 14px;
-            border-radius: 5px;
-            font-size: 0.97em;
-            font-weight: 500;
-            margin-right: 8px;
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s;
-            box-shadow: 0 1px 4px rgba(41,128,185,0.07);
+            font-size: 0.9em;
         }
-        .quiz-actions a:last-child {
-            margin-right: 0;
-            color: #dc3545;
-            background: #fff0f0;
+        .quiz-actions a.delete-link {
+            color: #dc3545; /* Red for delete */
         }
-        .quiz-actions a i {
-            margin-right: 6px;
-            font-size: 1em;
-        }
+
         .quiz-actions a:hover {
-            background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
-            color: #2c3e50;
-            box-shadow: 0 4px 16px rgba(243,156,18,0.13);
+            color: var(--accent-color);
+            transform: translateY(-2px);
         }
-        .quiz-actions a:last-child:hover {
-            background: #dc3545;
-            color: #fff;
+        .quiz-actions a.delete-link:hover {
+            color: #c82333;
         }
-        .no-quizzes {
-            background-color: #fdfdfd;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.03);
-            text-align: center;
-            color: #777;
-            font-style: italic;
-            font-size: 1em;
-            border: 1px solid #e0e0e0;
-            max-width: 700px;
-            margin: 0 auto;
-            margin-top: 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        .no-quizzes i {
-            color: #f39c12;
-        }
-        .navigation-links {
-            margin-top: 40px;
-            text-align: center;
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-        }
-        .navigation-links a {
-            display: inline-flex;
-            align-items: center;
-            color: #fff;
-            background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 1em;
-            border-radius: 6px;
-            padding: 12px 26px;
-            box-shadow: 0 2px 8px rgba(243,156,18,0.10);
-            transition: background 0.2s, color 0.2s, box-shadow 0.2s, transform 0.15s;
-            border: none;
-            outline: none;
-            gap: 8px;
-        }
-        .navigation-links a:hover {
-            background: linear-gradient(90deg, #2980b9 0%, #6dd5fa 100%);
-            color: #fff;
-            box-shadow: 0 4px 16px rgba(41,128,185,0.13);
-            transform: translateY(-2px) scale(1.04);
-        }
-        .navigation-links a i {
-            margin-right: 8px;
+
+        .quiz-actions a i {
+            margin-right: 5px;
             font-size: 1.1em;
         }
-        hr {
+
+        .quiz-actions a:last-child {
+            margin-right: 0;
+        }
+
+        .no-quizzes {
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px var(--shadow-light);
             margin-top: 30px;
-            border: 0;
-            height: 1px;
-            background-image: linear-gradient(to right, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0));
-        }
-        footer {
+            color: var(--text-medium);
+            font-style: italic;
             text-align: center;
-            padding: 20px;
+            font-size: 1.1em;
+            border: 1px dashed var(--border-color);
+        }
+        .no-quizzes i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .back-to-dashboard {
             margin-top: 40px;
-            font-size: 0.85em;
-            color: #777;
-            background-color: #f2f2f2;
-            border-top: 1px solid #eee;
-            border-radius: 0 0 8px 8px;
+            text-align: center;
         }
-        footer a {
-            color: #3498db;
+
+        .back-to-dashboard a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d;
+            color: white;
             text-decoration: none;
-            margin: 0 8px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
         }
-        footer a:hover {
-            text-decoration: underline;
+
+        .back-to-dashboard a:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
         }
-        footer p { margin: 5px 0; }
-        .contact-info { margin-top: 15px; }
-        .contact-info p { margin: 3px 0; }
+
+        .back-to-dashboard a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
         /* Dark Mode */
-        .dark-mode {
-            background-color: #1a1a1a;
-            color: #f8f9fa;
-        }
-        .dark-mode .sidebar {
-            background-color: #333;
-            box-shadow: 2px 0 15px rgba(0,0,0,0.3);
-        }
-        .dark-mode .main-wrapper {
-            background-color: #1a1a1a;
-        }
-        .dark-mode .main-content {
-            background-color: #222;
-            box-shadow: 0 0 20px rgba(0,0,0,0.2);
-        }
-        .dark-mode .quizzes-header h2 {
-            color: #f8f9fa;
-        }
-        .dark-mode .quizzes-header h2 i {
-            color: #f39c12;
-        }
-        .dark-mode .add-quiz-link {
-            background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
-            color: #181e29;
-        }
-        .dark-mode .add-quiz-link:hover {
-            background: linear-gradient(90deg, #28a745 0%, #6dd5fa 100%);
-            color: #fff;
-        }
-        .dark-mode .quizzes-table {
-            background-color: #2a2a2a;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-        }
-        .dark-mode .quizzes-table thead th {
-            background-color: #3e3e3e;
-            color: #ccc;
-            border-bottom-color: #555;
-        }
-        .dark-mode .quizzes-table tbody td {
-            border-bottom-color: #3a3a3a;
-        }
-        .dark-mode .quizzes-table tbody tr:nth-child(even) {
-            background-color: #333;
-        }
-        .dark-mode .quizzes-table tbody tr:hover {
-            background-color: #3a3a3a;
-        }
-        .dark-mode .quiz-actions a {
-            background: #23272f;
-            color: #ffe082;
-        }
-        .dark-mode .quiz-actions a:hover {
-            background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
-            color: #181e29;
-        }
-        .dark-mode .quiz-actions a:last-child {
-            background: #3a2323;
-            color: #ffb3b3;
-        }
-        .dark-mode .quiz-actions a:last-child:hover {
-            background: #dc3545;
-            color: #fff;
-        }
-        .dark-mode .no-quizzes {
-            background-color: #333;
-            color: #ccc;
-            border-color: #444;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-        .dark-mode .no-quizzes i {
-            color: #f39c12;
-        }
-        .dark-mode .navigation-links a {
-            background: linear-gradient(90deg, #23272f 0%, #22304a 100%);
-            color: #ffe082;
-        }
-        .dark-mode .navigation-links a:hover {
-            background: linear-gradient(90deg, #f39c12 0%, #f1c40f 100%);
-            color: #181e29;
-        }
-        .dark-mode footer {
-            background-color: #333;
-            color: #ccc;
-            border-top-color: #555;
-        }
-        .dark-mode footer a {
-            color: #fbc531;
-        }
-        /* Responsive */
-        @media (max-width: 992px) {
-            .sidebar { width: 220px; }
-            .main-wrapper { margin-left: 220px; }
-            .quizzes-header h2 { font-size: 1.8em; }
-            .quizzes-table thead th, .quizzes-table tbody td { padding: 12px 15px; }
-        }
-        @media (max-width: 768px) {
-            body { flex-direction: column; }
-            .sidebar {
-                width: 100%;
-                height: auto;
-                position: relative;
-                box-shadow: none;
-                padding-top: 0;
+        
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .my-quizzes-overview { /* Renamed */
+                padding: 25px;
             }
-            .sidebar .logo { padding: 15px 0; }
-            .sidebar .logo img { width: 50%; max-width: 120px; }
-            .sidebar ul {
+            .my-quizzes-overview > h3 { /* Renamed */
+                top: 20px;
+                left: 25px;
+                font-size: 1.4em;
+                width: calc(100% - 50px);
+            }
+            .my-quizzes-content { /* Renamed */
+                margin-top: 50px;
+            }
+            .quizzes-table thead th, .quizzes-table tbody td {
+                padding: 12px 15px;
+            }
+            .quiz-actions a {
+                margin-right: 8px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .my-quizzes-overview > h3 { /* Renamed */
+                position: static;
+                text-align: center;
+                width: auto;
+                margin-bottom: 25px;
+                padding-bottom: 10px;
+            }
+            .my-quizzes-content { /* Renamed */
+                margin-top: 0;
+            }
+            .quizzes-table, .no-quizzes {
+                margin-top: 20px;
+            }
+            .quizzes-table thead, .quizzes-table tbody, .quizzes-table th, .quizzes-table td, .quizzes-table tr {
+                display: block;
+            }
+            .quizzes-table thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            .quizzes-table tr {
+                border: 1px solid var(--border-color);
+                margin-bottom: 15px;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .quizzes-table tbody td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                min-height: 40px;
+            }
+            .quizzes-table tbody tr:nth-child(even) {
+                background-color: var(--background-card);
+            }
+            .quizzes-table tbody tr:nth-child(odd) {
+                background-color: var(--background-light);
+            }
+            .quizzes-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                width: calc(50% - 30px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: var(--text-dark);
+            }
+            .quiz-actions {
                 display: flex;
                 flex-wrap: wrap;
-                justify-content: center;
-                padding: 10px 0;
+                justify-content: flex-end;
+                gap: 8px;
+                padding-top: 10px;
+                border-top: 1px dashed var(--border-color);
             }
-            .sidebar ul li { width: 48%; margin-bottom: 5px; }
-            .sidebar ul li a {
-                justify-content: center;
-                padding: 10px;
-                text-align: center;
-                flex-direction: column;
+            .quiz-actions a {
+                margin-right: 0 !important;
+                padding: 8px 12px;
+                font-size: 0.85em;
             }
-            .sidebar ul li a i {
-                margin-right: 0;
-                margin-bottom: 5px;
-                font-size: 1em;
-            }
-            .sidebar ul li a span {
-                display: block;
-                font-size: 0.8em;
-            }
-            .main-wrapper { margin-left: 0; padding: 20px; }
-            .main-content { padding: 20px; }
-            .quizzes-header { flex-direction: column; align-items: flex-start; margin-bottom: 20px; }
-            .quizzes-header h2 { margin-bottom: 10px; font-size: 1.8em; }
-            .add-quiz-link { width: 100%; justify-content: center; }
-            .quizzes-table { font-size: 0.9em; margin-top: 15px; }
-            .quizzes-table thead th, .quizzes-table tbody td { padding: 10px 12px; }
-            .quiz-actions { display: flex; flex-wrap: wrap; gap: 5px; }
-            .quiz-actions a { margin-right: 0; font-size: 0.9em; }
-            .no-quizzes { padding: 20px; font-size: 1em; margin-top: 20px; }
-            .navigation-links { flex-direction: column; gap: 15px; }
-            footer { margin-top: 25px; }
         }
+
         @media (max-width: 480px) {
-            .sidebar ul li { width: 95%; }
-            .sidebar ul li a { justify-content: flex-start; flex-direction: row; }
-            .sidebar ul li a i { margin-right: 10px; margin-bottom: 0; }
-            .main-wrapper { padding: 15px; }
-            .main-content { padding: 15px; }
-            .quizzes-header h2 { font-size: 1.6em; }
-            .quizzes-table thead th, .quizzes-table tbody td { padding: 8px 10px; }
+            .admin-page-header h2 {
+                font-size: 1.5em;
+            }
+            .quizzes-table tbody td:before {
+                font-size: 0.85em;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="sidebar">
-        <div class="logo">
-            <img src="https://cdn.haitrieu.com/wp-content/uploads/2023/02/Logo-Truong-cao-dang-Quoc-te-BTEC-FPT.png" alt="BTEC Logo">
+    <?php include "includes/teacher_sidebar.php"; ?>
+
+    <div class="main-content">
+        <div class="admin-page-header">
+            <h2><i class="fas fa-question-circle"></i> Manage Quizzes</h2>
+            <a href="teacher_quiz_edit.php?action=add" class="add-new-button"><i class="fas fa-plus-circle"></i> Add New Quiz</a>
         </div>
-        <ul>
-            <li><a href="teacher_dashboard.php"><i class="fas fa-tachometer-alt"></i> <span>Dashboard</span></a></li>
-            <li><a href="teacher_courses.php"><i class="fas fa-book"></i> <span>My Courses</span></a></li>
-            <li><a href="teacher_search_courses.php"><i class="fas fa-search"></i> <span>Search Courses</span></a></li>
-            <li><a href="teacher_quiz_results.php"><i class="fas fa-chart-bar"></i> <span>View Quiz Results</span></a></li>
-            <li><a href="teacher_assignments.php"><i class="fas fa-tasks"></i> <span>Manage Assignments</span></a></li>
-            <li><a href="teacher_notifications.php"><i class="fas fa-bell"></i> <span>Send Notifications</span></a></li>
-            <li><a href="teacher_view_notifications.php"><i class="fas fa-envelope-open-text"></i> <span>View Notifications</span></a></li>
-            <li><a href="teacher_quizzes.php" class="active"><i class="fas fa-question-circle"></i> <span>Manage Quizzes</span></a></li>
-            <li><a href="teacher_profile.php"><i class="fas fa-user"></i> <span>My Profile</span></a></li>
-            <li><a href="logout.php"><i class="fas fa-sign-out-alt"></i> <span>Log out</span></a></li>
-        </ul>
-    </div>
-    <div class="main-wrapper">
-        <div class="main-content">
-            <button class="toggle-mode-btn" id="toggleModeBtn" title="Toggle dark/light mode">
-                <i class="fas fa-moon"></i>
-            </button>
-            <div class="quizzes-header">
-                <h2><i class="fas fa-question-circle"></i> Manage Quizzes</h2>
-                <a href="teacher_quiz_edit.php?action=add" class="add-quiz-link"><i class="fas fa-plus-circle"></i> Add New Quiz</a>
-            </div>
-            <?php if ($result->num_rows > 0): ?>
-                <table class="quizzes-table">
-                    <thead>
+
+        <div class="my-quizzes-overview">
+            <h3><i class="fas fa-clipboard-list"></i> Quiz Management Overview</h3>
+            <div class="my-quizzes-content">
+                </div>
+        </div>
+
+        <?php if ($result->num_rows > 0): ?>
+            <table class="quizzes-table">
+                <thead>
+                    <tr>
+                        <th>Course</th>
+                        <th>Quiz Title</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
                         <tr>
-                            <th>Course</th>
-                            <th>Quiz Title</th>
-                            <th>Actions</th>
+                            <td data-label="Course"><?= htmlspecialchars($row['course_title']) ?></td>
+                            <td data-label="Quiz Title"><?= htmlspecialchars($row['title']) ?></td>
+                            <td data-label="Actions" class="quiz-actions">
+                                <a href="teacher_quiz_results.php?action=edit&id=<?= $row['id'] ?>"><i class="fas fa-edit"></i> View Quiz's Results</a>
+                                <a href="teacher_quiz_edit.php?action=edit&id=<?= $row['id'] ?>"><i class="fas fa-edit"></i> Edit</a>
+                                <a href="teacher_quiz_questions.php?quiz_id=<?= $row['id'] ?>"><i class="fas fa-list-ul"></i> Manage Questions</a>
+                                <a href="teacher_quizzes.php?delete_id=<?= $row['id'] ?>" class="delete-link" onclick="return confirm('Delete this quiz?')"><i class="fas fa-trash-alt"></i> Delete</a>
+                            </td>
                         </tr>
-                    </thead>
-                    <tbody>
-                        <?php while ($row = $result->fetch_assoc()): ?>
-                            <tr>
-                                <td><?= htmlspecialchars($row['course_title']) ?></td>
-                                <td><?= htmlspecialchars($row['title']) ?></td>
-                                <td class="quiz-actions">
-                                    <a href="teacher_quiz_edit.php?action=edit&id=<?= $row['id'] ?>"><i class="fas fa-edit"></i> Edit</a>
-                                    <a href="teacher_quiz_questions.php?quiz_id=<?= $row['id'] ?>"><i class="fas fa-list-ul"></i> Manage Questions</a>
-                                    <a href="teacher_quizzes.php?delete_id=<?= $row['id'] ?>" onclick="return confirm('Delete this quiz?')"><i class="fas fa-trash-alt"></i> Delete</a>
-                                </td>
-                            </tr>
-                        <?php endwhile; ?>
-                    </tbody>
-                </table>
-            <?php else: ?>
-                <p class="no-quizzes"><i class="fas fa-exclamation-circle"></i> No quizzes found.</p>
-            <?php endif; ?>
-            <div class="navigation-links">
-                <a href="teacher_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-                <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
-            </div>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p class="no-quizzes"><i class="fas fa-exclamation-circle"></i> No quizzes found.</p>
+        <?php endif; ?>
+
+        <div class="back-to-dashboard">
+            <a href="teacher_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
         </div>
-        <hr>
-        <footer>
-            <a href="https://www.facebook.com/btecfptdn/?locale=vi_VN" target="_blank"><i class="fab fa-facebook"></i> Facebook</a>
-            |
-            <a href="https://international.fpt.edu.vn/" target="_blank"><i class="fas fa-globe"></i> Website</a>
-            |
-            <a href="tel:02473099588"><i class="fas fa-phone"></i> 024 730 99 588</a>
-            <br>
-            <p>Address: 66 Võ Văn Tần, Quận Thanh Khê, Đà Nẵng</p>
-            <div class="contact-info">
-                <p>Email:</p>
-                <p>Academic Department: <a href="mailto:Academic.btec.dn@fe.edu.vn">Academic.btec.dn@fe.edu.vn</a></p>
-                <p>SRO Department: <a href="mailto:sro.btec.dn@fe.edu.vn">sro.btec.dn@fe.edu.vn</a></p>
-                <p>Finance Department: <a href="mailto:accounting.btec.dn@fe.edu.vn">accounting.btec.dn@fe.edu.vn</a></p>
-            </div>
-            <p>&copy; <?= date('Y'); ?> BTEC FPT - Learning Management System.</p>
-            <small>Powered by Innovation in Education</small>
-        </footer>
+
+        <?php include "includes/footer.php"; ?>
     </div>
-    <script>
-        // Toggle dark/light mode
-        const btn = document.getElementById('toggleModeBtn');
-        btn.onclick = function() {
-            document.body.classList.toggle('dark-mode');
-            btn.innerHTML = document.body.classList.contains('dark-mode')
-                ? '<i class="fas fa-sun"></i>'
-                : '<i class="fas fa-moon"></i>';
-        };
-    </script>
+<script src="js/teacher_sidebar.js"></script>
 </body>
 </html>

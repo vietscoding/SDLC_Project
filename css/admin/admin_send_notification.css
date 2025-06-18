@@ -1,0 +1,266 @@
+ .main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+        }
+
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Specific styles for Send Notification page */
+        .notification-card {
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+        }
+
+        .notification-card h3 {
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .notification-card h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        /* Form Styling */
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+
+        .form-group label i {
+            margin-right: 8px;
+            color: var(--accent-color); /* Green for form icons */
+            font-size: 0.9em;
+        }
+
+        .form-group textarea,
+        .form-group select {
+            width: 100%; /* Changed from calc(100% - 16px) for consistency */
+            padding: 12px 15px; /* Increased padding */
+            border: 1px solid var(--border-color);
+            border-radius: 8px; /* Larger border-radius */
+            font-size: 1em;
+            background-color: var(--background-input);
+            color: var(--text-dark);
+            outline: none;
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+            resize: vertical;
+        }
+
+        .form-group select {
+            appearance: none; /* Remove default arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4H18.8c-5%200-9.3%201.8-12.9%205.5-3.8%203.8-5.7%208.2-5.7%2013.3%200%204.9%201.8%209.3%205.5%2013.1L139.7%20229.4a17.6%2017.6%200%200%200%2012.9%205.5c4.8%200%209.1-1.8%2012.9-5.5L287%2095.1c3.7-3.8%205.5-8.2%205.5-13.1%200-5-1.8-9.4-5.5-13.2z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px top 50%;
+            background-size: 0.6em auto;
+        }
+
+        body.dark-mode .form-group select {
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23eee%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13.6-6.4H18.8c-5%200-9.3%201.8-12.9%205.5-3.8%203.8-5.7%208.2-5.7%2013.3%200%204.9%201.8%209.3%205.5%2013.1L139.7%20229.4a17.6%2017.6%200%200%200%2012.9%205.5c4.8%200%209.1-1.8%2012.9-5.5L287%2095.1c3.7-3.8%205.5-8.2%205.5-13.1%200-5-1.8-9.4-5.5-13.2z%22%2F%3E%3C%2Fsvg%3E');
+        }
+
+        .form-group textarea:focus,
+        .form-group select:focus {
+            border-color: var(--primary-color-dark);
+            box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+        }
+
+        .form-actions {
+            margin-top: 25px;
+            text-align: right;
+        }
+
+        .form-actions button[type="submit"] {
+            background-color: var(--accent-color); /* Green for send button */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1.05em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(40, 167, 69, 0.2); /* Green shadow */
+        }
+
+        .form-actions button[type="submit"]:hover {
+            background-color: #218838; /* Darker green */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(40, 167, 69, 0.3);
+        }
+        .form-actions button[type="submit"] i {
+            margin-right: 8px;
+        }
+
+        .success-message {
+            background-color: #d4edda; /* Light green background */
+            color: #155724; /* Dark green text */
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #c3e6cb;
+            margin-bottom: 20px;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        .success-message i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+        body.dark-mode .success-message {
+            background-color: #1f3d29;
+            color: #a3e6b3;
+            border-color: #38764b;
+        }
+
+        .error-message {
+            background-color: #fcebeb; /* Light red background */
+            color: var(--error-color);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--error-color);
+            margin-bottom: 20px;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        .error-message i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+        body.dark-mode .error-message {
+            background-color: #4a1c22;
+            color: #ff6b6b;
+            border-color: #ff6b6b;
+        }
+
+        .back-to-users { /* Renamed from .back-link for consistency */
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-to-users a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d; /* Gray color for back button */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .back-to-users a:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+        .back-to-users a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+      
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .notification-card {
+                padding: 25px;
+            }
+            .notification-card h3 {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .notification-card h3 {
+                text-align: center;
+                margin-bottom: 25px;
+                padding-bottom: 10px;
+            }
+            .form-actions {
+                text-align: center; /* Center buttons on smaller screens */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-page-header h2 {
+                font-size: 1.5em;
+            }
+            .notification-card {
+                padding: 20px;
+            }
+            .notification-card h3 {
+                font-size: 1.3em;
+            }
+            .form-group textarea,
+            .form-group select {
+                padding: 10px 12px;
+            }
+            .form-actions button[type="submit"] {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+        }

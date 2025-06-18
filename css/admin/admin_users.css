@@ -1,0 +1,323 @@
+.main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+        }
+
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .user-management-overview { /* New class for the main content block */
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+        }
+
+        .user-management-overview h3 {
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .user-management-overview h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 15px; /* Adjusted gap */
+            margin-bottom: 25px; /* Adjusted margin */
+            align-items: center;
+        }
+
+        .search-form {
+            flex-grow: 1;
+            display: flex;
+            border: 1px solid var(--border-color); /* Consistent with other inputs */
+            border-radius: 8px; /* Rounded corners */
+            overflow: hidden; /* Ensures inner elements respect border-radius */
+        }
+
+        .search-form input[type="text"] {
+            padding: 12px 15px; /* Slightly more padding */
+            border: none; /* Remove individual border */
+            flex-grow: 1;
+            font-size: 1em;
+            background-color: var(--background-input); /* Consistent input background */
+            color: var(--text-dark);
+            outline: none; /* Remove outline on focus */
+        }
+
+        .search-form button {
+            background-color: var(--primary-color); /* Primary button color */
+            color: white;
+            border: none;
+            padding: 12px 20px; /* Slightly more padding */
+            cursor: pointer;
+            font-size: 1em;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .search-form button:hover {
+            background-color: var(--primary-color-dark); /* Darker on hover */
+            transform: translateY(-1px);
+        }
+
+        .search-form a {
+            display: inline-flex; /* Use flex for icon and text alignment */
+            align-items: center;
+            margin-left: 15px; /* Adjusted margin */
+            color: var(--secondary-color); /* Use a secondary action color */
+            text-decoration: none;
+            padding: 10px 15px;
+            border: 1px solid var(--secondary-color);
+            border-radius: 8px; /* Consistent rounded corners */
+            font-size: 0.95em;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .search-form a:hover {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+        .search-form a i {
+            margin-right: 8px;
+        }
+
+        .user-list-section {
+            background-color: var(--background-card); /* Background for sections within overview */
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow-light); /* Lighter shadow for inner cards */
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color); /* Subtle border */
+        }
+
+        .user-list-section h3 {
+            font-size: 1.4em; /* Slightly smaller for sub-sections */
+            color: var(--text-dark);
+            margin-top: 0;
+            margin-bottom: 15px;
+            border-bottom: 1px solid var(--border-color-light); /* Lighter border */
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .user-list-section h3 i {
+            margin-right: 10px;
+            color: var(--accent-color); /* Use accent color for section icons */
+            font-size: 0.9em;
+        }
+
+        .user-list {
+            list-style: none;
+            padding-left: 0;
+            margin: 0;
+        }
+
+        .user-item {
+            padding: 12px 0; /* Adjusted padding */
+            border-bottom: 1px solid var(--border-color-light);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-size: 0.95em;
+            color: var(--text-dark-secondary);
+        }
+
+        .user-item:last-child {
+            border-bottom: none;
+        }
+
+        .user-info {
+            flex-grow: 1;
+            color: var(--text-dark); /* Ensure user info stands out */
+        }
+
+        .user-actions a {
+            color: var(--primary-color); /* Primary color for actions */
+            text-decoration: none;
+            margin-left: 15px;
+            transition: color 0.2s ease;
+        }
+
+        .user-actions a:hover {
+            color: var(--primary-color-dark);
+            text-decoration: underline;
+        }
+        .user-actions a i {
+            margin-right: 5px;
+        }
+
+        .no-users {
+            background-color: var(--background-input);
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark-secondary);
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            box-shadow: 0 2px 10px var(--shadow-light);
+            margin-top: 15px;
+        }
+        .no-users i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .back-to-dashboard {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-to-dashboard a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d; /* Gray color for back button */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .back-to-dashboard a:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+        .back-to-dashboard a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Admin specific colors/overrides */
+        .user-list-section.admin-section .user-actions {
+            color: var(--text-dark-secondary); /* Grey out for admin actions */
+        }
+        .user-list-section.admin-section .user-actions span {
+            font-style: italic;
+            color: var(--text-dark-secondary);
+        }
+
+    
+
+        /* Responsive Adjustments (from admin_progress.php) */
+        @media (max-width: 1024px) {
+            .user-management-overview {
+                padding: 25px;
+            }
+            .user-management-overview h3 {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .user-management-overview h3 {
+                text-align: center;
+                margin-bottom: 25px;
+                padding-bottom: 10px;
+            }
+            .back-to-dashboard {
+                margin-top: 20px;
+            }
+            .user-list-section {
+                margin-top: 10px;
+            }
+            .search-container {
+                flex-direction: column; /* Stack search elements vertically */
+                align-items: stretch;
+            }
+            .search-form {
+                width: 100%;
+            }
+            .search-form input[type="text"] {
+                border-radius: 8px; /* Apply to input directly if not part of a combined form */
+            }
+            .search-form button {
+                border-radius: 8px; /* Apply to button directly */
+            }
+            .search-form a {
+                margin-left: 0;
+                margin-top: 10px; /* Space between search and reset */
+                justify-content: center; /* Center reset button */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-page-header h2 {
+                font-size: 1.5em;
+            }
+            .user-list-section h3 {
+                font-size: 1.2em;
+            }
+            .user-item {
+                padding: 10px 0;
+                font-size: 0.85em;
+                flex-direction: column; /* Stack user info and actions */
+                align-items: flex-start;
+            }
+            .user-info {
+                margin-bottom: 5px;
+            }
+            .user-actions {
+                width: 100%;
+                text-align: right;
+            }
+            .user-actions a {
+                margin-left: 10px;
+                margin-right: 0;
+            }
+        }
