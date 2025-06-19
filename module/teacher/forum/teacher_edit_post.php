@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'teacher') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $teacher_id = $_SESSION['user_id'];
 $post_id = $_GET['post_id'];
@@ -84,11 +84,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/teacher/teacher_edit_post.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/teacher/teacher_edit_post.css">
 </head>
 <body>
-    <?php include "includes/teacher_sidebar.php"; ?>
+    <?php include "../../../includes/teacher_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="admin-page-header">
@@ -107,11 +107,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $ext = strtolower(pathinfo($post['media_url'], PATHINFO_EXTENSION));
                         if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])):
                         ?>
-                            <img src="<?= htmlspecialchars($post['media_url']) ?>" alt="Current Media">
+                            <img src="../../../<?= htmlspecialchars($post['media_url']) ?>" alt="Current Media">
                         <?php elseif (in_array($ext, ['mp4', 'webm', 'ogg'])): ?>
-                            <video src="<?= htmlspecialchars($post['media_url']) ?>" controls></video>
+                            <video src="../../../<?= htmlspecialchars($post['media_url']) ?>" controls></video>
                         <?php else: ?>
-                            <p>Current Media: <a href="<?= htmlspecialchars($post['media_url']) ?>" target="_blank">View Current Media</a></p>
+                            <p>Current Media: <a href="../../../<?= htmlspecialchars($post['media_url']) ?>" target="_blank">View Current Media</a></p>
                         <?php endif; ?>
                     </div>
                     <div class="current-file-info">
@@ -142,8 +142,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </form>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/teacher_sidebar.js"></script>
+    <script src="../../../js/teacher_sidebar.js"></script>
 </body>
 </html>

@@ -1,10 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'teacher') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $sys_notif_result = $conn->query("SELECT message, created_at FROM system_notifications ORDER BY created_at DESC LIMIT 5");
 $fullname = htmlspecialchars($_SESSION['fullname']);
@@ -97,12 +97,12 @@ $avg_progress = $avg_progress_result->fetch_assoc();
     <title>Teacher Dashboard | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/teacher/teacher_dashboard.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/teacher/teacher_dashboard.css">
 </head>
 <body>
 
-    <?php include "includes/teacher_sidebar.php"; ?>
+    <?php include "../../../includes/teacher_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="teacher-dashboard-header">
@@ -145,15 +145,7 @@ $avg_progress = $avg_progress_result->fetch_assoc();
         </div>
 
         <div class="teacher-actions">
-            <h3><i class="fas fa-tools"></i> Quick Actions</h3>
-            <ul>
-                <li><a href="teacher_courses.php"><i class="fas fa-book"></i> Manage Courses</a></li>
-                <li><a href="teacher_assignments.php"><i class="fas fa-tasks"></i> Grade Assignments</a></li>
-                <li><a href="teacher_quizzes.php"><i class="fas fa-question-circle"></i> Grade Quizzes</a></li>
-                <li><a href="teacher_notifications.php"><i class="fas fa-bell"></i> Send Notifications</a></li>
-                <li><a href="teacher_forum_courses.php"><i class="fas fa-comments"></i> Course Forum</a></li>
-                <li><a href="teacher_profile.php"><i class="fas fa-user-circle"></i> Your Profile</a></li>
-            </ul>
+           
         </div>
 
         <div class="dashboard-section">
@@ -189,12 +181,12 @@ $avg_progress = $avg_progress_result->fetch_assoc();
         </div>
         
         <div class="logout-link">
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
+            <a href="../../../common/logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/teacher_sidebar.js"></script>
+    <script src="../../../js/teacher_sidebar.js"></script>
 
 </body>
 </html>

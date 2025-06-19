@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'student') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $comment_id = $_GET['comment_id'];
 $post_id = $_GET['post_id'];
@@ -37,12 +37,12 @@ $header_text = "Editing Comment for Post ID: " . htmlspecialchars($post_id);
     <title>Edit Comment | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/student/student_edit_comment.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/student/student_edit_comment.css">
    
 </head>
 <body>
-    <?php include "includes/student_sidebar.php"; ?>
+    <?php include "../../../includes/student_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="admin-page-header">
@@ -63,9 +63,9 @@ $header_text = "Editing Comment for Post ID: " . htmlspecialchars($post_id);
             </form>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
 
-    <script src="js/student_sidebar.js"></script>
+    <script src="../../../js/student_sidebar.js"></script>
 </body>
 </html>

@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'student') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $student_id = $_SESSION['user_id']; // Lấy ID của sinh viên hiện tại
 $course_id = $_GET['course_id'] ?? 0;
@@ -39,12 +39,12 @@ $role = htmlspecialchars($_SESSION['role'] ?? 'student');
     <title>Forum - <?= htmlspecialchars($course_name) ?> | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/student/student_forum.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/student/student_forum.css">
    
 </head>
 <body>
-    <?php include "includes/student_sidebar.php"; ?>
+    <?php include "../../../includes/student_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="admin-page-header">
@@ -74,9 +74,9 @@ $role = htmlspecialchars($_SESSION['role'] ?? 'student');
                                 $ext = strtolower(pathinfo($post['media_url'], PATHINFO_EXTENSION));
                                 if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])):
                                 ?>
-                                    <img src="<?= htmlspecialchars($post['media_url']) ?>" alt="Post media">
+                                    <img src="../../../<?= htmlspecialchars($post['media_url']) ?>" alt="Post media">
                                 <?php elseif (in_array($ext, ['mp4', 'webm'])): ?>
-                                    <video src="<?= htmlspecialchars($post['media_url']) ?>" controls></video>
+                                    <video src="../../../<?= htmlspecialchars($post['media_url']) ?>" controls></video>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
@@ -102,14 +102,14 @@ $role = htmlspecialchars($_SESSION['role'] ?? 'student');
 
         <div class="back-button-container">
             <a href="student_forum_courses.php" class="back-button"><i class="fas fa-arrow-left"></i> Back to Courses</a>
-            <a href="student_dashboard.php" class="back-button"><i class="fas fa-tachometer-alt"></i> Back to Dashboard</a>
+            <a href="../dashboard/student_dashboard.php" class="back-button"><i class="fas fa-tachometer-alt"></i> Back to Dashboard</a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
 
-    <script src="js/like.js"></script>
-    <script src="js/student_sidebar.js"></script>
+    <script src="../../../js/like.js"></script>
+    <script src="../../../js/student_sidebar.js"></script>
     <script>
 window.addEventListener('pageshow', function (event) {
     // If the page was restored from the BFcache

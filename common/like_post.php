@@ -6,7 +6,7 @@ header('Pragma: no-cache');
 header('Expires: Mon, 26 Jul 1997 05:00:00 GMT'); // A date in the past
 header('Content-Type: application/json'); // Đảm bảo phản hồi là JSON
 
-include "includes/db_connect.php"; // Thay đổi đường dẫn nếu cần
+include "../includes/db_connect.php"; // Thay đổi đường dẫn nếu cần
 
 $response = ['success' => false, 'message' => '', 'like_count' => 0, 'action' => ''];
 

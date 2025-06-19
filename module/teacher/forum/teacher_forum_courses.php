@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'teacher') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $teacher_id = $_SESSION['user_id'];
 
@@ -20,12 +20,12 @@ $courses_query = $conn->query("SELECT id, title FROM courses WHERE teacher_id = 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/teacher/teacher_forum_courses.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/teacher/teacher_forum_courses.css">
 </head>
 <body>
 
-    <?php include "includes/teacher_sidebar.php"; ?>
+    <?php include "../../../includes/teacher_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="admin-page-header">
@@ -60,12 +60,12 @@ $courses_query = $conn->query("SELECT id, title FROM courses WHERE teacher_id = 
 
         <div class="back-to-courses" style="margin-top: 30px; text-align: center;">
             <a href="teacher_my_posts.php" class="back-button" style="background-color: var(--accent-color);"><i class="fas fa-clipboard-list"></i> View and Manage My Posts</a>
-            <a href="teacher_dashboard.php" class="back-button" style="margin-left: 15px;"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="../dashboard/teacher_dashboard.php" class="back-button" style="margin-left: 15px;"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/teacher_sidebar.js"></script>
+    <script src="../../../js/teacher_sidebar.js"></script>
 
 </body>
 </html>

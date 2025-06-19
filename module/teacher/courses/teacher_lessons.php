@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'teacher') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 // Lấy course_id từ URL
 if (!isset($_GET['course_id'])) {
@@ -91,8 +91,8 @@ $result = $conn->query("SELECT id, title, content, video_link, file_path FROM le
     <title>Manage Lessons - <?= htmlspecialchars($course_title ?? 'Course') ?> | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/teacher/teacher_lessons.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/teacher/teacher_lessons.css">
 </head>
 <body>
     <?php
@@ -109,7 +109,7 @@ $result = $conn->query("SELECT id, title, content, video_link, file_path FROM le
 
     ?>
 
-    <?php include "includes/teacher_sidebar.php"; ?>
+    <?php include "../../../includes/teacher_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="admin-page-header">
@@ -153,10 +153,10 @@ $result = $conn->query("SELECT id, title, content, video_link, file_path FROM le
                                 </div>
                                 <div class="lesson-actions">
                                     <?php if (!empty($row['video_link'])): ?>
-                                        <a href="<?= htmlspecialchars($row['video_link']) ?>" target="_blank" class="view-link" title="View Video"><i class="fas fa-video"></i> Video</a>
+                                        <a href="../../../<?= htmlspecialchars($row['video_link']) ?>" target="_blank" class="view-link" title="View Video"><i class="fas fa-video"></i> Video</a>
                                     <?php endif; ?>
                                     <?php if (!empty($row['file_path'])): ?>
-                                        <a href="<?= htmlspecialchars($row['file_path']) ?>" target="_blank" class="file-link" title="View File"><i class="fas fa-file-alt"></i> File</a>
+                                        <a href="../../../<?= htmlspecialchars($row['file_path']) ?>" target="_blank" class="file-link" title="View File"><i class="fas fa-file-alt"></i> File</a>
                                     <?php endif; ?>
                                     <a href="edit_lesson.php?course_id=<?= htmlspecialchars($course_id) ?>&lesson_id=<?= htmlspecialchars($row['id']) ?>" class="edit-link" title="Edit Lesson"><i class="fas fa-edit"></i> Edit</a>
                                     <a href="teacher_lessons.php?course_id=<?= htmlspecialchars($course_id) ?>&remove_id=<?= htmlspecialchars($row['id']) ?>" onclick="return confirm('Are you sure you want to remove this lesson?')" class="delete-link" title="Remove Lesson"><i class="fas fa-trash-alt"></i> Delete</a>
@@ -172,11 +172,11 @@ $result = $conn->query("SELECT id, title, content, video_link, file_path FROM le
 
         <div class="back-buttons">
             <a href="teacher_courses.php"><i class="fas fa-arrow-left"></i> Back to My Courses</a>
-            <a href="teacher_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="../dashboard/teacher_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/teacher_sidebar.js"></script>
+    <script src="../../../js/teacher_sidebar.js"></script>
 </body>
 </html>

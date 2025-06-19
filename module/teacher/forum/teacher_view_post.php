@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'teacher') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $post_id = $_GET['post_id'];
 $teacher_id = $_SESSION['user_id']; // Added to check for like status
@@ -67,11 +67,11 @@ $comments = $conn->query("
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/teacher/teacher_view_post.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/teacher/teacher_view_post.css">
 </head>
 <body>
-    <?php include "includes/teacher_sidebar.php"; ?>
+    <?php include "../../../includes/teacher_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="admin-page-header">
@@ -156,10 +156,10 @@ $comments = $conn->query("
             </a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/teacher_sidebar.js"></script>
-    <script src="js/like.js?v=<?= filemtime('js/like.js') ?>"></script>
+    <script src="../../../js/teacher_sidebar.js"></script>
+    <script src="../../../js/like.js"></script>
     <script>
         window.addEventListener('pageshow', function (event) {
             if (event.persisted) {

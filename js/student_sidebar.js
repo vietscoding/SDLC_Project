@@ -1,4 +1,4 @@
-// js/teacher_sidebar.js
+// js/student_sidebar.js
 
 document.addEventListener('DOMContentLoaded', function() {
     const sidebarToggle = document.getElementById('sidebarToggle');
@@ -20,7 +20,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
-    // Function to set the active sidebar link
     /**
      * Chuẩn hóa một đường dẫn tuyệt đối (từ window.location.pathname)
      * về một đường dẫn tương đối so với một base path của dự án.
@@ -30,80 +29,84 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     function getRelativePathFromAbsolute(absolutePath, projectBasePath) {
         if (absolutePath.startsWith(projectBasePath)) {
+            // Loại bỏ projectBasePath khỏi đầu đường dẫn tuyệt đối
             let relativePath = absolutePath.substring(projectBasePath.length);
-            // Loại bỏ các tham số query và hash nếu có
-            relativePath = relativePath.split('?')[0].split('#')[0];
+            // Loại bỏ dấu '/' ở cuối nếu có
+            if (relativePath.endsWith('/')) {
+                relativePath = relativePath.slice(0, -1);
+            }
             return relativePath;
         }
-        return absolutePath; // Trả về nguyên nếu không khớp base path
+        return absolutePath; // Trả về nguyên gốc nếu không khớp base path
     }
 
-    // Function to set the active sidebar link
-    /*function setActiveSidebarLink() {
-        // --- CẤU HÌNH ĐƯỜNG DẪN GỐC CỦA DỰ ÁN CỦA BẠN ---
-        // Bạn cần xác định chính xác phần này.
-        // Nếu dự án của bạn chạy ở http://localhost/SDLC_project/
-        // thì projectBasePath là '/SDLC_project/'
-        // Nếu bạn deploy lên http://yourdomain.com/ (thư mục gốc), thì projectBasePath là '/'
-        const projectBasePath = '/SDLC_project/'; // ĐIỀU CHỈNH CÁI NÀY NẾU CẦN
+    /**
+     * Hàm để xác định projectBasePath một cách linh hoạt.
+     * Dựa vào cấu trúc thư mục của dự án (ví dụ: sự tồn tại của '/module/', '/common/')
+     * để suy luận đường dẫn gốc của dự án trên URL.
+     */
+    function determineProjectBasePath() {
+        const currentPathname = window.location.pathname; // Ví dụ: /SDLC_project/module/student/dashboard/student_dashboard.php
 
-        const currentAbsoluteUrlPath = window.location.pathname; // Ví dụ: /SDLC_project/module/student/dashboard/student_dashboard.php
-        const normalizedCurrentPath = getRelativePathFromAbsolute(currentAbsoluteUrlPath, projectBasePath); // Ví dụ: module/student/dashboard/student_dashboard.php
-        console.log("Normalized Current Path:", normalizedCurrentPath); // Debugging
+        // Cố gắng tìm phần '/module/' trong đường dẫn
+        const moduleIndex = currentPathname.indexOf('/module/');
+        if (moduleIndex !== -1) {
+            return currentPathname.substring(0, moduleIndex + 1); // +1 để bao gồm dấu / cuối cùng
+        }
+
+        // Trường hợp fallback: cố gắng tìm '/common/' (nếu file login, logout nằm ở đó)
+        const commonIndex = currentPathname.indexOf('/common/');
+        if (commonIndex !== -1) {
+             return currentPathname.substring(0, commonIndex + 1);
+        }
+
+        // Trường hợp cuối cùng: nếu không tìm thấy cấu trúc đặc trưng, giả định dự án nằm ở root
+        console.warn("Could not determine projectBasePath dynamically. Assuming project is at web root.");
+        return '/';
+    }
+
+    // --- CẤU HÌNH ĐƯỜNG DẪN GỐC CỦA DỰ ÁN CỦA BẠN ---
+    // Gọi hàm để xác định projectBasePath một cách linh hoạt
+    const projectBasePath = determineProjectBasePath();
+    console.log("Dynamically determined projectBasePath:", projectBasePath); // Để kiểm tra trong console
+
+    // Function to set the active sidebar link
+    function setActiveSidebarLink() {
+        const currentPathname = window.location.pathname; // Lấy đường dẫn hiện tại
+        const currentRelativePath = getRelativePathFromAbsolute(currentPathname, projectBasePath); // Chuẩn hóa đường dẫn
+        const currentPageFileName = currentRelativePath.split('/').pop().split('?')[0]; // Lấy tên file cuối cùng (ví dụ: student_dashboard.php)
 
         sidebarLinks.forEach(link => {
-            const linkHref = link.getAttribute('href'); // Ví dụ: ../dashboard/student_dashboard.php
-            link.classList.remove('active');
+            link.classList.remove('active'); // Xóa lớp 'active' khỏi tất cả các liên kết trước
+            const linkHref = link.getAttribute('href'); // Lấy href của liên kết sidebar (ví dụ: ../dashboard/student_dashboard.php)
+            
+            if (!linkHref) return; // Bỏ qua nếu không có href
 
-            let resolvedLinkPathRelative;
-            try {
-                // Tạo một URL tạm thời để phân giải đường dẫn tương đối
-                // Sau đó, lấy pathname và loại bỏ projectBasePath để có đường dẫn tương đối từ gốc dự án
-                const tempUrl = new URL(linkHref, window.location.href);
-                resolvedLinkPathRelative = getRelativePathFromAbsolute(tempUrl.pathname, projectBasePath);
+            const linkFileName = linkHref.split('/').pop().split('?')[0]; // Lấy tên file từ href của liên kết
 
-            } catch (e) {
-                console.error("Error resolving link path for:", linkHref, e);
-                return;
-            }
-
-            console.log("Link Href:", linkHref, "Resolved Relative Link Path:", resolvedLinkPathRelative); // Debugging
-
-            // So sánh các đường dẫn tương đối đã được chuẩn hóa
-            if (resolvedLinkPathRelative === normalizedCurrentPath) {
+            // So sánh trực tiếp tên file
+            if (linkFileName === currentPageFileName) {
                 link.classList.add('active');
             }
-            // --- Logic cho các trang con (ví dụ: student_profile.php active khi ở student_change_email.php) ---
-            // Phần này vẫn nên dựa vào tên file cuối cùng vì nó đơn giản và dễ quản lý cho các nhóm trang
-            else {
-                const currentPageFileName = normalizedCurrentPath.split('/').pop();
-                const linkFileName = resolvedLinkPathRelative.split('/').pop();
-
-                // Logic cho trang "My Profile"
-                const profileRelatedPages = ['student_profile.php', 'student_change_email.php', 'student_change_password.php'];
-                if (linkFileName === 'student_profile.php' && profileRelatedPages.includes(currentPageFileName)) {
-                    link.classList.add('active');
-                }
-                // Logic cho trang "Courses"
-                else if (linkFileName === 'courses.php' && ['courses.php', 'student_search_courses.php', 'student_course_details.php'].includes(currentPageFileName)) {
-                    link.classList.add('active');
-                }
-                // Logic cho "Assignments", "Notifications", "Progress", "Course Forum"...
-                else if (linkFileName === 'student_assignments.php' && ['student_assignments.php', 'student_view_assignments.php'].includes(currentPageFileName)) {
-                    link.classList.add('active');
-                }
-                 else if (linkFileName === 'notifications.php' && ['notifications.php'].includes(currentPageFileName)) {
-                    link.classList.add('active');
-                }
-                else if (linkFileName === 'progress.php' && ['progress.php'].includes(currentPageFileName)) {
-                    link.classList.add('active');
-                }
-                else if (linkFileName === 'student_forum_courses.php' && ['student_forum_courses.php', 'student_add_forum_post.php', 'student_view_forum_post.php'].includes(currentPageFileName)) {
-                    link.classList.add('active');
-                }
-            }
+            // Xử lý các trang con (parent-child relationships)
+            else if (linkFileName === 'student_profile.php' && ['student_change_email.php', 'student_change_password.php'].includes(currentPageFileName)) {
+                link.classList.add('active');
+            } else if (linkFileName === 'courses.php' && ['course_detail.php', 'lesson.php', 'quiz_list.php', 'quiz.php', 'quiz_result.php'].includes(currentPageFileName)) {
+                link.classList.add('active');
+                
+            } else if (linkFileName === 'student_forum_courses.php' && ['student_create_post.php', 'student_view_post.php','student_edit_comment.php','student_my_posts.php','student_forum.php','student_edit_post.php'].includes(currentPageFileName)) {
+                // Đã sửa 'student_add_forum_post.php' thành 'student_create_post.php' nếu tên file chính xác là vậy
+                // và thêm 'student_view_post.php'
+                link.classList.add('active');
+            }else if (linkFileName === 'student_assignments.php' && ['submit_assignment.php'].includes(currentPageFileName)) {
+                link.classList.add('active');}
+            // Thêm các trường hợp khác nếu có trang con cho các mục sidebar khác
+            // Ví dụ:
+            // else if (linkFileName === 'student_assignments.php' && ['student_view_assignment.php', 'student_submit_assignment.php'].includes(currentPageFileName)) {
+            //     link.classList.add('active');
+            // 
         });
-    }*/
+    }
 
 
     // Initial call to set active link on page load
@@ -138,6 +141,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 mainContent.classList.remove('sidebar-open');
             }
         }
-        setActiveSidebarLink(); // Re-evaluate active link on resize, especially for initial load
+        // Gọi lại để đảm bảo active link được đặt lại nếu có thay đổi kích thước ảnh hưởng đến hiển thị
+        setActiveSidebarLink(); 
     });
 });

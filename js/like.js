@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 likeCountElement.innerText = parseInt(likeCountElement.innerText) + 1;
             }
 
-            fetch("like_post.php", {
+            fetch("../../../common/like_post.php", { // Corrected path
                 method: "POST",
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded"
