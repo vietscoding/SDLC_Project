@@ -1,10 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'teacher') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $user_id = $_SESSION['user_id'];
 $success = $error = "";
@@ -44,11 +44,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Change Password | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/teacher/teacher_change_password.css">
+    <link rel="stylesheet" href="../../../css/style.css"> 
+    <link rel="stylesheet" href="../../../css/teacher/teacher_change_password.css">
 </head>
 <body>
-    <?php include "includes/teacher_sidebar.php"; ?>
+    <?php include "../../../includes/teacher_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="admin-page-header">
@@ -78,8 +78,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </div>
             </form>
         </div>
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/teacher_sidebar.js"></script>
+    <script src="../../../js/teacher_sidebar.js"></script>
 </body>
 </html>

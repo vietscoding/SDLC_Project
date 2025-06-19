@@ -56,9 +56,9 @@ $result = $stmt->get_result();
                             <td data-label="Description"><?= nl2br(htmlspecialchars($row['description'])) ?></td>
                             <td data-label="Actions" class="course-actions">
                                 <a href="teacher_lessons.php?course_id=<?= $row['id'] ?>"><i class="fas fa-list-ul"></i> Lessons</a>
-                                <a href="../user_management/teacher_enrollments.php ?= $row['id'] ?>"><i class="fas fa-users"></i> Enrollments</a>
-                                <a href="../user_management/ teacher_progress.php?course_id=<?= $row['id'] ?>"><i class="fas fa-chart-line"></i> Progress</a>
-                                <a href="../user_management/ teacher_enroll_approval.php?course_id=<?= $row['id'] ?>"><i class="fas fa-user-check"></i> Approve</a>
+                                <a href="../user_management/teacher_enrollments.php?course_id=<?= $row['id'] ?>"><i class="fas fa-users"></i> Enrollments</a>
+                                <a href="../user_management/teacher_progress.php?course_id=<?= $row['id'] ?>"><i class="fas fa-chart-line"></i> Progress</a>
+                                <a href="../user_management/teacher_enroll_approval.php?course_id=<?= $row['id'] ?>"><i class="fas fa-user-check"></i> Approve</a>
                             </td>
                         </tr>
                     <?php endwhile; ?>
@@ -69,7 +69,7 @@ $result = $stmt->get_result();
         <?php endif; ?>
 
         <div class="back-to-dashboard">
-            <a href="teacher_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="../dashboard/teacher_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
         </div>
 
         <?php include "../../../includes/footer.php"; ?>

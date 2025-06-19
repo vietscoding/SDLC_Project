@@ -153,7 +153,7 @@ $result = $conn->query("SELECT id, title, content, video_link, file_path FROM le
                                 </div>
                                 <div class="lesson-actions">
                                     <?php if (!empty($row['video_link'])): ?>
-                                        <a href="../../../<?= htmlspecialchars($row['video_link']) ?>" target="_blank" class="view-link" title="View Video"><i class="fas fa-video"></i> Video</a>
+                                        <a href="<?= htmlspecialchars($row['video_link']) ?>" target="_blank" class="view-link" title="View Video"><i class="fas fa-video"></i> Video</a>
                                     <?php endif; ?>
                                     <?php if (!empty($row['file_path'])): ?>
                                         <a href="../../../<?= htmlspecialchars($row['file_path']) ?>" target="_blank" class="file-link" title="View File"><i class="fas fa-file-alt"></i> File</a>

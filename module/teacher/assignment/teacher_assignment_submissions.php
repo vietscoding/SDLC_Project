@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'teacher') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 if (!isset($_GET['assignment_id'])) {
     echo "Assignment ID missing.";
@@ -70,11 +70,11 @@ $submissions = $result->get_result();
     <title>Submissions for <?= htmlspecialchars($assignment_title) ?> | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/teacher/teacher_assignment_submissions.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/teacher/teacher_assignment_submissions.css">
 </head>
 <body>
-    <?php include "includes/teacher_sidebar.php"; ?>
+    <?php include "../../../includes/teacher_sidebar.php"; ?>
 
     <div class="main-content">
 
@@ -140,12 +140,12 @@ $submissions = $result->get_result();
 
         <div class="back-to-dashboard">
             <a href="teacher_assignments.php"><i class="fas fa-arrow-left"></i> Back to Assignments</a>
-            <a href="teacher_dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
+            <a href="../dashboard/teacher_dashboard.php"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+            <a href="../../../common/logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-<script src="js/teacher_sidebar.js"></script>
+<script src="../../../js/teacher_sidebar.js"></script>
 </body>
 </html>

@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'teacher') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 // Lấy lesson_id và course_id từ URL
 if (!isset($_GET['lesson_id']) || !isset($_GET['course_id'])) {
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $file_path_to_save = $file_path; // Giữ nguyên file cũ nếu không upload mới
 
 if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-    $upload_dir = 'uploads/lessons/';
+    $upload_dir = '../../../uploads/lessons/';
     if (!is_dir($upload_dir)) {
         mkdir($upload_dir, 0777, true);
     }
@@ -79,8 +79,8 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
     <title>Edit Lesson - <?= htmlspecialchars($title ?? 'Lesson') ?> | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-   <link rel="stylesheet" href="css/teacher/edit_lesson.css"
+    <link rel="stylesheet" href="../../../css/style.css">
+   <link rel="stylesheet" href="../../../css/teacher/edit_lesson.css">
 </head>
 <body>
     <?php
@@ -109,7 +109,7 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
     // $message = '<div class="error-message"><i class="fas fa-times-circle"></i> Lỗi khi cập nhật bài học.</div>';
     ?>
 
-    <?php include "includes/teacher_sidebar.php"; ?>
+    <?php include "../../../includes/teacher_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="admin-page-header">
@@ -147,13 +147,13 @@ if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
 
         <div class="back-buttons">
             <a href="teacher_lessons.php?course_id=<?= htmlspecialchars($course_id) ?>" class="primary-button"><i class="fas fa-arrow-left"></i> Back to Lessons</a>
-            <a href="teacher_dashboard.php"><i class="fas fa-home"></i> Back to Dashboard</a>
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log Out</a>
+            <a href="../dashboard/teacher_dashboard.php"><i class="fas fa-home"></i> Back to Dashboard</a>
+            <a href="../../../common/logout.php"><i class="fas fa-sign-out-alt"></i> Log Out</a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/teacher_sidebar.js"></script>
+    <script src="../../../js/teacher_sidebar.js"></script>
     
 </body>
 </html>
