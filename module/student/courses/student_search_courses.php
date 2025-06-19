@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'student') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 // Xử lý tìm kiếm
 $keyword = $_GET['keyword'] ?? '';
@@ -39,12 +39,12 @@ $role = htmlspecialchars($_SESSION['role']);
     <title>Search Courses | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/student/student_search_courses.css"> 
+    <link rel="stylesheet" href="../../../css/style.css"> 
+    <link rel="stylesheet" href="../../../css/student/student_search_courses.css"> 
    
 </head>
 <body>
-    <?php include "includes/student_sidebar.php"; ?> <div class="main-content">
+    <?php include "../../../includes/student_sidebar.php"; ?> <div class="main-content">
         <div class="courses-header">
             <h2><i class="fas fa-search"></i> Search Courses</h2>
             <div class="user-info">
@@ -80,13 +80,13 @@ $role = htmlspecialchars($_SESSION['role']);
         <?php endif; ?>
 
         <div class="navigation-links">
-            <a href="student_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="../dashboard/student_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
             <a href="courses.php"><i class="fas fa-book"></i> My Courses</a>
         </div>
         
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
     
-<script src="js/student_sidebar.js"></script>
+<script src="../../../js/student_sidebar.js"></script>
 </body>
 </html>

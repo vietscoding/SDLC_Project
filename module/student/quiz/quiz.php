@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'student') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 if (!isset($_GET['id'])) {
     echo "Quiz ID missing.";
@@ -111,12 +111,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title>Take Quiz: <?= htmlspecialchars($quiz_title) ?> | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/student/quiz.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/student/quiz.css">
    
 </head>
 <body>
-    <?php include "includes/student_sidebar.php"; ?>
+    <?php include "../../../includes/student_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="page-header">
@@ -140,13 +140,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         </form>
         <div class="navigation-links">
             <a href="quiz_list.php?course_id=<?= $course_id ?>"><i class="fas fa-arrow-left"></i> Back to Quizzes</a>
-            <a href="student_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
+            <a href="../dashboard/student_dashboard.php"><i class="fas fa-home"></i> Dashboard</a>
+            <a href="../../../common/logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
         </div>
         
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/student_sidebar.js"></script>
+    <script src="../../../js/student_sidebar.js"></script>
  
 </body>
 </html>

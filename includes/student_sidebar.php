@@ -24,7 +24,8 @@ function isActive($link_target_href, $current_script) {
     // 2. Kiểm tra các trường hợp trang hiện tại là trang con của một mục sidebar chính (cha)
     // Key là tên file của mục sidebar cha, value là mảng các tên file của trang con.
     $parent_child_map = [
-        'courses.php'             => ['student_search_courses.php', 'course_detail.php'],
+        'courses.php'             => [ 'course_detail.php','lesson.php','quiz_list.php'],
+        'student_search_courses.php' => ['student_search_courses.php'],
         'student_assignments.php' => ['student_view_assignments.php'],
         'student_forum_courses.php' => ['student_add_forum_post.php', 'student_view_forum_post.php'],
         'student_profile.php'     => ['student_change_email.php', 'student_change_password.php'],

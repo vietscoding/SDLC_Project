@@ -1,10 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'student') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 $user_id = $_SESSION['user_id'];
 $sql = "
 SELECT c.id, c.title,
@@ -29,12 +29,12 @@ $role = htmlspecialchars($_SESSION['role']);
     <title>My Learning Progress | BTEC FPT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/student/progress.css"> 
+    <link rel="stylesheet" href="../../../css/style.css"> 
+    <link rel="stylesheet" href="../../../css/student/progress.css"> 
  
 </head>
 <body>
-    <?php include "includes/student_sidebar.php"; ?>
+    <?php include "../../../includes/student_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="student-dashboard-header">
@@ -73,13 +73,13 @@ $role = htmlspecialchars($_SESSION['role']);
         </div>
 
         <div class="navigation-links">
-            <a href="student_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
-            <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
+            <a href="../dashboard/student_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="../../../common/logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
         </div>
 
-        <?php include "includes/footer.php"; ?>
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-    <script src="js/student_sidebar.js"></script>
+    <script src="../../../js/student_sidebar.js"></script>
   
 </body>
 </html>
