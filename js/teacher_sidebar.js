@@ -93,7 +93,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 link.classList.add('active');
             }
             // Courses and related pages
-            else if (linkFileName === 'teacher_courses.php' && ['teacher_lessons.php', 'edit_lesson.php', 'teacher_enrollments.php', 'teacher_progress.php', 'teacher_enroll_approval.php', 'teacher_add_course.php', 'teacher_edit_course.php'].includes(currentPageFileName)) {
+            else if (linkFileName === 'teacher_courses.php' && ['teacher_lessons.php', 'edit_lesson.php', 'teacher_enrollments.php', 'teacher_progress.php', 'teacher_enroll_approval.php', 'teacher_add_course.php', 'teacher_edit_course.php','teacher_analytics.php'].includes(currentPageFileName)) {
                 link.classList.add('active');
             }
             // Search Courses (assuming teacher_course_detail.php is a child of search courses in the UI flow)

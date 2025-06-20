@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+    header("Location: ../../../login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || !isset($_POST['course_id']) || !isset($_POST['csrf_token'])) {
     echo "Invalid request.";

@@ -1,10 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 if (!isset($_GET['quiz_id']) || !isset($_GET['question_id'])) {
     echo "Missing quiz or question ID.";
@@ -78,13 +78,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/admin/admin_quiz_questions_edit.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/admin/admin_quiz_questions_edit.css">
    
 </head>
 <body>
 
-<?php include "includes/sidebar.php"; ?>
+<?php include "../../../includes/sidebar.php"; ?>
 
 <div class="main-content">
     <div class="admin-page-header">
@@ -143,9 +143,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="admin_quiz_questions.php?quiz_id=<?= $quiz_id ?>"><i class="fas fa-arrow-left"></i> Back to Questions List</a>
     </div>
 
-    <?php include "includes/footer.php"; ?>
+    <?php include "../../../includes/footer.php"; ?>
 </div>
 
-<script src="js/sidebar.js"></script>
+<script src="../../../js/sidebar.js"></script>
 </body>
 </html>

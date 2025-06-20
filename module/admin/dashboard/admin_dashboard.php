@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 // Thống kê số liệu
 $total_courses = $conn->query("SELECT COUNT(*) AS total FROM courses")->fetch_assoc()['total'];
@@ -58,13 +58,13 @@ if ($total_lessons > 0) {
     <title>Admin Dashboard | BTEC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css"> 
-    <link rel="stylesheet" href="css/admin/admin_dashboard.css"> 
+    <link rel="stylesheet" href="../../../css/style.css"> 
+    <link rel="stylesheet" href="../../../css/admin/admin_dashboard.css"> 
    
 </head>
 <body>
 
-<?php include "includes/sidebar.php"; ?>
+<?php include "../../../includes/sidebar.php"; ?>
 
 <div class="main-content">
     <div class="admin-dashboard-header">
@@ -118,24 +118,15 @@ if ($total_lessons > 0) {
     </div>
 
     <div class="admin-actions">
-        <h3><i class="fas fa-tools"></i> Admin Actions</h3>
-        <ul>
-            <li><a href="admin_courses.php"><i class="fas fa-book"></i> Manage Courses</a></li>
-            <li><a href="admin_users.php"><i class="fas fa-users"></i> Manage Users</a></li>
-            <li><a href="admin_quizzes.php"><i class="fas fa-question-circle"></i> Manage Quizzes</a></li>
-            <li><a href="admin_assignments.php"><i class="fas fa-tasks"></i> Manage Assignments</a></li>
-            <li><a href="admin_reports.php"><i class="fas fa-chart-line"></i> View Reports</a></li>
-            <li><a href="admin_forum.php"><i class="fas fa-comments"></i> Manage Forum</a></li>
-            <li><a href="admin_send_notification.php"><i class="fas fa-bell"></i> Post Notifications</a></li>
-        </ul>
+      
     </div>
 
     <div class="logout-link">
-        <a href="logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
+        <a href="../../../common/logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
     </div>
 
-    <?php include "includes/footer.php"; ?>
+    <?php include "../../../includes/footer.php"; ?>
 </div>
-<script src="js/sidebar.js"></script>
+<script src="../../../js/sidebar.js"></script>
 </body>
 </html>

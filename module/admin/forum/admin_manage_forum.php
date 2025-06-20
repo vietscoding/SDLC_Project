@@ -1,10 +1,10 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $courses = $conn->query("SELECT id, title FROM courses");
 ?>
@@ -15,13 +15,13 @@ $courses = $conn->query("SELECT id, title FROM courses");
     <title>Admin - Manage Forum by Course | BTEC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/admin/admin_manage_forum.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/admin/admin_manage_forum.css">
    
 </head>
 <body>
 
-<?php include "includes/sidebar.php"; ?>
+<?php include "../../../includes/sidebar.php"; ?>
 
 <div class="main-content">
     <div class="inner-content-wrapper">
@@ -52,11 +52,11 @@ $courses = $conn->query("SELECT id, title FROM courses");
 
         <div class="navigation-links">
             <a href="admin_forum.php" class="view-all-posts-btn"><i class="fas fa-hourglass-half"></i> View Pending Posts</a>
-            <a href="admin_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+            <a href="../dashboard/admin_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
         </div>
     </div>
-    <?php include "includes/footer.php"; ?>
+    <?php include "../../../includes/footer.php"; ?>
 </div>
-<script src="js/sidebar.js"></script>
+<script src="../../../js/sidebar.js"></script>
 </body>
 </html>

@@ -1,14 +1,14 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 // Generate and store CSRF token if not already set
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $error = "";
 
@@ -52,13 +52,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Add New Course | BTEC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/admin/admin_add_course.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/admin/admin_add_course.css">
     
 </head>
 <body>
 
-<?php include "includes/sidebar.php"; ?>
+<?php include "../../../includes/sidebar.php"; ?>
 
 <div class="main-content">
     <div class="admin-page-header">
@@ -110,9 +110,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <a href="admin_courses.php"><i class="fas fa-arrow-left"></i> Back to Courses</a>
     </div>
 
-    <?php include "includes/footer.php"; ?>
+    <?php include "../../../includes/footer.php"; ?>
 </div>
 
-<script src="js/sidebar.js"></script>
+<script src="../../../js/sidebar.js"></script>
 </body>
 </html>

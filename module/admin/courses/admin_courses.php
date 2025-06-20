@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 if (empty($_SESSION['csrf_token'])) {
     $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 }
@@ -42,13 +42,13 @@ $result = $stmt->get_result();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="css/style.css"> 
-<link rel="stylesheet" href="css/admin/admin_courses.css"> 
+    <link rel="stylesheet" href="../../../css/style.css"> 
+<link rel="stylesheet" href="../../../css/admin/admin_courses.css"> 
     
 </head>
 <body>
 
-<?php include "includes/sidebar.php"; ?>
+<?php include "../../../includes/sidebar.php"; ?>
 
 <div class="main-content">
     <div class="admin-page-header">
@@ -89,8 +89,8 @@ $result = $stmt->get_result();
                         <td data-label="Teacher"><?= htmlspecialchars($row['teacher_name']) ?></td>
                         <td data-label="Actions" class="course-actions">
                             <a href="admin_edit_course.php?course_id=<?= $row['id'] ?>"><i class="fas fa-edit"></i> Edit</a>
-                            <a href="admin_enrollments.php?course_id=<?= $row['id'] ?>"><i class="fas fa-users"></i> Enrollments</a>
-                            <a href="admin_progress.php?course_id=<?= $row['id'] ?>"><i class="fas fa-tasks"></i> Progress</a>
+                            <a href="../user_management/admin_enrollments.php?course_id=<?= $row['id'] ?>"><i class="fas fa-users"></i> Enrollments</a>
+                            <a href="../user_management/admin_progress.php?course_id=<?= $row['id'] ?>"><i class="fas fa-tasks"></i> Progress</a>
                              <form action="admin_delete_course.php" method="POST" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this course?');">
     <input type="hidden" name="course_id" value="<?= $row['id'] ?>">
     <input type="hidden" name="csrf_token" value="<?= htmlspecialchars($_SESSION['csrf_token']) ?>">
@@ -106,12 +106,12 @@ $result = $stmt->get_result();
     <?php endif; ?>
 
     <div class="back-to-dashboard">
-        <a href="admin_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <a href="../dashboard/admin_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
     </div>
 
-    <?php include "includes/footer.php"; ?>
+    <?php include "../../../includes/footer.php"; ?>
 
 </div>
-<script src="js/sidebar.js"></script>
+<script src="../../../js/sidebar.js"></script>
 </body>
 </html>

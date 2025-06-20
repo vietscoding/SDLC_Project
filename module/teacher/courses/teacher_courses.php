@@ -58,6 +58,7 @@ $result = $stmt->get_result();
                                 <a href="teacher_lessons.php?course_id=<?= $row['id'] ?>"><i class="fas fa-list-ul"></i> Lessons</a>
                                 <a href="../user_management/teacher_enrollments.php?course_id=<?= $row['id'] ?>"><i class="fas fa-users"></i> Enrollments</a>
                                 <a href="../user_management/teacher_progress.php?course_id=<?= $row['id'] ?>"><i class="fas fa-chart-line"></i> Progress</a>
+                                <a href="../report/teacher_analytics.php?course_id=<?= $row['id'] ?>"><i class="fas fa-user-check"></i> View Report</a>
                                 <a href="../user_management/teacher_enroll_approval.php?course_id=<?= $row['id'] ?>"><i class="fas fa-user-check"></i> Approve</a>
                             </td>
                         </tr>

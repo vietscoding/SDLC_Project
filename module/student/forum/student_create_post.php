@@ -22,13 +22,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $attachment = null;
 
     if (!empty($_FILES['media']['name'])) {
-        $media_path = "uploads/" . time() . "_" . $_FILES['media']['name'];
+        $media_path = "../../../uploads/" . time() . "_" . $_FILES['media']['name'];
         move_uploaded_file($_FILES['media']['tmp_name'], $media_path);
         $media_url = $media_path;
     }
 
     if (!empty($_FILES['attachment']['name'])) {
-        $file_path = "uploads/" . time() . "_" . $_FILES['attachment']['name'];
+        $file_path = "../../../uploads/" . time() . "_" . $_FILES['attachment']['name'];
         move_uploaded_file($_FILES['attachment']['tmp_name'], $file_path);
         $attachment = $file_path;
     }

@@ -1,11 +1,11 @@
 <?php
 session_start();
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] != 'admin') {
-    header("Location: login.php");
+    header("Location: ../../../common/login.php");
     exit;
 }
 
-include "includes/db_connect.php";
+include "../../../includes/db_connect.php";
 
 $action = $_GET['action'] ?? 'add';  // 'add' hoặc 'edit'
 $assignment_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
@@ -47,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $upload_path = $current_file;
 
     if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
-        $upload_dir = 'uploads/assignments/';
+        $upload_dir = '../../../uploads/assignments/';
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0777, true);
 
         $file_tmp = $_FILES['file']['tmp_name'];
@@ -85,13 +85,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <title><?= ($action === 'add') ? 'Add New Assignment' : 'Edit Assignment' ?> | BTEC</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/admin/admin_assignment_edit.css">
+    <link rel="stylesheet" href="../../../css/style.css">
+    <link rel="stylesheet" href="../../../css/admin/admin_assignment_edit.css">
   
 </head>
 <body>
 
-<?php include "includes/sidebar.php"; ?>
+<?php include "../../../includes/sidebar.php"; ?>
 
 <div class="main-content">
     <div class="admin-page-header">
@@ -157,9 +157,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <a href="admin_assignments.php"><i class="fas fa-arrow-left"></i> Back to Assignments List</a>
     </div>
 
-    <?php include "includes/footer.php"; ?>
+    <?php include "../../../includes/footer.php"; ?>
 </div>
 
-<script src="js/sidebar.js"></script>
+<script src="../../../js/sidebar.js"></script>
 </body>
 </html>
