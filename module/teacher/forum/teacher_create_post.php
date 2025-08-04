@@ -17,7 +17,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $attachment = null;
 
     if (!empty($_FILES['media']['name'])) {
-        $media_path = "uploads/" . time() . "_" . $_FILES['media']['name'];
+        $media_path = "../../../uploads/" . time() . "_" . $_FILES['media']['name'];
         // Ensure the uploads directory exists and is writable
         if (!is_dir('uploads')) {
             mkdir('uploads', 0777, true);
@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 
     if (!empty($_FILES['attachment']['name'])) {
-        $file_path = "uploads/" . time() . "_" . $_FILES['attachment']['name'];
+        $file_path = "../../../uploads/" . time() . "_" . $_FILES['attachment']['name'];
         // Ensure the uploads directory exists and is writable
         if (!is_dir('uploads')) {
             mkdir('uploads', 0777, true);

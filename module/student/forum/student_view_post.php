@@ -97,7 +97,7 @@ $role = htmlspecialchars($_SESSION['role'] ?? 'student');
                     ?>
                         <img src="<?= htmlspecialchars($post['media_url']) ?>" alt="Post media">
                     <?php elseif (in_array($ext, ['mp4', 'webm'])): ?>
-                        <video src="../../../<?= htmlspecialchars($post['media_url']) ?>" controls></video>
+                        <video src="<?= htmlspecialchars($post['media_url']) ?>" controls></video>
                     <?php endif; ?>
                 </div>
             <?php endif; ?>

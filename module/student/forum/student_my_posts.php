@@ -103,11 +103,11 @@ $role = htmlspecialchars($_SESSION['role'] ?? 'student');
                                 $ext = strtolower(pathinfo($post['media_url'], PATHINFO_EXTENSION));
                                 if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])):
                                 ?>
-                                    <img src="../../../<?= htmlspecialchars($post['media_url']) ?>" alt="Post media">
+                                    <img src="<?= htmlspecialchars($post['media_url']) ?>" alt="Post media">
                                 <?php elseif (in_array($ext, ['mp4', 'webm'])): ?>
-                                    <video src="../../../<?= htmlspecialchars($post['media_url']) ?>" controls></video>
+                                    <video src="<?= htmlspecialchars($post['media_url']) ?>" controls></video>
                                 <?php else: ?>
-                                    <a href="../../../<?= htmlspecialchars($post['media_url']) ?>" target="_blank"><i class="fas fa-file-image"></i> View Media</a>
+                                    <a href="<?= htmlspecialchars($post['media_url']) ?>" target="_blank"><i class="fas fa-file-image"></i> View Media</a>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>

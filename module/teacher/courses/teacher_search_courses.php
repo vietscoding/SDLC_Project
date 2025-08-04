@@ -11,26 +11,59 @@ $teacher_id = $_SESSION['user_id'];
 $keyword = $_GET['keyword'] ?? "";
 
 // Query lấy các courses mà teacher này đang dạy
-if (!empty($keyword)) {
-    $stmt = $conn->prepare("SELECT c.id, c.title, c.department, u.fullname AS instructor
-                            FROM courses c
-                            JOIN users u ON c.teacher_id = u.id
-                            WHERE c.teacher_id = ?
-                              AND (c.title LIKE ? OR c.department LIKE ?)
-                            ORDER BY c.id DESC");
-    $like = "%" . $keyword . "%";
-    $stmt->bind_param("iss", $teacher_id, $like, $like);
-} else {
-    $stmt = $conn->prepare("SELECT c.id, c.title, c.department, u.fullname AS instructor
-                            FROM courses c
-                            JOIN users u ON c.teacher_id = u.id
-                            WHERE c.teacher_id = ?
-                            ORDER BY c.id DESC");
-    $stmt->bind_param("i", $teacher_id);
-}
+$stmt = $conn->prepare("SELECT c.id, c.title, c.department, u.fullname AS instructor
+                        FROM courses c
+                        JOIN users u ON c.teacher_id = u.id
+                        WHERE c.teacher_id = ?
+                        ORDER BY c.id DESC");
+$stmt->bind_param("i", $teacher_id);
+
 
 $stmt->execute();
 $result = $stmt->get_result();
+$matched_courses = [];
+
+while ($course = $result->fetch_assoc()) {
+    if (!empty($keyword)) {
+        $title_words = explode(" ", $course['title']);
+$department_words = explode(" ", $course['department']);
+
+// Tính khoảng cách Levenshtein với từng từ, lấy khoảng cách nhỏ nhất
+$distance_title = PHP_INT_MAX;
+foreach ($title_words as $word) {
+    $distance = levenshtein(strtolower(trim($keyword)), strtolower(trim($word)));
+    if ($distance < $distance_title) {
+        $distance_title = $distance;
+    }
+}
+
+$distance_department = PHP_INT_MAX;
+foreach ($department_words as $word) {
+    $distance = levenshtein(strtolower(trim($keyword)), strtolower(trim($word)));
+    if ($distance < $distance_department) {
+        $distance_department = $distance;
+    }
+}
+
+
+        if ($distance_title <= 3 || $distance_department <= 3 
+            || stripos($course['title'], $keyword) !== false 
+            || stripos($course['department'], $keyword) !== false) {
+            
+            $course['score'] = min($distance_title, $distance_department);
+            $matched_courses[] = $course;
+        }
+    } else {
+        $course['score'] = 0;
+        $matched_courses[] = $course;
+    }
+}
+
+usort($matched_courses, function($a, $b) {
+    return $a['score'] <=> $b['score'];
+});
+
+
 ?>
 
 <!DOCTYPE html>
@@ -65,31 +98,32 @@ $result = $stmt->get_result();
             </div>
         </div>
 
-        <?php if ($result->num_rows > 0): ?>
-            <div class="progress-overview" style="margin-top: 20px;">
-                <h3><i class="fas fa-book-reader"></i> Search Results</h3>
-                <div class="progress-content">
-                    <ul class="course-list">
-                        <?php while ($course = $result->fetch_assoc()): ?>
-                            <li class="course-item">
-                                <div class="course-item-image" style="background-image: url('https://source.unsplash.com/random/800x400?education,coding&sig=<?= $course['id'] ?>');">
-                                    <span class="course-icon"><i class="fas fa-book-open"></i></span>
-                                </div>
-                                <div class="course-item-content">
-                                    <h3 class="course-item-title"><?= htmlspecialchars($course['title']) ?></h3>
-                                    <p class="course-item-description">Department: <?= htmlspecialchars($course['department']) ?> | Instructor: <?= htmlspecialchars($course['instructor']) ?></p>
-                                    <div class="course-item-actions">
-                                        <a href="teacher_course_detail.php?course_id=<?= $course['id'] ?>"><i class="fas fa-info-circle"></i> View Details</a>
-                                    </div>
-                                </div>
-                            </li>
-                        <?php endwhile; ?>
-                    </ul>
-                </div>
-            </div>
-        <?php else: ?>
-            <p class="no-results"><i class="fas fa-exclamation-circle"></i> No courses found matching your search criteria.</p>
-        <?php endif; ?>
+        <?php if (count($matched_courses) > 0): ?>
+    <div class="progress-overview" style="margin-top: 20px;">
+        <h3><i class="fas fa-book-reader"></i> Search Results</h3>
+        <div class="progress-content">
+            <ul class="course-list">
+                <?php foreach ($matched_courses as $course): ?>
+                    <li class="course-item">
+                        <div class="course-item-image" style="background-image: url('https://source.unsplash.com/random/800x400?education,coding&sig=<?= $course['id'] ?>');">
+                            <span class="course-icon"><i class="fas fa-book-open"></i></span>
+                        </div>
+                        <div class="course-item-content">
+                            <h3 class="course-item-title"><?= htmlspecialchars($course['title']) ?></h3>
+                            <p class="course-item-description">Department: <?= htmlspecialchars($course['department']) ?> | Instructor: <?= htmlspecialchars($course['instructor']) ?></p>
+                            <div class="course-item-actions">
+                                <a href="teacher_course_detail.php?course_id=<?= $course['id'] ?>"><i class="fas fa-info-circle"></i> View Details</a>
+                            </div>
+                        </div>
+                    </li>
+                <?php endforeach; ?>
+            </ul>
+        </div>
+    </div>
+<?php else: ?>
+    <p class="no-results"><i class="fas fa-exclamation-circle"></i> No courses found matching your search criteria.</p>
+<?php endif; ?>
+
 
         <div class="back-to-courses" style="margin-top: 30px; text-align: center;">
             <a href="../dashboard/teacher_dashboard.php" class="back-button"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>

@@ -17,7 +17,17 @@ $stmt = $conn->prepare($courses_taught_query);
 $stmt->bind_param("i", $teacher_id);
 $stmt->execute();
 $courses_taught_result = $stmt->get_result();
-$courses_taught = $courses_taught_result->fetch_all(MYSQLI_ASSOC);
+
+// CHỈNH SỬA: Thay vì chỉ lưu IDs và Titles riêng biệt, tạo mảng $courses_taught
+$courses_taught = [];
+$courses_taught_ids = [];
+$courses_taught_titles = [];
+while($row = $courses_taught_result->fetch_assoc()){
+    $courses_taught[] = $row; // Thêm toàn bộ hàng vào mảng $courses_taught
+    $courses_taught_ids[] = $row['id'];
+    $courses_taught_titles[$row['id']] = $row['title']; // Vẫn giữ để dùng cho summary chart
+}
+$stmt->close();
 
 // Fetch assignments to grade
 $assignments_to_grade_query = "
@@ -31,21 +41,10 @@ $stmt = $conn->prepare($assignments_to_grade_query);
 $stmt->bind_param("i", $teacher_id);
 $stmt->execute();
 $assignments_to_grade_result = $stmt->get_result();
-$assignments_to_grade = $assignments_to_grade_result->fetch_assoc();
+$assignments_to_grade_count = $assignments_to_grade_result->fetch_assoc()['count_assignments'];
+$stmt->close();
 
-// Fetch quizzes to grade (assuming quizzes need manual grading if 'score' is null or a specific status)
-$quizzes_to_grade_query = "
-    SELECT COUNT(DISTINCT qs.id) AS count_quizzes
-    FROM quiz_submissions qs
-    JOIN quizzes q ON qs.quiz_id = q.id
-    JOIN courses c ON q.course_id = c.id
-    WHERE c.teacher_id = ? AND qs.score IS NULL;
-";
-$stmt = $conn->prepare($quizzes_to_grade_query);
-$stmt->bind_param("i", $teacher_id);
-$stmt->execute();
-$quizzes_to_grade_result = $stmt->get_result();
-$quizzes_to_grade = $quizzes_to_grade_result->fetch_assoc();
+// === BẮT ĐẦU THÊM MỚI TỪ YÊU CẦU CỦA BẠN ===
 
 // Fetch quick stats: total students enrolled in teacher's courses
 $total_students_query = "
@@ -58,7 +57,8 @@ $stmt = $conn->prepare($total_students_query);
 $stmt->bind_param("i", $teacher_id);
 $stmt->execute();
 $total_students_result = $stmt->get_result();
-$total_students = $total_students_result->fetch_assoc();
+$total_students = $total_students_result->fetch_assoc()['total_students'] ?? 0; // Thêm ?? 0 để tránh lỗi nếu không có kết quả
+$stmt->close();
 
 // Calculate average progress of students in teacher's courses
 $avg_progress_query = "
@@ -85,11 +85,58 @@ $stmt = $conn->prepare($avg_progress_query);
 $stmt->bind_param("i", $teacher_id);
 $stmt->execute();
 $avg_progress_result = $stmt->get_result();
-$avg_progress = $avg_progress_result->fetch_assoc();
+$avg_overall_progress = round($avg_progress_result->fetch_assoc()['avg_overall_progress'] ?? 0, 2); // Thêm ?? 0 và làm tròn
+$stmt->close();
 
+// === KẾT THÚC THÊM MỚI ===
+
+// Dữ liệu cho biểu đồ tổng quát (không đổi)
+$course_summary_data = [];
+if (!empty($courses_taught_ids)) {
+    foreach ($courses_taught_ids as $course_id) {
+        $course_title = htmlspecialchars($courses_taught_titles[$course_id]);
+
+        // Average Quiz Score for this course
+        $avg_quiz_score = 'N/A';
+        $stmt = $conn->prepare("
+            SELECT AVG(score) AS avg_score
+            FROM quiz_submissions
+            WHERE quiz_id IN (SELECT id FROM quizzes WHERE course_id = ?) AND score IS NOT NULL
+        ");
+        $stmt->bind_param("i", $course_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        if ($row['avg_score'] !== null) {
+            $avg_quiz_score = round($row['avg_score'], 2);
+        }
+        $stmt->close();
+
+        // Average Assignment Grade for this course
+        $avg_assignment_grade = 'N/A';
+        $stmt = $conn->prepare("
+            SELECT AVG(grade) AS avg_grade
+            FROM assignment_submissions
+            WHERE assignment_id IN (SELECT id FROM assignments WHERE course_id = ?) AND grade IS NOT NULL
+        ");
+        $stmt->bind_param("i", $course_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $row = $result->fetch_assoc();
+        if ($row['avg_grade'] !== null) {
+            $avg_assignment_grade = round($row['avg_grade'], 2);
+        }
+        $stmt->close();
+
+        $course_summary_data[] = [
+            'course_title' => $course_title,
+            'avg_quiz_score' => $avg_quiz_score,
+            'avg_assignment_grade' => $avg_assignment_grade
+        ];
+    }
+}
 
 ?>
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -98,509 +145,57 @@ $avg_progress = $avg_progress_result->fetch_assoc();
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../../css/style.css">
-    
-    <style>
-        /* CSS ĐẶC TRƯNG CHO TEACHER DASHBOARD (giữ lại bố cục cũ, áp dụng phong cách mới) */
-
-/* Main Content Area */
-.main-content {
-    margin-left: 280px; /* Phải khớp với sidebar width trong style.css */
-    padding: 30px;
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: var(--background-light);
-    transition: margin-left 0.3s ease;
-}
-
-/* Teacher Dashboard Header */
-.teacher-dashboard-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 10px;
-    border-bottom: 1px solid var(--border-color);
-}
-
-.teacher-dashboard-header h2 {
-    font-size: 2.2em;
-    color: var(--text-dark);
-    margin: 0;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-}
-
-.teacher-dashboard-header h2 i {
-    margin-right: 12px;
-    color: var(--primary-color);
-    font-size: 1.1em;
-}
-
-/* General Dashboard Section/Card Styling */
-.dashboard-section, .dashboard-card {
-    background-color: var(--background-card);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px var(--shadow-light);
-    margin-bottom: 30px;
-}
-
-.dashboard-section h3, .dashboard-card h3 {
-    font-size: 1.8em;
-    color: var(--text-dark);
-    margin-top: 0;
-    margin-bottom: 25px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 15px;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-}
-
-.dashboard-section h3 i, .dashboard-card h3 i {
-    margin-right: 12px;
-    color: var(--accent-color); /* You can vary this color if needed */
-    font-size: 1.1em;
-}
-
-/* Specific styles for Quick Stats - using overview-item grid */
-.quick-stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 25px;
-    margin-top: 20px; /* Space from heading */
-}
-
-.quick-stats-grid .overview-item {
-    background-color: var(--background-light);
-    padding: 25px;
-    border-radius: 10px;
-    text-align: center;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
-    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
-    border: 1px solid var(--border-color);
-}
-
-.quick-stats-grid .overview-item:hover {
-    transform: translateY(-8px);
-    box-shadow: 0 8px 25px var(--shadow-medium);
-}
-
-.quick-stats-grid .overview-item i {
-    font-size: 3em;
-    margin-bottom: 15px;
-    color: var(--primary-color);
-    transition: color 0.3s ease;
-}
-
-.quick-stats-grid .overview-item:hover i {
-    color: var(--accent-color);
-}
-
-.quick-stats-grid .overview-item span {
-    display: block;
-    font-size: 1em;
-    color: var(--text-medium);
-    margin-bottom: 8px;
-    font-weight: 500;
-}
-
-.quick-stats-grid .overview-item strong {
-    display: block;
-    font-size: 2em;
-    font-weight: 700;
-    color: var(--text-dark);
-    letter-spacing: -0.5px;
-}
-.quick-stats-grid .overview-item .count.danger {
-    color: #dc3545; /* Red for urgent numbers */
-}
-
-
-/* Teacher Actions (Quick Actions) */
-.teacher-actions {
-    background-color: var(--background-card);
-    padding: 30px;
-    border-radius: 12px;
-    box-shadow: 0 5px 20px var(--shadow-light);
-    margin-bottom: 30px;
-}
-
-.teacher-actions h3 {
-    font-size: 1.8em;
-    color: var(--text-dark);
-    margin-top: 0;
-    margin-bottom: 25px;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 15px;
-    display: flex;
-    align-items: center;
-    font-weight: 600;
-}
-
-.teacher-actions h3 i {
-    margin-right: 12px;
-    color: var(--accent-color);
-    font-size: 1.1em;
-}
-
-.teacher-actions ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 15px;
-}
-
-.teacher-actions li {
-    background-color: var(--background-light);
-    padding: 15px 20px;
-    border-radius: 8px;
-    transition: background-color 0.3s ease, transform 0.2s ease;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    display: flex;
-    align-items: center;
-}
-
-.teacher-actions li:hover {
-    background-color: #e6f7ff;
-    transform: translateY(-3px);
-}
-
-.teacher-actions li a {
-    color: var(--primary-color);
-    text-decoration: none;
-    font-weight: 500;
-    transition: color 0.3s ease;
-    display: flex;
-    align-items: center;
-    width: 100%;
-}
-
-.teacher-actions li a:hover {
-    color: var(--primary-color);
-}
-
-.teacher-actions li a i {
-    margin-right: 10px;
-    font-size: 1.1em;
-    color: var(--primary-color);
-    transition: color 0.3s ease;
-}
-
-.teacher-actions li a:hover i {
-    color: var(--primary-color);
-}
-
-/* Notification Styling */
-.notification-list {
-    margin-top: 20px;
-}
-.notification-item {
-    background-color: var(--background-light); /* Use light background for notifications */
-    border: 1px solid var(--border-color);
-    padding: 15px;
-    margin-bottom: 10px;
-    border-radius: 8px;
-    font-size: 0.95em;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-    transition: transform 0.2s ease;
-}
-.notification-item:hover {
-    transform: translateX(5px);
-}
-.notification-item strong {
-    color: var(--primary-color);
-    display: block;
-    margin-bottom: 5px;
-    font-size: 1em;
-}
-.notification-item small {
-    display: block;
-    color: var(--text-medium);
-    margin-top: 5px;
-    font-size: 0.85em;
-}
-.notification-item.system-notification {
-    border-left: 5px solid var(--primary-color);
-}
-.notification-item.student-notification {
-    border-left: 5px solid var(--accent-color);
-}
-.notification-item:last-child {
-    margin-bottom: 0;
-}
-
-/* Course List Styling */
-.course-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    margin-top: 20px;
-}
-.course-list li {
-    padding: 15px 20px;
-    border-bottom: 1px dashed var(--border-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: var(--text-dark);
-    font-weight: 500;
-    background-color: var(--background-light);
-    border-radius: 8px;
-    margin-bottom: 8px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
-}
-.course-list li:hover {
-    background-color: #f0f8ff;
-    transform: translateY(-3px);
-}
-.course-list li:last-child {
-    border-bottom: none;
-    margin-bottom: 0;
-}
-.course-list li span {
-    color: var(--text-medium);
-    font-size: 0.9em;
-}
-
-/* Logout Link */
-.logout-link {
-    margin-top: 20px;
-    text-align: center;
-}
-
-.logout-link a {
-    display: inline-flex;
-    align-items: center;
-    padding: 12px 30px;
-    background-color: var(--accent-color);
-    color: white;
-    text-decoration: none;
-    border-radius: 8px;
-    font-weight: 600;
-    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
-    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
-}
-
-.logout-link a:hover {
-    background-color: #c82333;
-    transform: translateY(-3px);
-    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
-}
-
-.logout-link a i {
-    margin-right: 10px;
-    font-size: 1.1em;
-}
-
-/* Responsive Adjustments (Copied and adapted from admin_dashboard.php) */
-@media (max-width: 1024px) {
-    .quick-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-    }
-    .teacher-actions ul {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-    .quick-stats-grid .overview-item i {
-        font-size: 2.5em;
-    }
-    .quick-stats-grid .overview-item strong {
-        font-size: 1.8em;
-    }
-    .quick-stats-grid .overview-item span {
-        font-size: 0.9em;
-    }
-    .teacher-actions li a {
-        font-size: 0.9em;
-    }
-}
-
-@media (max-width: 768px) {
-    .main-content {
-        margin-left: 0;
-        padding: 20px;
-        padding-top: 80px; /* Adjust for potential fixed header/sidebar on mobile */
-    }
-    .teacher-dashboard-header {
-        flex-direction: column;
-        align-items: flex-start;
-        margin-bottom: 20px;
-    }
-    .teacher-dashboard-header h2 {
-        font-size: 1.8em;
-        margin-bottom: 10px;
-        text-align: left;
-    }
-
-    .dashboard-section, .dashboard-card {
-        padding: 15px;
-        margin-bottom: 20px;
-    }
-    .dashboard-section h3, .dashboard-card h3 {
-        font-size: 1.4em;
-        margin-bottom: 15px;
-        padding-bottom: 8px;
-    }
-
-    .quick-stats-grid {
-        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-        gap: 15px;
-        margin-top: 15px;
-    }
-    .quick-stats-grid .overview-item {
-        padding: 12px;
-    }
-    .quick-stats-grid .overview-item i {
-        font-size: 2em;
-        margin-bottom: 10px;
-    }
-    .quick-stats-grid .overview-item span {
-        font-size: 0.8em;
-    }
-    .quick-stats-grid .overview-item strong {
-        font-size: 1.3em;
-    }
-
-    .teacher-actions {
-        padding: 15px;
-        margin-bottom: 20px;
-    }
-    .teacher-actions h3 {
-        font-size: 1.4em;
-        margin-bottom: 15px;
-        padding-bottom: 8px;
-    }
-    .teacher-actions ul {
-        grid-template-columns: 1fr;
-        gap: 10px;
-    }
-    .teacher-actions li {
-        padding: 12px 15px;
-    }
-    .teacher-actions li a {
-        font-size: 0.9em;
-    }
-    .teacher-actions li a i {
-        font-size: 1em;
-    }
-
-    .notification-item {
-        padding: 12px;
-        font-size: 0.9em;
-    }
-    .notification-item strong {
-        font-size: 0.95em;
-    }
-    .notification-item small {
-        font-size: 0.8em;
-    }
-
-    .course-list li {
-        padding: 12px 15px;
-        font-size: 0.9em;
-    }
-    .course-list li span {
-        font-size: 0.8em;
-    }
-
-    .logout-link a {
-        padding: 10px 20px;
-        font-size: 0.95em;
-        width: auto;
-    }
-}
-
-@media (max-width: 480px) {
-    .teacher-dashboard-header h2 {
-        font-size: 1.4em;
-    }
-    .quick-stats-grid {
-        grid-template-columns: 1fr;
-    }
-    .quick-stats-grid .overview-item {
-        padding: 10px;
-    }
-    .quick-stats-grid .overview-item i {
-        font-size: 1.8em;
-    }
-    .quick-stats-grid .overview-item strong {
-        font-size: 1.2em;
-    }
-    .quick-stats-grid .overview-item span {
-        font-size: 0.75em;
-    }
-    .dashboard-section h3, .dashboard-card h3, .teacher-actions h3 {
-        font-size: 1.3em;
-    }
-    .teacher-actions li a {
-        font-size: 0.85em;
-    }
-    .logout-link a {
-        font-size: 0.9em;
-        padding: 8px 15px;
-    }
-}
-    </style>
+    <link rel="stylesheet" href="../../../css/teacher/teacher_dashboard.css">
 </head>
 <body>
-
     <?php include "../../../includes/teacher_sidebar.php"; ?>
 
     <div class="main-content">
         <div class="teacher-dashboard-header">
-            <h2><i class="fas fa-tachometer-alt"></i> Teacher Dashboard</h2>
+            <h2>Welcome, <?= $fullname ?>!</h2>
         </div>
-
-        <div class="dashboard-section">
-            <h3><i class="fas fa-chart-line"></i> Quick Stats</h3>
-            <div class="quick-stats-grid">
-                <div class="overview-item">
-                    <i class="fas fa-book-open"></i>
-                    <span>Active Courses</span>
-                    <strong><?= count($courses_taught) ?></strong>
-                </div>
-                <div class="overview-item">
-                    <i class="fas fa-user-graduate"></i>
-                    <span>Total Students Enrolled</span>
-                    <strong><?= htmlspecialchars($total_students['total_students']) ?></strong>
-                </div>
-                <div class="overview-item">
-                    <i class="fas fa-tasks"></i>
-                    <span>Assignments to Grade</span>
-                    <strong class="<?= ($assignments_to_grade['count_assignments'] > 0) ? 'danger' : ''; ?>">
-                        <?= htmlspecialchars($assignments_to_grade['count_assignments']) ?>
-                    </strong>
-                </div>
-                <div class="overview-item">
-                    <i class="fas fa-question-circle"></i>
-                    <span>Quizzes to Grade</span>
-                    <strong class="<?= ($quizzes_to_grade['count_quizzes'] > 0) ? 'danger' : ''; ?>">
-                        <?= htmlspecialchars($quizzes_to_grade['count_quizzes']) ?>
-                    </strong>
-                </div>
-                 <div class="overview-item">
-                    <i class="fas fa-spinner"></i>
-                    <span>Avg Student Progress</span>
-                    <strong><?= round(htmlspecialchars($avg_progress['avg_overall_progress'] ?? 0), 2) ?>%</strong>
-                </div>
+<div class="dashboard-section chart-section">
+            <h3><i class="fas fa-chart-bar"></i> Course Performance Overview</h3>
+            <div class="chart-container">
+                <canvas id="coursePerformanceChart"></canvas>
             </div>
         </div>
+        <div class="dashboard-section quick-stats-grid">
+            <div class="overview-item">
+                <i class="fas fa-book"></i>
+                <span>Courses Taught</span>
+                <strong><?= count($courses_taught) ?></strong>
+            </div>
+            <div class="overview-item">
+                <i class="fas fa-tasks"></i>
+                <span>Assignments to Grade</span>
+                <strong><?= htmlspecialchars($assignments_to_grade_count) ?></strong>
+            </div>
+            <div class="overview-item">
+                <i class="fas fa-user-graduate"></i>
+                <span>Total Students</span>
+                <strong><?= htmlspecialchars($total_students) ?></strong>
+            </div>
+            <div class="overview-item">
+                <i class="fas fa-chart-line"></i>
+                <span>Avg. Overall Progress</span>
+                <strong><?= htmlspecialchars($avg_overall_progress) ?>%</strong>
+            </div>
+            </div>
 
-        <div class="teacher-actions">
-           
-        </div>
+        
 
         <div class="dashboard-section">
-            <h3><i class="fas fa-book-open"></i> Courses You Teach</h3>
+            <h3><i class="fas fa-chalkboard-teacher"></i> Your Courses</h3>
             <ul class="course-list">
-                <?php if ($courses_taught): ?>
+                <?php if (!empty($courses_taught)): ?>
                     <?php foreach ($courses_taught as $course): ?>
-                        <li><?= htmlspecialchars($course['title']) ?></li>
+                        <li>
+                            <a href="../report/teacher_analytics.php?course_id=<?= htmlspecialchars($course['id']) ?>">
+                                <?= htmlspecialchars($course['title']) ?>
+                            </a>
+                            <span>(ID: <?= htmlspecialchars($course['id']) ?>)</span>
+                        </li>
                     <?php endforeach; ?>
                 <?php else: ?>
                     <li>No courses assigned yet.</li>
@@ -623,10 +218,9 @@ $avg_progress = $avg_progress_result->fetch_assoc();
                         <p>No system notifications.</p>
                     </div>
                 <?php endif; ?>
-                
             </div>
         </div>
-        
+
         <div class="logout-link">
             <a href="../../../common/logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
         </div>
@@ -634,6 +228,14 @@ $avg_progress = $avg_progress_result->fetch_assoc();
         <?php include "../../../includes/footer.php"; ?>
     </div>
     <script src="../../../js/teacher_sidebar.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../../js/teacher_dashboard_charts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const courseSummaryData = <?= json_encode($course_summary_data) ?>;
+            console.log("Course Summary Data:", courseSummaryData);
+            initCoursePerformanceChart(courseSummaryData);
+        });
+    </script>
 </body>
 </html>

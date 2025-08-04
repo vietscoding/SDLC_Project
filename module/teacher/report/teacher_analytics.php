@@ -26,6 +26,24 @@ if (!$stmt->fetch()) {
 }
 $stmt->close();
 
+// Lấy danh sách tất cả học sinh đã enroll trong khóa học
+$all_students_in_course = [];
+$stmt = $conn->prepare("
+    SELECT u.id, u.fullname
+    FROM users u
+    JOIN enrollments e ON u.id = e.user_id
+    WHERE e.course_id = ? AND u.role = 'student'
+    ORDER BY u.fullname ASC
+");
+$stmt->bind_param("i", $course_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $all_students_in_course[] = $row;
+}
+$stmt->close();
+
+
 // Tổng số học viên đã enroll
 $stmt = $conn->prepare("SELECT COUNT(*) AS total_students FROM enrollments WHERE course_id = ?");
 $stmt->bind_param("i", $course_id);
@@ -64,7 +82,7 @@ if ($total_lessons > 0 && $total_students > 0) {
     $stmt = $conn->prepare($avg_progress_query);
     // Bind $total_lessons for the division, and $course_id for filtering
     // 'd' for float/double (for division), 'i' for integer (for course_id)
-    $stmt->bind_param("di", $total_lessons, $course_id); 
+    $stmt->bind_param("di", $total_lessons, $course_id);
     $stmt->execute();
     $result = $stmt->get_result();
     $avg_progress = round($result->fetch_assoc()['avg_completion'] ?? 0, 2);
@@ -84,6 +102,65 @@ $result = $stmt->get_result();
 $avg_score_row = $result->fetch_assoc();
 $avg_score = $avg_score_row['avg_score'] !== null ? round($avg_score_row['avg_score'], 2) : 'N/A';
 $stmt->close();
+
+// Lấy tất cả điểm quiz của học viên trong khóa học
+$all_quiz_scores = [];
+$stmt = $conn->prepare("
+    SELECT
+        qs.user_id,
+        u.fullname AS student_name,
+        q.title AS quiz_title,
+        qs.score,
+        qs.submitted_at -- Giả sử bạn có cột submission_date trong quiz_submissions
+    FROM
+        quiz_submissions qs
+    JOIN
+        quizzes q ON qs.quiz_id = q.id
+    JOIN
+        users u ON qs.user_id = u.id
+    WHERE
+        q.course_id = ? AND qs.score IS NOT NULL
+    ORDER BY
+        qs.user_id, qs.submitted_at ASC, q.id ASC -- Sắp xếp để có thứ tự cho Moving Average
+");
+$stmt->bind_param("i", $course_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$raw_quiz_data_by_student = [];
+while ($row = $result->fetch_assoc()) {
+    $raw_quiz_data_by_student[$row['user_id']][] = $row;
+}
+$stmt->close();
+
+$student_quiz_trends = [];
+$window_size = 3; // Kích thước cửa sổ Moving Average, ví dụ 3 bài quiz gần nhất
+
+foreach ($raw_quiz_data_by_student as $user_id => $quiz_entries) {
+    $scores = array_column($quiz_entries, 'score');
+    $quiz_titles = array_column($quiz_entries, 'quiz_title'); // Dùng làm nhãn cho biểu đồ
+    $moving_average_scores = [];
+
+    if (count($scores) > 0) {
+        for ($i = 0; $i < count($scores); $i++) {
+            $sum = 0;
+            $count = 0;
+            for ($j = max(0, $i - $window_size + 1); $j <= $i; $j++) {
+                $sum += $scores[$j];
+                $count++;
+            }
+            $moving_average_scores[] = round($sum / $count, 2);
+        }
+    }
+
+    $student_quiz_trends[] = [
+        'user_id' => $user_id,
+        'student_name' => $quiz_entries[0]['student_name'],
+        'quiz_titles' => $quiz_titles,
+        'raw_scores' => $scores, // Giữ lại để debug hoặc so sánh
+        'moving_average_scores' => $moving_average_scores
+    ];
+}
 
 // Tổng số assignments trong khóa
 $stmt = $conn->prepare("SELECT COUNT(*) AS total_assignments FROM assignments WHERE course_id = ?");
@@ -116,6 +193,158 @@ $avg_grade_row = $result->fetch_assoc();
 $avg_grade = $avg_grade_row['avg_grade'] !== null ? round($avg_grade_row['avg_grade'], 2) : 'N/A';
 $stmt->close();
 
+
+// === BẮT ĐẦU THÊM MỚI CHO ASSIGNMENT TRENDS ===
+
+// Lấy tất cả điểm assignments của học viên trong khóa học, sắp xếp theo thứ tự
+$all_assignment_grades = [];
+$stmt = $conn->prepare("
+    SELECT
+        asa.user_id,
+        u.fullname AS student_name,
+        a.title AS assignment_title,
+        asa.grade,
+        asa.submitted_at -- Giả sử bạn có cột submission_date_time trong assignment_submissions
+    FROM
+        assignment_submissions asa
+    JOIN
+        assignments a ON asa.assignment_id = a.id
+    JOIN
+        users u ON asa.user_id = u.id
+    WHERE
+        a.course_id = ? AND asa.grade IS NOT NULL
+    ORDER BY
+        asa.user_id, asa.submitted_at ASC, a.id ASC -- Sắp xếp để có thứ tự cho Moving Average
+");
+$stmt->bind_param("i", $course_id);
+$stmt->execute();
+$result = $stmt->get_result();
+
+$raw_assignment_data_by_student = [];
+while ($row = $result->fetch_assoc()) {
+    $raw_assignment_data_by_student[$row['user_id']][] = $row;
+}
+$stmt->close();
+
+$student_assignment_trends = [];
+$assignment_window_size = 3; // Kích thước cửa sổ Moving Average cho assignment, ví dụ 3 bài gần nhất
+
+foreach ($raw_assignment_data_by_student as $user_id => $assignment_entries) {
+    $grades = array_column($assignment_entries, 'grade');
+    $assignment_titles = array_column($assignment_entries, 'assignment_title'); // Dùng làm nhãn cho biểu đồ
+    $moving_average_grades = [];
+
+    if (count($grades) > 0) {
+        for ($i = 0; $i < count($grades); $i++) {
+            $sum = 0;
+            $count = 0;
+            for ($j = max(0, $i - $assignment_window_size + 1); $j <= $i; $j++) {
+                $sum += $grades[$j];
+                $count++;
+            }
+            $moving_average_grades[] = round($sum / $count, 2);
+        }
+    }
+
+    $student_assignment_trends[] = [
+        'user_id' => $user_id,
+        'student_name' => $assignment_entries[0]['student_name'],
+        'assignment_titles' => $assignment_titles,
+        'raw_grades' => $grades, // Giữ lại để debug hoặc so sánh
+        'moving_average_grades' => $moving_average_grades
+    ];
+}
+
+// === KẾT THÚC THÊM MỚI CHO ASSIGNMENT TRENDS ===
+
+// === BẮT ĐẦU THÊM MỚI CHO TOP 5 STUDENTS ===
+$student_average_scores = [];
+
+// Lấy tất cả điểm quiz của học viên
+$stmt = $conn->prepare("
+    SELECT
+        qs.user_id,
+        u.fullname AS student_name,
+        AVG(qs.score) AS average_quiz_score
+    FROM
+        quiz_submissions qs
+    JOIN
+        quizzes q ON qs.quiz_id = q.id
+    JOIN
+        users u ON qs.user_id = u.id
+    WHERE
+        q.course_id = ? AND qs.score IS NOT NULL
+    GROUP BY
+        qs.user_id, u.fullname
+");
+$stmt->bind_param("i", $course_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $student_average_scores[$row['user_id']]['student_name'] = $row['student_name'];
+    $student_average_scores[$row['user_id']]['quiz_scores'] = $row['average_quiz_score'];
+}
+$stmt->close();
+
+// Lấy tất cả điểm assignment của học viên
+$stmt = $conn->prepare("
+    SELECT
+        asa.user_id,
+        u.fullname AS student_name,
+        AVG(asa.grade) AS average_assignment_grade
+    FROM
+        assignment_submissions asa
+    JOIN
+        assignments a ON asa.assignment_id = a.id
+    JOIN
+        users u ON asa.user_id = u.id
+    WHERE
+        a.course_id = ? AND asa.grade IS NOT NULL
+    GROUP BY
+        asa.user_id, u.fullname
+");
+$stmt->bind_param("i", $course_id);
+$stmt->execute();
+$result = $stmt->get_result();
+while ($row = $result->fetch_assoc()) {
+    $student_average_scores[$row['user_id']]['student_name'] = $row['student_name'];
+    $student_average_scores[$row['user_id']]['assignment_grades'] = $row['average_assignment_grade'];
+}
+$stmt->close();
+
+// Tính điểm trung bình tổng thể và chuẩn bị cho Top-K Selection
+$final_student_scores = [];
+foreach ($student_average_scores as $user_id => $data) {
+    $total_score = 0;
+    $count = 0;
+    if (isset($data['quiz_scores'])) {
+        $total_score += $data['quiz_scores'];
+        $count++;
+    }
+    if (isset($data['assignment_grades'])) {
+        $total_score += $data['assignment_grades'];
+        $count++;
+    }
+
+    if ($count > 0) {
+        $final_student_scores[$user_id] = [
+            'student_name' => $data['student_name'],
+            'average_overall_score' => round($total_score / $count, 2)
+        ];
+    }
+}
+
+// Sắp xếp giảm dần theo điểm trung bình tổng thể (Top-K Selection)
+uasort($final_student_scores, function($a, $b) {
+    return $b['average_overall_score'] <=> $a['average_overall_score'];
+});
+
+// Lấy top 5
+$top_5_students = array_slice($final_student_scores, 0, 5, true);
+
+// === KẾT THÚC THÊM MỚI CHO TOP 5 STUDENTS ===
+
+
 ?>
 
 <!DOCTYPE html>
@@ -141,6 +370,65 @@ $stmt->close();
 
         <div class="dashboard-section">
             <h3><i class="fas fa-chart-line"></i> Course Statistics</h3>
+
+            <div class="dashboard-section chart-section">
+                <h3><i class="fas fa-chart-line"></i> Student Quiz Score Trends</h3>
+                <div class="chart-controls">
+                    <label for="quizStudentSelect">Select Student(s):</label>
+                    <select id="quizStudentSelect" multiple>
+                        <option value="all">All Students</option>
+                        <?php foreach ($all_students_in_course as $student): ?>
+                            <option value="<?= $student['id'] ?>"><?= htmlspecialchars($student['fullname']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button onclick="applyStudentFilter('quiz')">Apply Filter</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="studentQuizScoreChart"></canvas>
+                </div>
+            </div>
+            <div class="dashboard-section chart-section">
+                <h3><i class="fas fa-chart-line"></i> Student Assignment Grade Trends</h3>
+                <div class="chart-controls">
+                    <label for="assignmentStudentSelect">Select Student(s):</label>
+                    <select id="assignmentStudentSelect" multiple>
+                        <option value="all">All Students</option>
+                        <?php foreach ($all_students_in_course as $student): ?>
+                            <option value="<?= $student['id'] ?>"><?= htmlspecialchars($student['fullname']) ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                    <button onclick="applyStudentFilter('assignment')">Apply Filter</button>
+                </div>
+                <div class="chart-container">
+                    <canvas id="studentAssignmentGradeChart"></canvas>
+                </div>
+            </div>
+            <div class="dashboard-section">
+                <h3><i class="fas fa-trophy"></i> Top 5 Students by Average Score</h3>
+                <?php if (!empty($top_5_students)): ?>
+                    <table class="top-students-table">
+                        <thead>
+                            <tr>
+                                <th>Rank</th>
+                                <th>Student Name</th>
+                                <th>Average Overall Score</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php $rank = 1; ?>
+                            <?php foreach ($top_5_students as $student): ?>
+                                <tr>
+                                    <td><?= $rank++ ?></td>
+                                    <td><?= htmlspecialchars($student['student_name']) ?></td>
+                                    <td><?= htmlspecialchars($student['average_overall_score']) ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                <?php else: ?>
+                    <p>No student data available to determine top performers.</p>
+                <?php endif; ?>
+            </div>
             <div class="quick-stats-grid">
                 <div class="overview-item">
                     <i class="fas fa-user-graduate"></i>
@@ -178,7 +466,9 @@ $stmt->close();
                     <strong><?= htmlspecialchars($total_submissions) ?></strong>
                 </div>
             </div>
-        </div>
+            
+            
+            </div>
         
         <div class="logout-link">
             <a href="../../../common/logout.php"><i class="fas fa-sign-out-alt"></i> Log out</a>
@@ -187,6 +477,49 @@ $stmt->close();
         <?php include "../../../includes/footer.php"; ?>
     </div>
     <script src="../../../js/teacher_sidebar.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../../js/teacher_chart.js"></script>
+    <script>
+        // Store the full dataset globally or pass it to a chart manager
+        const fullStudentQuizTrendsData = <?= json_encode($student_quiz_trends) ?>;
+        const fullStudentAssignmentTrendsData = <?= json_encode($student_assignment_trends) ?>;
 
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initial chart load with all students
+            initQuizScoreChart(fullStudentQuizTrendsData);
+            initAssignmentGradeChart(fullStudentAssignmentTrendsData);
+        });
+
+        function applyStudentFilter(chartType) {
+            let selectedStudentIds;
+            let dataToRender;
+
+            if (chartType === 'quiz') {
+                const selectElement = document.getElementById('quizStudentSelect');
+                selectedStudentIds = Array.from(selectElement.selectedOptions).map(option => option.value);
+                
+                if (selectedStudentIds.includes('all') || selectedStudentIds.length === 0) {
+                    dataToRender = fullStudentQuizTrendsData;
+                } else {
+                    dataToRender = fullStudentQuizTrendsData.filter(student => 
+                        selectedStudentIds.includes(String(student.user_id))
+                    );
+                }
+                initQuizScoreChart(dataToRender);
+            } else if (chartType === 'assignment') {
+                const selectElement = document.getElementById('assignmentStudentSelect');
+                selectedStudentIds = Array.from(selectElement.selectedOptions).map(option => option.value);
+
+                if (selectedStudentIds.includes('all') || selectedStudentIds.length === 0) {
+                    dataToRender = fullStudentAssignmentTrendsData;
+                } else {
+                    dataToRender = fullStudentAssignmentTrendsData.filter(student => 
+                        selectedStudentIds.includes(String(student.user_id))
+                    );
+                }
+                initAssignmentGradeChart(dataToRender);
+            }
+        }
+    </script>
 </body>
 </html>

@@ -64,7 +64,7 @@ $posts = $conn->query("
                                     ?>
                                         <img src="<?= $post['media_url'] ?>" alt="Post Media">
                                     <?php elseif (in_array($ext, ['mp4', 'webm'])): ?>
-                                        <video src="../../../<?= $post['media_url'] ?>" controls></video>
+                                        <video src="<?= $post['media_url'] ?>" controls></video>
                                     <?php endif; ?>
                                 </div>
                             <?php endif; ?>

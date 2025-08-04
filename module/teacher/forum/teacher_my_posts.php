@@ -101,9 +101,9 @@ $posts = $conn->query("
                                 ?>
                                     <img src="<?= htmlspecialchars($post['media_url']) ?>" alt="Image">
                                 <?php elseif (in_array($ext, ['mp4', 'webm', 'ogg'])): ?>
-                                    <video src="../../../<?= htmlspecialchars($post['media_url']) ?>" controls></video>
+                                    <video src="<?= htmlspecialchars($post['media_url']) ?>" controls></video>
                                 <?php else: ?>
-                                    <a href="../../../<?= htmlspecialchars($post['media_url']) ?>" target="_blank"><i class="fas fa-file-image"></i> View Media</a>
+                                    <a href="<?= htmlspecialchars($post['media_url']) ?>" target="_blank"><i class="fas fa-file-image"></i> View Media</a>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>

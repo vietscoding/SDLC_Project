@@ -370,3 +370,58 @@
             padding: 8px 15px;
         }
     }
+    /* Ensure these styles are present in your admin_dashboard.css */
+
+.dashboard-section, .dashboard-card {
+    background-color: var(--background-card);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px var(--shadow-light);
+    margin-bottom: 30px; /* Add margin between sections */
+}
+
+.chart-section {
+    padding: 20px;
+    margin-bottom: 30px;
+    background-color: var(--background-card);
+    border-radius: 12px;
+    box-shadow: 0 5px 20px var(--shadow-light);
+}
+
+.chart-section h3 {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chart-container {
+    position: relative;
+    height: 100px; /* Adjust height as needed */
+    width: 100%;
+    margin: auto;
+}
+
+.chart-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+/* Responsive adjustments for charts */
+@media (max-width: 1024px) {
+    .chart-container {
+        height: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-container {
+        height: 250px;
+    }
+}

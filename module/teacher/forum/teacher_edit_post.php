@@ -38,7 +38,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($current_media_url && file_exists($current_media_url)) {
             unlink($current_media_url);
         }
-        $media_path = "uploads/" . time() . "_" . $_FILES['media']['name'];
+        $media_path = "../../../uploads/" . time() . "_" . $_FILES['media']['name'];
         move_uploaded_file($_FILES['media']['tmp_name'], $media_path);
         $current_media_url = $media_path;
     } else if (isset($_POST['remove_media']) && $_POST['remove_media'] == 'true') {
@@ -58,7 +58,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($current_attachment && file_exists($current_attachment)) {
             unlink($current_attachment);
         }
-        $file_path = "uploads/" . time() . "_" . $_FILES['attachment']['name'];
+        $file_path = "../../../uploads/" . time() . "_" . $_FILES['attachment']['name'];
         move_uploaded_file($_FILES['attachment']['tmp_name'], $file_path);
         $current_attachment = $file_path;
     } else if (isset($_POST['remove_attachment']) && $_POST['remove_attachment'] == 'true') {
@@ -107,9 +107,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         $ext = strtolower(pathinfo($post['media_url'], PATHINFO_EXTENSION));
                         if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])):
                         ?>
-                            <img src="../../../<?= htmlspecialchars($post['media_url']) ?>" alt="Current Media">
+                            <img src="<?= htmlspecialchars($post['media_url']) ?>" alt="Current Media">
                         <?php elseif (in_array($ext, ['mp4', 'webm', 'ogg'])): ?>
-                            <video src="../../../<?= htmlspecialchars($post['media_url']) ?>" controls></video>
+                            <video src="<?= htmlspecialchars($post['media_url']) ?>" controls></video>
                         <?php else: ?>
                             <p>Current Media: <a href="../../../<?= htmlspecialchars($post['media_url']) ?>" target="_blank">View Current Media</a></p>
                         <?php endif; ?>

@@ -39,7 +39,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($current_media_url && file_exists($current_media_url)) {
             unlink($current_media_url);
         }
-        $media_path = "uploads/" . time() . "_" . $_FILES['media']['name'];
+        $media_path = "../../../uploads/" . time() . "_" . $_FILES['media']['name'];
         move_uploaded_file($_FILES['media']['tmp_name'], $media_path);
         $current_media_url = $media_path;
     } else if (isset($_POST['remove_media']) && $_POST['remove_media'] == 'true') {
@@ -56,7 +56,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($current_attachment && file_exists($current_attachment)) {
             unlink($current_attachment);
         }
-        $file_path = "uploads/" . time() . "_" . $_FILES['attachment']['name'];
+        $file_path = "../../../uploads/" . time() . "_" . $_FILES['attachment']['name'];
         move_uploaded_file($_FILES['attachment']['tmp_name'], $file_path);
         $current_attachment = $file_path;
     } else if (isset($_POST['remove_attachment']) && $_POST['remove_attachment'] == 'true') {

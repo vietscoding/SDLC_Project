@@ -335,3 +335,52 @@
             padding: 8px 15px;
         }
     }
+    /* Styles for Chart Containers */
+.chart-section {
+    padding: 20px;
+    margin-bottom: 30px;
+    
+    background-color: var(--background-card);
+    border-radius: 12px;
+    box-shadow: 0 5px 20px var(--shadow-light);
+}
+
+.chart-section h3 {
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chart-container {
+    position: relative;
+    /* Height sẽ được điều chỉnh động bởi JavaScript */
+    width: 100%;
+    height: 300px;
+    margin: auto;
+}
+
+.chart-container canvas {
+    display: block;
+    width: 100% !important;
+    height: 100% !important; /* Đảm bảo canvas chiếm toàn bộ chiều cao của container */
+}
+
+/* Responsive adjustments for charts (adjust as needed) */
+@media (max-width: 1024px) {
+    .chart-container {
+        /* min-height có thể cần để đảm bảo hiển thị tốt trên màn hình nhỏ */
+        min-height: 350px; 
+    }
+}
+
+@media (max-width: 768px) {
+    .chart-container {
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-container {
+        min-height: 250px;
+    }
+}

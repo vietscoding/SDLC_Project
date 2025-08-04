@@ -73,9 +73,9 @@ $posts = $conn->query("
                                 $ext = strtolower(pathinfo($post['media_url'], PATHINFO_EXTENSION));
                                 if (in_array($ext, ['jpg', 'jpeg', 'png', 'gif'])):
                                 ?>
-                                    <img src="../../../<?= $post['media_url'] ?>" alt="Image">
+                                    <img src="<?= $post['media_url'] ?>" alt="Image">
                                 <?php elseif (in_array($ext, ['mp4', 'webm'])): ?>
-                                    <video src="../../../<?= $post['media_url'] ?>" controls></video>
+                                    <video src="<?= $post['media_url'] ?>" controls></video>
                                 <?php endif; ?>
                             </div>
                         <?php endif; ?>
@@ -93,7 +93,7 @@ $posts = $conn->query("
                                 <i class="fas fa-thumbs-up"></i> Like (<span id="like-count-<?= $post['id'] ?>"><?= $post['like_count'] ?></span>)
                             </button>
                             <a href="teacher_view_post.php?post_id=<?= $post['id'] ?>" class="post-comments-link">
-                                <i class="fas fa-comment"></i> View & Comment
+                                <i class="fas fa-comment"></i> Comment
                             </a>
                         </div>
                     </div>

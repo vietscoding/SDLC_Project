@@ -13,13 +13,57 @@ $sql = "
     SELECT c.id, c.title, c.description, c.department, u.fullname AS instructor
     FROM courses c
     JOIN users u ON c.teacher_id = u.id
-    WHERE c.title LIKE ? OR c.department LIKE ? OR u.fullname LIKE ?
 ";
-$stmt = $conn->prepare($sql);
-$search_keyword = '%' . $keyword . '%';
-$stmt->bind_param("sss", $search_keyword, $search_keyword, $search_keyword);
-$stmt->execute();
-$result = $stmt->get_result();
+$result = $conn->query($sql);
+$matched_courses = [];
+
+while ($course = $result->fetch_assoc()) {
+    if (!empty($keyword)) {
+        // Tách từng từ trong title, department, instructor
+        $title_words = explode(" ", $course['title']);
+        $department_words = explode(" ", $course['department']);
+        $instructor_words = explode(" ", $course['instructor']);
+
+        // Tính khoảng cách nhỏ nhất với từng mục
+        $distance_title = PHP_INT_MAX;
+        foreach ($title_words as $word) {
+            $distance = levenshtein(strtolower(trim($keyword)), strtolower(trim($word)));
+            if ($distance < $distance_title) $distance_title = $distance;
+        }
+
+        $distance_department = PHP_INT_MAX;
+        foreach ($department_words as $word) {
+            $distance = levenshtein(strtolower(trim($keyword)), strtolower(trim($word)));
+            if ($distance < $distance_department) $distance_department = $distance;
+        }
+
+        $distance_instructor = PHP_INT_MAX;
+        foreach ($instructor_words as $word) {
+            $distance = levenshtein(strtolower(trim($keyword)), strtolower(trim($word)));
+            if ($distance < $distance_instructor) $distance_instructor = $distance;
+        }
+
+        // Nếu khoảng cách <= 3 hoặc chứa keyword thì thêm vào danh sách
+        if ($distance_title <= 3 || $distance_department <= 3 || $distance_instructor <= 3
+            || stripos(strtolower($course['title']), strtolower($keyword)) !== false
+            || stripos(strtolower($course['department']), strtolower($keyword)) !== false
+            || stripos(strtolower($course['instructor']), strtolower($keyword)) !== false) {
+            
+            $course['score'] = min($distance_title, $distance_department, $distance_instructor);
+            $matched_courses[] = $course;
+        }
+    } else {
+        // Nếu không search thì score mặc định 0
+        $course['score'] = 0;
+        $matched_courses[] = $course;
+    }
+}
+
+// Sắp xếp theo score tăng dần (phù hợp nhất lên trước)
+usort($matched_courses, function($a, $b) {
+    return $a['score'] <=> $b['score'];
+});
+
 
 $enrolled_courses = [];
 $user_id = $_SESSION['user_id'];
@@ -58,26 +102,27 @@ $role = htmlspecialchars($_SESSION['role']);
             <button type="submit">Search</button>
         </form>
 
-        <?php if ($result->num_rows > 0): ?>
-            <ul class="course-list-container">
-                <?php while ($course = $result->fetch_assoc()): ?>
-                    <li class="course-item">
-                        <strong><?= htmlspecialchars($course['title']) ?></strong>
-                        <p><?= htmlspecialchars($course['description'] ?? 'No description available.'); ?></p>
-                        <div class="course-meta">
-                            Department: <?= htmlspecialchars($course['department']) ?> <br>
-                            Instructor: <?= htmlspecialchars($course['instructor']) ?>
-                            <?php if (in_array($course['id'], $enrolled_courses)): ?>
-                                <br><span style="color: var(--primary-color); font-weight: bold;">[Enrolled]</span>
-                            <?php endif; ?>
-                        </div>
-                        <a href="course_detail.php?course_id=<?= $course['id'] ?>">View Details <i class="fas fa-arrow-right"></i></a>
-                    </li>
-                <?php endwhile; ?>
-            </ul>
-        <?php else: ?>
-            <p class="no-results">No matching courses found.</p>
-        <?php endif; ?>
+        <?php if (count($matched_courses) > 0): ?>
+    <ul class="course-list-container">
+        <?php foreach ($matched_courses as $course): ?>
+            <li class="course-item">
+                <strong><?= htmlspecialchars($course['title']) ?></strong>
+                <p><?= htmlspecialchars($course['description'] ?? 'No description available.'); ?></p>
+                <div class="course-meta">
+                    Department: <?= htmlspecialchars($course['department']) ?> <br>
+                    Instructor: <?= htmlspecialchars($course['instructor']) ?>
+                    <?php if (in_array($course['id'], $enrolled_courses)): ?>
+                        <br><span style="color: var(--primary-color); font-weight: bold;">[Enrolled]</span>
+                    <?php endif; ?>
+                </div>
+                <a href="course_detail.php?course_id=<?= $course['id'] ?>">View Details <i class="fas fa-arrow-right"></i></a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php else: ?>
+    <p class="no-results">No matching courses found.</p>
+<?php endif; ?>
+
 
         <div class="navigation-links">
             <a href="../dashboard/student_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>

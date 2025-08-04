@@ -55,7 +55,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 <img src="https://vinadesign.vn/uploads/images/2023/06/logo-fpt-vinadesign-03-14-38-27.jpg" alt="BTEC FPT Logo">
                 BTEC FPT
             </div>
-            <h2><i class="fas fa-user-plus"></i> Create Account</h2>
+            <h2> Create Account</h2>
 
             <?php
             // Example PHP logic for success/error messages
