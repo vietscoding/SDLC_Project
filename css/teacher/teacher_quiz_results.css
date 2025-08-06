@@ -1,0 +1,275 @@
+       *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--background-light);
+            color: var(--text-dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            overflow-x: hidden;
+            transition: background 0.4s, color 0.4s;
+        }
+
+        /* Main Content Area (phải khớp với sidebar width) */
+        .main-content {
+            margin-left: 280px; /* Phải khớp với sidebar width trong style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive cho main-content */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0; /* Loại bỏ margin khi sidebar ẩn */
+                padding-top: 80px; /* Tạo khoảng trống cho nút burger */
+            }
+        }
+
+        /* Header tương tự admin-dashboard-header */
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Container cho phần search và thêm mới, tương tự system-overview */
+        .quiz-results-overview { /* Renamed for teacher context */
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .quiz-results-overview > h3 {
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            width: calc(100% - 60px);
+            margin-bottom: 20px; /* Adjust spacing below heading */
+        }
+
+        .quiz-results-overview > h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .quiz-results-content { /* Renamed for teacher context */
+            margin-top: 60px; /* Để tạo khoảng trống cho tiêu đề h3 */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+
+        /* Bảng Quizzes vẫn giữ nguyên nhưng với style tốt hơn */
+        .results-table { /* Changed from quizzes-table */
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 30px;
+            background-color: var(--background-card);
+            box-shadow: 0 5px 20px var(--shadow-light);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .results-table thead th {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            font-size: 1em;
+            text-transform: uppercase;
+        }
+
+        .results-table tbody td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-dark);
+            font-size: 0.95em;
+        }
+
+        .results-table tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .results-table tbody tr:nth-child(even) {
+            background-color: #f9fbfd;
+        }
+
+        .results-table tbody tr:hover {
+            background-color: #e9f7ff;
+            transition: background-color 0.2s ease;
+        }
+
+        .no-results {
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px var(--shadow-light);
+            margin-top: 30px;
+            color: var(--text-medium);
+            font-style: italic;
+            text-align: center;
+            font-size: 1.1em;
+            border: 1px dashed var(--border-color);
+        }
+        .no-results i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .back-to-dashboard {
+            margin-top: 40px;
+            text-align: center;
+        }
+
+        .back-to-dashboard a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d;
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .back-to-dashboard a:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .back-to-dashboard a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Dark Mode */
+        
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .quiz-results-overview {
+                padding: 25px;
+            }
+            .quiz-results-overview > h3 {
+                top: 20px;
+                left: 25px;
+                font-size: 1.4em;
+                width: calc(100% - 50px);
+            }
+            .quiz-results-content {
+                margin-top: 50px;
+            }
+            .results-table thead th, .results-table tbody td {
+                padding: 12px 15px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .quiz-results-overview > h3 {
+                position: static;
+                text-align: center;
+                width: auto;
+                margin-bottom: 25px;
+                padding-bottom: 10px;
+            }
+            .quiz-results-content {
+                margin-top: 0;
+            }
+            .results-table, .no-results {
+                margin-top: 20px;
+            }
+            .results-table thead, .results-table tbody, .results-table th, .results-table td, .results-table tr {
+                display: block;
+            }
+            .results-table thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            .results-table tr {
+                border: 1px solid var(--border-color);
+                margin-bottom: 15px;
+                border-radius: 8px;
+                overflow: hidden;
+            }
+            .results-table tbody td {
+                border: none;
+                position: relative;
+                padding-left: 50%;
+                text-align: right;
+                display: flex;
+                align-items: center;
+                justify-content: flex-end;
+                min-height: 40px;
+            }
+            .results-table tbody tr:nth-child(even) {
+                background-color: var(--background-card);
+            }
+            .results-table tbody tr:nth-child(odd) {
+                background-color: var(--background-light);
+            }
+           
+            .results-table td:before {
+                content: attr(data-label);
+                position: absolute;
+                left: 15px;
+                width: calc(50% - 30px);
+                padding-right: 10px;
+                white-space: nowrap;
+                text-align: left;
+                font-weight: bold;
+                color: var(--text-dark);
+            }
+            
+        }
+
+        @media (max-width: 480px) {
+            .admin-page-header h2 {
+                font-size: 1.5em;
+            }
+            .results-table tbody td:before {
+                font-size: 0.85em;
+            }
+        }

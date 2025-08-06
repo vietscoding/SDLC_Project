@@ -1,0 +1,248 @@
+:root {
+           
+            --correct-color: #28a745; /* Green for correct answers */
+            --incorrect-color: #dc3545; /* Red for incorrect answers */
+        }
+
+       
+
+        .main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease, background-color 0.3s ease;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        .user-info {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .user-info i {
+            color: var(--primary-color);
+        }
+
+        .quiz-results-container {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .score-summary {
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 20px 30px;
+            border-radius: 12px;
+            text-align: center;
+            font-size: 1.6em;
+            font-weight: 700;
+            box-shadow: 0 8px 25px rgba(var(--primary-rgb), 0.3);
+            margin-bottom: 20px;
+        }
+        .score-summary span {
+            font-size: 1.2em;
+            margin-left: 10px;
+        }
+
+        ol {
+            list-style: none; /* Remove default numbering */
+            padding: 0;
+            margin: 0;
+        }
+
+        ol li {
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            border: 1px solid var(--border-color);
+            margin-bottom: 20px;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        ol li:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px var(--shadow-hover);
+        }
+
+        ol li strong {
+            font-size: 1.1em;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            display: block;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+
+        ol li span {
+            display: block;
+            margin-top: 8px;
+            font-size: 0.95em;
+            color: var(--text-medium);
+        }
+
+        ol li span.correct-answer {
+            color: var(--correct-color);
+            font-weight: 600;
+        }
+
+        ol li span.incorrect-answer {
+            color: var(--incorrect-color);
+            font-weight: 600;
+        }
+
+        .result-option {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 1em;
+            color: var(--text-medium);
+            padding: 2px 0;
+        }
+
+        .result-option.selected {
+            font-weight: 600;
+            /* You can add a subtle background or border if you want to highlight the selected one */
+        }
+
+        .result-option.correct {
+            color: var(--correct-color);
+            font-weight: 600;
+        }
+
+        .result-option.incorrect {
+            color: var(--incorrect-color);
+            font-weight: 600;
+        }
+
+
+        .navigation-links {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            padding-top: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+            border: 2px solid transparent;
+        }
+
+        .navigation-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4);
+        }
+
+        .navigation-links a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .main-content {
+                padding: 25px;
+            }
+            .page-header h2 {
+                font-size: 2em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 80px; /* Adjust for potential fixed header/sidebar on mobile */
+            }
+            .page-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .page-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            .score-summary {
+                font-size: 1.4em;
+                padding: 15px 20px;
+            }
+            ol li {
+                padding: 20px;
+            }
+            .navigation-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .navigation-links a {
+                width: 90%; /* Make buttons full width on small screens */
+                justify-content: center;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .page-header h2 {
+                font-size: 1.5em;
+            }
+            .score-summary {
+                font-size: 1.2em;
+                padding: 12px 15px;
+            }
+            ol li {
+                padding: 15px;
+            }
+            ol li strong {
+                font-size: 1em;
+            }
+            .navigation-links a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }

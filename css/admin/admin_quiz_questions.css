@@ -1,0 +1,336 @@
+.main-content {
+            margin-left: 280px; /* Phải khớp với sidebar width trong style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        /* Responsive cho main-content */
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0; /* Loại bỏ margin khi sidebar ẩn */
+                padding-top: 80px; /* Tạo khoảng trống cho nút burger */
+            }
+        }
+
+        /* Header tương tự admin-dashboard-header */
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Container cho phần form, tương tự system-overview */
+        .quiz-management-overview { /* Changed from course-management-overview */
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .quiz-management-overview > h3 { /* Changed from course-management-overview */
+            position: absolute;
+            top: 25px;
+            left: 30px;
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            width: calc(100% - 60px);
+            margin-bottom: 20px;
+        }
+
+        .quiz-management-overview > h3 i { /* Changed from course-management-overview */
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .quiz-management-content { /* Changed from course-management-content */
+            margin-top: 60px; /* Để tạo khoảng trống cho tiêu đề h3 */
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="datetime-local"], /* Added for datetime-local */
+        .form-group select,
+        .form-group textarea { /* Added for textarea */
+            width: calc(100% - 22px); /* Adjust for padding and border */
+            padding: 12px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1em;
+            background-color: var(--background-input);
+            color: var(--text-dark);
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="datetime-local"]:focus, /* Added for datetime-local */
+        .form-group select:focus,
+        .form-group textarea:focus { /* Added for textarea */
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px var(--shadow-focus); /* Assuming --shadow-focus is defined in style.css or a suitable alternative */
+            outline: none;
+        }
+
+        .form-group select {
+            appearance: none; /* Remove default select arrow */
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%204%205%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M2%200L0%202h4zm0%205L0%203h4z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 10px top 50%;
+            background-size: 8px auto;
+        }
+
+        .form-actions {
+            margin-top: 25px;
+            display: flex; /* Make buttons align horizontally */
+            gap: 15px; /* Space between buttons */
+            justify-content: flex-end; /* Align to the right */
+        }
+
+        .form-actions button[type="submit"] {
+            background-color: #007bff; /* Blue for save button */
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.2s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            box-shadow: 0 4px 10px rgba(0, 123, 255, 0.2);
+        }
+
+        .form-actions button[type="submit"]:hover {
+            background-color: #0056b3;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px rgba(0, 123, 255, 0.3);
+        }
+        .form-actions button[type="submit"] i {
+            margin-right: 8px;
+        }
+
+        .error-message {
+            color: var(--red-color); /* Use a defined red color, assuming it's in style.css or define here */
+            margin-bottom: 20px;
+            padding: 12px;
+            background-color: #ffe0e0; /* Light red background */
+            border: 1px solid #ff0000; /* Red border */
+            border-radius: 8px;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        .error-message i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-link a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d; /* Gray color for back button */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .back-link a:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+        .back-link a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+    
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .quiz-management-overview { /* Changed from course-management-overview */
+                padding: 25px;
+            }
+            .quiz-management-overview > h3 { /* Changed from course-management-overview */
+                top: 20px;
+                left: 25px;
+                font-size: 1.4em;
+                width: calc(100% - 50px);
+            }
+            .quiz-management-content { /* Changed from course-management-content */
+                margin-top: 50px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .quiz-management-overview > h3 { /* Changed from course-management-overview */
+                position: static;
+                text-align: center;
+                width: auto;
+                margin-bottom: 25px;
+                padding-bottom: 10px;
+            }
+            .quiz-management-content { /* Changed from course-management-content */
+                margin-top: 0;
+            }
+            .back-link {
+                margin-top: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-page-header h2 {
+                font-size: 1.5em;
+            }
+        }
+
+        /* Specific styles for question list */
+        .quiz-info {
+            margin-bottom: 20px;
+            color: var(--text-dark);
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+        }
+        .quiz-info i {
+            margin-right: 8px;
+            color: var(--primary-color);
+        }
+
+        .question-list {
+            list-style: none; /* Remove default numbering */
+            padding-left: 0;
+            counter-reset: question-counter; /* Initialize counter */
+        }
+        .question-item {
+            margin-bottom: 25px;
+            padding: 20px;
+            background-color: var(--background-light);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            box-shadow: 0 2px 10px var(--shadow-light);
+            position: relative;
+        }
+        .question-item:last-child {
+            margin-bottom: 0;
+        }
+        .question-item::before {
+            counter-increment: question-counter;
+            content: counter(question-counter) ". ";
+            font-weight: 700;
+            color: var(--primary-color);
+            position: absolute;
+            left: 10px;
+            top: 15px;
+        }
+        .question-text {
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            padding-left: 30px; /* Space for the counter */
+        }
+        .options {
+            margin-left: 30px;
+            margin-bottom: 10px;
+            color: var(--text-medium);
+        }
+        .options span {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .correct-answer {
+            color: var(--green-color); /* Assuming --green-color is defined or set to green */
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            margin-left: 30px;
+        }
+        .correct-answer i {
+            margin-right: 8px;
+        }
+        .question-actions {
+            margin-left: 30px;
+        }
+        .question-actions a {
+            color: #007bff;
+            text-decoration: none;
+            margin-right: 15px;
+            transition: color 0.2s ease, transform 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            font-weight: 500;
+        }
+        .question-actions a:hover {
+            color: #0056b3;
+            transform: translateY(-1px);
+        }
+        .question-actions a i {
+            margin-right: 5px;
+        }
+        .question-actions a:last-child {
+            color: #dc3545; /* Red for delete */
+        }
+        .question-actions a:last-child:hover {
+            color: #c82333;
+        }
+
+      

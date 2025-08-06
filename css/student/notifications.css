@@ -1,0 +1,277 @@
+ .main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        .notifications-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .notifications-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .notifications-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Notification List Containers (similar to course-list-container) */
+        .notification-section {
+            margin-bottom: 40px;
+        }
+
+        .notification-section h3 {
+            font-size: 1.8em;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 1px dashed var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .notification-section h3 i {
+            margin-right: 10px;
+            color: var(--accent-color);
+        }
+
+        .notification-list-container {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+        
+        /* IMPORTANT: Specific style for system announcements to be vertical */
+        .system-announcements .notification-list-container {
+            display: flex; /* Change to flex */
+            flex-direction: column; /* Stack items vertically */
+            gap: 15px; /* Adjust gap for vertical items */
+        }
+        
+        .system-announcements .notification-item {
+            width: 100%; /* Make items take full width */
+        }
+
+
+        .notification-item {
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .notification-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            background-color: var(--hover-light);
+        }
+
+        .notification-item .notification-date {
+            color: var(--text-medium);
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: block;
+            border-bottom: 1px dotted var(--border-color);
+            padding-bottom: 5px;
+        }
+
+        .notification-item .notification-message {
+            color: var(--text-dark);
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            flex-grow: 1;
+        }
+
+        .notification-item .notification-status {
+            display: inline-block;
+            background-color: var(--accent-color);
+            color: white;
+            padding: 5px 12px;
+            border-radius: 6px;
+            font-size: 0.85em;
+            font-weight: 600;
+            align-self: flex-end; /* Align to the bottom right */
+            box-shadow: 0 2px 8px rgba(var(--accent-rgb), 0.2);
+        }
+
+        .no-notifications {
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            text-align: center;
+            color: var(--text-medium);
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+
+        /* Navigation Links below notifications */
+        .navigation-links {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+        }
+
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--accent-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+            border: 2px solid transparent;
+        }
+
+        .navigation-links a:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4);
+        }
+
+        .navigation-links a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Toggle Mode Button - Repositioned for consistency */
+        .toggle-mode-btn {
+            position: absolute;
+            top: 20px; /* Adjust as needed */
+            right: 30px; /* Adjust as needed */
+            background-color: var(--secondary-color); /* Matches theme */
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .toggle-mode-btn:hover {
+            background-color: var(--secondary-dark);
+            transform: scale(1.05);
+        }
+
+     
+
+        /* Responsive adjustments (copy from courses.php and adapt) */
+        @media (max-width: 1024px) {
+            .notification-list-container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+            }
+            .system-announcements .notification-list-container {
+                grid-template-columns: 1fr; /* Override for system announcements to stay vertical */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 80px; /* Adjust for potential fixed header/sidebar on mobile */
+            }
+            .notifications-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .notifications-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            .toggle-mode-btn {
+                top: 70px; /* Adjust position for mobile, below header */
+                right: 20px;
+            }
+            .notification-section h3 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+            .notification-list-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            .system-announcements .notification-list-container {
+                grid-template-columns: 1fr; /* Override for system announcements to stay vertical */
+            }
+            .notification-item {
+                padding: 20px;
+            }
+            .notification-item .notification-message {
+                font-size: 0.95em;
+                margin-bottom: 10px;
+            }
+            .navigation-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .navigation-links a {
+                width: 90%; /* Make buttons full width on small screens */
+                justify-content: center;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .notifications-header h2 {
+                font-size: 1.5em;
+            }
+            .notification-list-container {
+                grid-template-columns: 1fr; /* Stack notifications vertically on very small screens */
+            }
+            .toggle-mode-btn {
+                top: 60px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.1em;
+            }
+            .navigation-links a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }

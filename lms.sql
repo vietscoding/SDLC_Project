@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Máy chủ: 127.0.0.1
--- Thời gian đã tạo: Th6 11, 2025 lúc 11:38 AM
+-- Thời gian đã tạo: Th6 24, 2025 lúc 05:57 AM
 -- Phiên bản máy phục vụ: 8.0.42
 -- Phiên bản PHP: 8.2.12
 
@@ -20,8 +20,6 @@ SET time_zone = "+00:00";
 --
 -- Cơ sở dữ liệu: `lms`
 --
-CREATE DATABASE IF NOT EXISTS `lms` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
-USE `lms`;
 
 -- --------------------------------------------------------
 
@@ -77,6 +75,29 @@ INSERT INTO `assignment_submissions` (`id`, `assignment_id`, `user_id`, `submitt
 -- --------------------------------------------------------
 
 --
+-- Cấu trúc bảng cho bảng `comments`
+--
+
+CREATE TABLE `comments` (
+  `id` int NOT NULL,
+  `post_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `comments`
+--
+
+INSERT INTO `comments` (`id`, `post_id`, `user_id`, `content`, `created_at`) VALUES
+(10, 13, 2, 'Thank you for sharing!', '2025-06-17 08:36:09'),
+(11, 14, 1, 'Woww!!!', '2025-06-17 16:57:09'),
+(12, 14, 1, '12234', '2025-06-17 17:05:29');
+
+-- --------------------------------------------------------
+
+--
 -- Cấu trúc bảng cho bảng `courses`
 --
 
@@ -98,7 +119,9 @@ INSERT INTO `courses` (`id`, `title`, `department`, `description`, `teacher_id`,
 (2, 'CSS Styling', 'IT', 'Introduction to CSS styling for web pages.', 2, '2025-05-16 14:45:21'),
 (3, 'JavaScript', 'IT', 'Basic course for beginner', 4, '2025-05-17 14:00:47'),
 (4, 'C# Programming', 'IT', 'Building Applications with C#', 2, '2025-05-18 13:39:30'),
-(5, 'Java core', 'IT', 'Java Core Concepts and Applications', 4, '2025-05-18 13:40:05');
+(9, 'Financial Accounting for Decision Making', 'Business', 'This course equips learners with the skills to interpret and apply financial data to real-world business decisions. You\'ll explore the fundamentals of financial accounting, including how to prepare and analyze key financial statements like the balance sheet, income statement, and cash flow statement. Through hands-on exercises, you\'ll learn to evaluate costs, assess performance, and use accounting tools to support strategic planning and operational control. Ideal for aspiring managers, entrepreneurs, and professionals looking to strengthen their financial acumen and make informed decisions in dynamic business environments.', 8, '2025-06-15 20:57:05'),
+(10, 'Human Resource Management', 'Business', 'This course explores the essential functions and strategic role of human resource management (HRM) in modern organizations. Students will gain a comprehensive understanding of key HR practices such as recruitment and selection, performance management, employee development, compensation and benefits, and workplace diversity. Emphasis is placed on aligning HR strategies with organizational goals, fostering a positive work culture, and navigating legal and ethical considerations. Through real-world case studies and interactive projects, learners will develop the skills to manage people effectively and contribute to organizational success.', 8, '2025-06-15 20:57:38'),
+(11, 'Entrepreneurship & Innovation', 'Business', 'This course empowers students to think creatively, act entrepreneurially, and drive innovation in a rapidly evolving business landscape. Learners will explore the fundamentals of launching new ventures, from identifying market opportunities and validating ideas to building business models and securing funding. Emphasis is placed on design thinking, lean startup methodology, and the role of innovation in both startups and established organizations. Through case studies, team projects, and real-world simulations, students will develop the mindset and tools to turn ideas into impactful solutions.', 8, '2025-06-16 12:23:40');
 
 -- --------------------------------------------------------
 
@@ -110,6 +133,7 @@ CREATE TABLE `enrollments` (
   `id` int NOT NULL,
   `user_id` int NOT NULL,
   `course_id` int NOT NULL,
+  `status` enum('pending','approved','rejected') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
   `enrolled_at` datetime DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
@@ -117,40 +141,18 @@ CREATE TABLE `enrollments` (
 -- Đang đổ dữ liệu cho bảng `enrollments`
 --
 
-INSERT INTO `enrollments` (`id`, `user_id`, `course_id`, `enrolled_at`) VALUES
-(1, 1, 2, '2025-05-16 15:02:17'),
-(2, 1, 1, '2025-05-16 15:03:32'),
-(3, 3, 1, '2025-05-16 16:39:01'),
-(4, 3, 2, '2025-05-17 11:22:41'),
-(5, 1, 4, '2025-06-05 13:54:01'),
-(6, 3, 4, '2025-06-05 14:18:41'),
-(7, 1, 3, '2025-06-10 00:00:14');
-
--- --------------------------------------------------------
-
---
--- Cấu trúc bảng cho bảng `forum_posts`
---
-
-CREATE TABLE `forum_posts` (
-  `id` int NOT NULL,
-  `user_id` int NOT NULL,
-  `course_id` int NOT NULL,
-  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
-  `posted_at` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Đang đổ dữ liệu cho bảng `forum_posts`
---
-
-INSERT INTO `forum_posts` (`id`, `user_id`, `course_id`, `content`, `posted_at`) VALUES
-(1, 1, 2, 'hello', '2025-05-16 15:47:36'),
-(2, 1, 1, 'hello world', '2025-05-16 16:20:22'),
-(3, 3, 2, 'Hi', '2025-05-17 11:39:19'),
-(4, 3, 1, 'Hi', '2025-05-17 11:50:13'),
-(5, 1, 1, 'sgsdgsd', '2025-05-17 16:18:39'),
-(6, 1, 1, 'kmdsnfkjsdnfk', '2025-06-09 13:47:11');
+INSERT INTO `enrollments` (`id`, `user_id`, `course_id`, `status`, `enrolled_at`) VALUES
+(1, 1, 2, 'approved', '2025-05-16 15:02:17'),
+(2, 1, 1, 'approved', '2025-05-16 15:03:32'),
+(3, 3, 1, 'approved', '2025-05-16 16:39:01'),
+(4, 3, 2, 'approved', '2025-05-17 11:22:41'),
+(5, 1, 4, 'approved', '2025-06-05 13:54:01'),
+(6, 3, 4, 'approved', '2025-06-05 14:18:41'),
+(7, 1, 3, 'approved', '2025-06-10 00:00:14'),
+(20, 3, 3, 'pending', '2025-06-13 21:51:02'),
+(22, 10, 1, 'approved', '2025-06-13 21:53:57'),
+(24, 10, 2, 'approved', '2025-06-14 12:06:12'),
+(25, 12, 1, 'pending', '2025-06-16 18:34:09');
 
 -- --------------------------------------------------------
 
@@ -184,7 +186,8 @@ INSERT INTO `lessons` (`id`, `course_id`, `title`, `content`, `video_link`, `cre
 (10, 4, 'Inheritance and Polymorphism', '1. Base and derived classes\r\n2. Overriding methods\r\n3. Virtual and abstract methods', 'https://www.youtube.com/watch?v=CClziU97Xeg&pp=ygUfSW5oZXJpdGFuY2UgYW5kIFBvbHltb3JwaGlzbSBjIw%3D%3D', '2025-05-18 13:56:14', NULL),
 (11, 4, 'Interfaces and Abstract Classes', '1. Interface declaration and implementation\r\n2. Abstract classes and methods\r\n3. Differences and use cases', 'https://www.youtube.com/watch?v=0EnSPBVrbG0&pp=ygUiSW50ZXJmYWNlcyBhbmQgQWJzdHJhY3QgQ2xhc3NlcyBjIw%3D%3D', '2025-05-18 13:57:05', NULL),
 (12, 1, 'Login form in HTML', '1. Set up the HTML Document\r\n2. Create the Form Element\r\n3. Add Input Fields\r\n4. Include a Submit Button', 'https://www.youtube.com/watch?v=hlwlM4a5rxg', '2025-06-05 14:39:33', 'uploads/lessons/1749109173_Chapter6_Examples.docx'),
-(13, 2, 'CSS Basic', '1. What is CSS?\r\n2. Applying CSS to your HTML\r\n3. CSS syntax basics\r\n4. Improving the text', '', '2025-06-05 16:32:38', 'uploads/lessons/1749115958_Chapter6_Examples.docx');
+(13, 2, 'CSS Basic', '1. What is CSS?\r\n2. Applying CSS to your HTML\r\n3. CSS syntax basics\r\n4. Improving the text', '', '2025-06-05 16:32:38', 'uploads/lessons/1749115958_Chapter6_Examples.docx'),
+(14, 1, 'Building Your First Webpage', 'This lesson introduces HTML, the fundamental language for creating webpages. You will learn about the basic structure of an HTML document, common elements like headings, paragraphs, links, and images, and how to create your first simple webpage. The focus is on understanding the building blocks of HTML and gaining confidence to experiment and build your own webpages.', 'https://www.youtube.com/watch?v=V8UAEoOvqFg', '2025-06-20 15:08:49', 'uploads/lessons/1750406929_Create project, connect to DB and display data.docx');
 
 -- --------------------------------------------------------
 
@@ -244,7 +247,103 @@ INSERT INTO `notifications` (`id`, `user_id`, `message`, `is_read`, `created_at`
 (36, 7, 'The system will be under maintenance tomorrow at 12pm', 0, '2025-06-06 20:21:26', NULL, NULL, 'general'),
 (37, 1, 'You have successfully enrolled in the course: \'JavaScript\'.', 1, '2025-06-10 00:00:14', NULL, NULL, 'general'),
 (38, 4, 'Hoàng Anh Quân has enrolled in your course: JavaScript', 0, '2025-06-10 00:00:14', NULL, NULL, 'general'),
-(39, 1, 'From Nguyễn Văn C (Course: JavaScript): Hello student!', 1, '2025-06-10 00:01:03', 4, 3, 'teacher_notification');
+(39, 1, 'From Nguyễn Văn C (Course: JavaScript): Hello student!', 1, '2025-06-10 00:01:03', 4, 3, 'teacher_notification'),
+(40, 1, 'You scored 1 points on quiz \'CSS Fundamentals Quiz\'!', 1, '2025-06-11 21:14:37', NULL, NULL, 'general'),
+(41, 2, 'Hoàng Anh Quân has submitted a quiz in your course: CSS Styling', 0, '2025-06-11 21:14:37', NULL, NULL, 'general'),
+(42, 1, 'You scored 1 points on quiz \'CSS Fundamentals Quiz\'!', 1, '2025-06-11 21:19:15', NULL, NULL, 'general'),
+(43, 2, 'Hoàng Anh Quân has submitted a quiz in your course: CSS Styling', 0, '2025-06-11 21:19:15', NULL, NULL, 'general'),
+(45, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-12 15:29:17', NULL, NULL, 'general'),
+(47, 2, 'Hoc Sinh has enrolled in your course: CSS Styling', 0, '2025-06-12 15:29:26', NULL, NULL, 'general'),
+(48, 1, 'You have successfully enrolled in the course: \'Java core\'.', 1, '2025-06-13 20:12:14', NULL, NULL, 'general'),
+(49, 4, 'Hoàng Anh Quân has enrolled in your course: Java core', 0, '2025-06-13 20:12:14', NULL, NULL, 'general'),
+(51, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:35:51', NULL, NULL, 'general'),
+(53, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:35:54', NULL, NULL, 'general'),
+(55, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:35:57', NULL, NULL, 'general'),
+(57, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:35:59', NULL, NULL, 'general'),
+(59, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:36:00', NULL, NULL, 'general'),
+(61, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:36:00', NULL, NULL, 'general'),
+(63, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:36:00', NULL, NULL, 'general'),
+(65, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:36:00', NULL, NULL, 'general'),
+(67, 2, 'Hoc Sinh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:36:00', NULL, NULL, 'general'),
+(68, 3, 'You have successfully enrolled in the course: \'JavaScript\'.', 0, '2025-06-13 21:51:02', NULL, NULL, 'general'),
+(69, 4, 'Nguyễn Văn B has enrolled in your course: JavaScript', 0, '2025-06-13 21:51:02', NULL, NULL, 'general'),
+(71, 4, 'Hoc Sinh has enrolled in your course: JavaScript', 0, '2025-06-13 21:51:30', NULL, NULL, 'general'),
+(72, 10, 'You have successfully enrolled in the course: \'HTML Basics\'.', 0, '2025-06-13 21:53:57', NULL, NULL, 'general'),
+(73, 2, 'Trần Văn Mạnh has enrolled in your course: HTML Basics', 0, '2025-06-13 21:53:57', NULL, NULL, 'general'),
+(74, 3, 'You have successfully enrolled in the course: \'Java core\'.', 0, '2025-06-14 12:03:19', NULL, NULL, 'general'),
+(75, 4, 'Nguyễn Văn B has enrolled in your course: Java core', 0, '2025-06-14 12:03:19', NULL, NULL, 'general'),
+(76, 10, 'You have successfully enrolled in the course: \'CSS Styling\'.', 0, '2025-06-14 12:06:12', NULL, NULL, 'general'),
+(77, 2, 'Trần Văn Mạnh has enrolled in your course: CSS Styling', 0, '2025-06-14 12:06:12', NULL, NULL, 'general'),
+(78, 12, 'You have successfully enrolled in the course: \'HTML Basics\'.', 0, '2025-06-16 18:34:09', NULL, NULL, 'general'),
+(79, 2, 'Lê Văn Linh has enrolled in your course: HTML Basics', 0, '2025-06-16 18:34:09', NULL, NULL, 'general'),
+(80, 1, 'You scored 0 points on quiz \'CSS basic\'!', 1, '2025-06-18 16:49:03', NULL, NULL, 'general'),
+(81, 2, 'Hoàng Anh Quân has submitted a quiz in your course: CSS Styling', 0, '2025-06-18 16:49:03', NULL, NULL, 'general'),
+(82, 1, 'You scored 3 points on quiz \'C# basic\'!', 1, '2025-06-18 16:57:43', NULL, NULL, 'general'),
+(83, 2, 'Hoàng Anh Quân has submitted a quiz in your course: C# Programming', 0, '2025-06-18 16:57:43', NULL, NULL, 'general'),
+(84, 1, 'You scored 1 points on quiz \'HTML Quiz\'!', 1, '2025-06-19 12:53:54', NULL, NULL, 'general'),
+(85, 2, 'Hoàng Anh Quân has submitted a quiz in your course: HTML Basics', 0, '2025-06-19 12:53:54', NULL, NULL, 'general');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `posts`
+--
+
+CREATE TABLE `posts` (
+  `id` int NOT NULL,
+  `course_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `content` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `media_url` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `attachment` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `status` enum('pending','approved','rejected') COLLATE utf8mb4_unicode_ci DEFAULT 'pending',
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `posts`
+--
+
+INSERT INTO `posts` (`id`, `course_id`, `user_id`, `content`, `media_url`, `attachment`, `status`, `created_at`) VALUES
+(5, 1, 2, 'Wow!!!!!!!', 'uploads/1749801363_39116-420985147_small.mp4', NULL, 'approved', '2025-06-13 14:56:03'),
+(9, 1, 1, 'test 2', NULL, NULL, 'approved', '2025-06-15 17:13:25'),
+(11, 1, 2, 'Hahahahahaha!!!!!!!!', 'uploads/1750059277_32132-390688056_small.mp4', 'uploads/1750125130_part-1.docx', 'approved', '2025-06-16 14:34:37'),
+(12, 4, 3, 'Can someone explain this ?', 'uploads/1750059428_21551-319487844_small.mp4', NULL, 'approved', '2025-06-16 14:37:08'),
+(13, 1, 3, 'Here are some tips to study better', NULL, 'uploads/1750061026_DSA_ASM.docx', 'approved', '2025-06-16 15:03:46'),
+(14, 1, 2, 'You need to hear this!!!!', 'uploads/1750152631_15826249-hd_1920_1080_30fps.mp4', NULL, 'approved', '2025-06-17 16:30:31'),
+(15, 1, 2, 'sdasd', 'uploads/1750152908_21551-319487844_small.mp4', NULL, 'pending', '2025-06-17 16:35:08'),
+(16, 1, 1, 'tyuiop', 'uploads/1750316586_MainBefore.jpg', NULL, 'pending', '2025-06-19 14:03:06'),
+(17, 1, 1, 'uyuyuuyuyuy', '../../../uploads/1750401053_kp50Ri.jpg', NULL, 'approved', '2025-06-20 13:30:53');
+
+-- --------------------------------------------------------
+
+--
+-- Cấu trúc bảng cho bảng `post_likes`
+--
+
+CREATE TABLE `post_likes` (
+  `id` int NOT NULL,
+  `post_id` int NOT NULL,
+  `user_id` int NOT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Đang đổ dữ liệu cho bảng `post_likes`
+--
+
+INSERT INTO `post_likes` (`id`, `post_id`, `user_id`, `created_at`) VALUES
+(96, 5, 3, '2025-06-13 15:01:13'),
+(100, 9, 1, '2025-06-15 17:13:44'),
+(140, 5, 2, '2025-06-17 08:23:23'),
+(146, 9, 2, '2025-06-17 08:25:11'),
+(166, 13, 2, '2025-06-17 16:07:56'),
+(168, 11, 2, '2025-06-17 16:08:06'),
+(176, 11, 1, '2025-06-17 16:12:49'),
+(187, 12, 2, '2025-06-17 16:52:08'),
+(194, 5, 1, '2025-06-17 17:31:44'),
+(215, 13, 1, '2025-06-19 14:56:33'),
+(220, 14, 1, '2025-06-19 15:26:14');
 
 -- --------------------------------------------------------
 
@@ -272,7 +371,8 @@ INSERT INTO `progress` (`id`, `user_id`, `course_id`, `lesson_id`, `is_completed
 (4, 1, 4, 5, 1, '2025-06-05 16:26:14'),
 (5, 1, 2, 13, 1, '2025-06-05 16:33:57'),
 (6, 1, 1, 12, 1, '2025-06-05 16:41:56'),
-(7, 1, 4, 4, 1, '2025-06-06 20:17:47');
+(7, 1, 4, 4, 1, '2025-06-06 20:17:47'),
+(8, 10, 2, 13, 1, '2025-06-14 12:07:32');
 
 -- --------------------------------------------------------
 
@@ -284,16 +384,19 @@ CREATE TABLE `quizzes` (
   `id` int NOT NULL,
   `course_id` int NOT NULL,
   `title` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `created_at` datetime DEFAULT CURRENT_TIMESTAMP
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `deadline` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `quizzes`
 --
 
-INSERT INTO `quizzes` (`id`, `course_id`, `title`, `created_at`) VALUES
-(1, 1, 'HTML Basics Quiz', '2025-05-16 15:11:21'),
-(2, 2, 'CSS Fundamentals Quiz', '2025-05-16 15:11:21');
+INSERT INTO `quizzes` (`id`, `course_id`, `title`, `created_at`, `deadline`) VALUES
+(1, 1, 'HTML Basics Quiz', '2025-05-16 15:11:21', '2025-08-01 12:00:00'),
+(4, 2, 'CSS basic', '2025-06-16 23:34:43', '2025-07-18 12:01:00'),
+(5, 4, 'C# basic', '2025-06-18 16:53:59', '2025-08-01 12:53:00'),
+(6, 1, 'HTML Quiz', '2025-06-19 12:49:53', '2025-07-31 12:49:00');
 
 -- --------------------------------------------------------
 
@@ -313,20 +416,13 @@ CREATE TABLE `quiz_answers` (
 --
 
 INSERT INTO `quiz_answers` (`id`, `submission_id`, `question_id`, `selected_option`) VALUES
-(1, 9, 1, 'A'),
-(2, 9, 2, 'C'),
-(3, 10, 1, 'A'),
-(4, 10, 2, 'A'),
-(5, 11, 3, 'A'),
-(6, 11, 4, 'A'),
-(7, 12, 3, 'A'),
-(8, 12, 4, 'B'),
-(9, 13, 1, 'A'),
-(10, 13, 2, 'A'),
-(11, 14, 1, 'A'),
-(12, 14, 2, 'C'),
-(13, 15, 3, 'A'),
-(14, 15, 4, 'A');
+(19, 18, 6, 'B'),
+(20, 18, 7, 'B'),
+(21, 18, 8, 'A'),
+(22, 19, 9, 'B'),
+(23, 19, 10, 'C'),
+(24, 19, 11, 'A'),
+(25, 20, 12, 'D');
 
 -- --------------------------------------------------------
 
@@ -352,8 +448,13 @@ CREATE TABLE `quiz_questions` (
 INSERT INTO `quiz_questions` (`id`, `quiz_id`, `question`, `option_a`, `option_b`, `option_c`, `option_d`, `correct_option`) VALUES
 (1, 1, 'What does HTML stand for?', 'Hyper Text Markup Language', 'Hot Mail', 'How to Make Lasagna', 'Home Tool Markup Language', 'A'),
 (2, 1, 'Who is making the Web standards?', 'Mozilla', 'Microsoft', 'The World Wide Web Consortium', 'Google', 'C'),
-(3, 2, 'Which property is used to change the background color?', 'color', 'background-color', 'bgcolor', 'background', 'B'),
-(4, 2, 'How do you make each word in a text start with a capital letter?', 'text-transform: capitalize;', 'text-style: capital;', 'transform: capitalize;', 'You can\'t do that with CSS', 'A');
+(6, 4, 'What does CSS stand for?', 'Computer Style Sheets', 'Creative Style Syntax', 'Cascading Style Sheets', '- Central Styling System', 'C'),
+(7, 4, 'Which HTML tag is used to link an external CSS file?', '<script>', '<style>', '<link>', '<css>', 'C'),
+(8, 4, 'How do you apply a class named highlight in CSS?', '#highlight', '.highlight', 'highlight', '*highlight', 'B'),
+(9, 5, 'Who developed the C# programming language?', 'Oracle', 'Microsoft', 'Google', 'IBM', 'B'),
+(10, 5, 'What is the file extension for a C# source code file?', '.c', '.cpp', '.cs', '.csharp', 'C'),
+(11, 5, 'What does CLR stand for in C#?', 'Common Language Runtime', 'Common Link Resource', 'Code Language Runtime', 'Central Logic Resource', 'A'),
+(12, 6, 'Where in an HTML document is the correct place to insert the metadata?', 'In the body section', 'Before the <html> tag', 'After the <body> tag', 'In the <head> section', 'D');
 
 -- --------------------------------------------------------
 
@@ -375,20 +476,9 @@ CREATE TABLE `quiz_submissions` (
 
 INSERT INTO `quiz_submissions` (`id`, `user_id`, `quiz_id`, `score`, `submitted_at`) VALUES
 (1, 1, 1, 1, '2025-05-16 15:22:50'),
-(2, 1, 1, 1, '2025-05-16 15:25:35'),
-(3, 1, 1, 1, '2025-05-16 15:26:07'),
-(4, 1, 2, 1, '2025-05-16 15:26:15'),
-(5, 1, 1, 2, '2025-05-16 15:59:26'),
-(6, 1, 1, 2, '2025-05-16 15:59:54'),
-(7, 1, 1, 2, '2025-05-16 16:00:44'),
-(8, 1, 1, 2, '2025-05-16 16:02:15'),
-(9, 1, 1, 2, '2025-05-16 16:03:27'),
-(10, 1, 1, 1, '2025-05-16 16:03:39'),
-(11, 1, 2, 1, '2025-05-16 16:07:39'),
-(12, 1, 2, 0, '2025-05-16 16:11:09'),
-(13, 1, 1, 1, '2025-05-16 16:19:43'),
-(14, 1, 1, 2, '2025-05-16 16:34:21'),
-(15, 3, 2, 1, '2025-05-17 11:51:03');
+(18, 1, 4, 0, '2025-06-18 16:49:03'),
+(19, 1, 5, 3, '2025-06-18 16:57:43'),
+(20, 1, 6, 1, '2025-06-19 12:53:54');
 
 -- --------------------------------------------------------
 
@@ -438,7 +528,11 @@ INSERT INTO `users` (`id`, `fullname`, `email`, `password`, `role`, `created_at`
 (5, 'Admin', 'admin@gmail.com', '$2y$10$vI2YpLI.1ShVQVU2OHzQJuDckN1bfDmEPDL2/shA1ZVEmgPUIO/LK', 'admin', '2025-05-17 13:28:36', 'approved'),
 (6, 'Trần Văn Hùng', 'hung@gmail.com', '$2y$10$7rdp5fVpG4jTDNpHr0TrtO1jnBKhIEMhxgZh8.Mux11/vyDZGCkxq', 'teacher', '2025-06-03 10:45:31', 'approved'),
 (7, 'Nguyễn Thị Tâm', 'tam@gmail.com', '$2y$10$dKOuEF3sKXwVxPpXpaedlOgOkO4Tz2w6lgN0d0ue2VrMP.HRz9qcO', 'teacher', '2025-06-06 18:19:15', 'approved'),
-(8, 'Trần Văn C', 'D@gmail.com', '$2y$10$5IFUNAHDRQ88BJMlLwQifew0xziLLOvKxcPTaaVPl.Wds6Cor8u8C', 'teacher', '2025-06-11 15:20:12', 'approved');
+(8, 'Trần Văn C', 'D@gmail.com', '$2y$10$5IFUNAHDRQ88BJMlLwQifew0xziLLOvKxcPTaaVPl.Wds6Cor8u8C', 'teacher', '2025-06-11 15:20:12', 'approved'),
+(10, 'Trần Văn Mạnh', 'manh@gmail.com', '$2y$10$CEzX3MNQe8im.iDqRJyOiuT0E83Yqdnjhn.cw4ADci77Zwuq2pT3e', 'student', '2025-06-13 20:37:02', 'approved'),
+(11, 'Hoàng Thị Thu Hà', 'ha@gmail.com', '$2y$10$nuX/xXyKmIJZ44HhvQFHsOS59N3YgbITLs9lYXhTopajk37ulDrkW', 'student', '2025-06-16 12:19:02', 'pending'),
+(12, 'Lê Văn Linh', 'linh@gmail.com', '$2y$10$P/VHtHY3SHZKaQvJphXe5.QsXjga6VLQntMdoL6uhH4KVwbmf8vVS', 'student', '2025-06-16 18:33:44', 'approved'),
+(13, 'Hồ Mai Anh', 'anh@gmail.com', '$2y$10$QRp81KZI4bHoNfddTT9om.IAd1Sdw1cLFhRPnmFKQvjvtx0OxfJZ.', 'teacher', '2025-06-20 15:13:48', 'pending');
 
 --
 -- Chỉ mục cho các bảng đã đổ
@@ -460,6 +554,14 @@ ALTER TABLE `assignment_submissions`
   ADD KEY `user_id` (`user_id`);
 
 --
+-- Chỉ mục cho bảng `comments`
+--
+ALTER TABLE `comments`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `post_id` (`post_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
 -- Chỉ mục cho bảng `courses`
 --
 ALTER TABLE `courses`
@@ -470,14 +572,6 @@ ALTER TABLE `courses`
 -- Chỉ mục cho bảng `enrollments`
 --
 ALTER TABLE `enrollments`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `user_id` (`user_id`),
-  ADD KEY `course_id` (`course_id`);
-
---
--- Chỉ mục cho bảng `forum_posts`
---
-ALTER TABLE `forum_posts`
   ADD PRIMARY KEY (`id`),
   ADD KEY `user_id` (`user_id`),
   ADD KEY `course_id` (`course_id`);
@@ -494,6 +588,22 @@ ALTER TABLE `lessons`
 --
 ALTER TABLE `notifications`
   ADD PRIMARY KEY (`id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Chỉ mục cho bảng `posts`
+--
+ALTER TABLE `posts`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `course_id` (`course_id`),
+  ADD KEY `user_id` (`user_id`);
+
+--
+-- Chỉ mục cho bảng `post_likes`
+--
+ALTER TABLE `post_likes`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `post_id` (`post_id`,`user_id`),
   ADD KEY `user_id` (`user_id`);
 
 --
@@ -565,64 +675,76 @@ ALTER TABLE `assignment_submissions`
   MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
+-- AUTO_INCREMENT cho bảng `comments`
+--
+ALTER TABLE `comments`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+
+--
 -- AUTO_INCREMENT cho bảng `courses`
 --
 ALTER TABLE `courses`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- AUTO_INCREMENT cho bảng `enrollments`
 --
 ALTER TABLE `enrollments`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
-
---
--- AUTO_INCREMENT cho bảng `forum_posts`
---
-ALTER TABLE `forum_posts`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT cho bảng `lessons`
 --
 ALTER TABLE `lessons`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
 
 --
 -- AUTO_INCREMENT cho bảng `notifications`
 --
 ALTER TABLE `notifications`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=86;
+
+--
+-- AUTO_INCREMENT cho bảng `posts`
+--
+ALTER TABLE `posts`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=18;
+
+--
+-- AUTO_INCREMENT cho bảng `post_likes`
+--
+ALTER TABLE `post_likes`
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=221;
 
 --
 -- AUTO_INCREMENT cho bảng `progress`
 --
 ALTER TABLE `progress`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT cho bảng `quizzes`
 --
 ALTER TABLE `quizzes`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT cho bảng `quiz_answers`
 --
 ALTER TABLE `quiz_answers`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=15;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=26;
 
 --
 -- AUTO_INCREMENT cho bảng `quiz_questions`
 --
 ALTER TABLE `quiz_questions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT cho bảng `quiz_submissions`
 --
 ALTER TABLE `quiz_submissions`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
 
 --
 -- AUTO_INCREMENT cho bảng `system_notifications`
@@ -634,7 +756,7 @@ ALTER TABLE `system_notifications`
 -- AUTO_INCREMENT cho bảng `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- Các ràng buộc cho các bảng đã đổ
@@ -654,6 +776,13 @@ ALTER TABLE `assignment_submissions`
   ADD CONSTRAINT `assignment_submissions_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
 
 --
+-- Các ràng buộc cho bảng `comments`
+--
+ALTER TABLE `comments`
+  ADD CONSTRAINT `comments_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
+  ADD CONSTRAINT `comments_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
 -- Các ràng buộc cho bảng `courses`
 --
 ALTER TABLE `courses`
@@ -667,13 +796,6 @@ ALTER TABLE `enrollments`
   ADD CONSTRAINT `enrollments_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE;
 
 --
--- Các ràng buộc cho bảng `forum_posts`
---
-ALTER TABLE `forum_posts`
-  ADD CONSTRAINT `forum_posts_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE,
-  ADD CONSTRAINT `forum_posts_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`) ON DELETE CASCADE;
-
---
 -- Các ràng buộc cho bảng `lessons`
 --
 ALTER TABLE `lessons`
@@ -684,6 +806,20 @@ ALTER TABLE `lessons`
 --
 ALTER TABLE `notifications`
   ADD CONSTRAINT `notifications_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`) ON DELETE CASCADE;
+
+--
+-- Các ràng buộc cho bảng `posts`
+--
+ALTER TABLE `posts`
+  ADD CONSTRAINT `posts_ibfk_1` FOREIGN KEY (`course_id`) REFERENCES `courses` (`id`),
+  ADD CONSTRAINT `posts_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
+
+--
+-- Các ràng buộc cho bảng `post_likes`
+--
+ALTER TABLE `post_likes`
+  ADD CONSTRAINT `post_likes_ibfk_1` FOREIGN KEY (`post_id`) REFERENCES `posts` (`id`),
+  ADD CONSTRAINT `post_likes_ibfk_2` FOREIGN KEY (`user_id`) REFERENCES `users` (`id`);
 
 --
 -- Các ràng buộc cho bảng `progress`

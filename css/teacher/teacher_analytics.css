@@ -1,0 +1,618 @@
+.main-content {
+    margin-left: 280px; /* Phải khớp với sidebar width trong style.css */
+    padding: 30px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-light);
+    transition: margin-left 0.3s ease;
+}
+
+/* Teacher Dashboard Header */
+.teacher-dashboard-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.teacher-dashboard-header h2 {
+    font-size: 2.2em;
+    color: var(--text-dark);
+    margin: 0;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.teacher-dashboard-header h2 i {
+    margin-right: 12px;
+    color: var(--primary-color);
+    font-size: 1.1em;
+}
+
+/* General Dashboard Section/Card Styling */
+.dashboard-section, .dashboard-card {
+    background-color: var(--background-card);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px var(--shadow-light);
+    margin-bottom: 30px;
+}
+
+.dashboard-section h3, .dashboard-card h3 {
+    font-size: 1.8em;
+    color: var(--text-dark);
+    margin-top: 0;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.dashboard-section h3 i, .dashboard-card h3 i {
+    margin-right: 12px;
+    color: var(--accent-color); /* You can vary this color if needed */
+    font-size: 1.1em;
+}
+
+/* Specific styles for Quick Stats - using overview-item grid */
+.quick-stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    margin-top: 20px; /* Space from heading */
+}
+
+.quick-stats-grid .overview-item {
+    background-color: var(--background-light);
+    padding: 25px;
+    border-radius: 10px;
+    text-align: center;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+    transition: transform 0.3s ease-in-out, box-shadow 0.3s ease;
+    border: 1px solid var(--border-color);
+}
+
+.quick-stats-grid .overview-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 8px 25px var(--shadow-medium);
+}
+
+.quick-stats-grid .overview-item i {
+    font-size: 3em;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+}
+
+.quick-stats-grid .overview-item:hover i {
+    color: var(--accent-color);
+}
+
+.quick-stats-grid .overview-item span {
+    display: block;
+    font-size: 1em;
+    color: var(--text-medium);
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
+.quick-stats-grid .overview-item strong {
+    display: block;
+    font-size: 2em;
+    font-weight: 700;
+    color: var(--text-dark);
+    letter-spacing: -0.5px;
+}
+.quick-stats-grid .overview-item .count.danger {
+    color: #dc3545; /* Red for urgent numbers */
+}
+
+
+/* Teacher Actions (Quick Actions) */
+.teacher-actions {
+    background-color: var(--background-card);
+    padding: 30px;
+    border-radius: 12px;
+    box-shadow: 0 5px 20px var(--shadow-light);
+    margin-bottom: 30px;
+}
+
+.teacher-actions h3 {
+    font-size: 1.8em;
+    color: var(--text-dark);
+    margin-top: 0;
+    margin-bottom: 25px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 15px;
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+}
+
+.teacher-actions h3 i {
+    margin-right: 12px;
+    color: var(--accent-color);
+    font-size: 1.1em;
+}
+
+.teacher-actions ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 15px;
+}
+
+.teacher-actions li {
+    background-color: var(--background-light);
+    padding: 15px 20px;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    align-items: center;
+}
+
+.teacher-actions li:hover {
+    background-color: #e6f7ff;
+    transform: translateY(-3px);
+}
+
+.teacher-actions li a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.3s ease;
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.teacher-actions li a:hover {
+    color: var(--primary-color);
+}
+
+.teacher-actions li a i {
+    margin-right: 10px;
+    font-size: 1.1em;
+    color: var(--primary-color);
+    transition: color 0.3s ease;
+}
+
+.teacher-actions li a:hover i {
+    color: var(--primary-color);
+}
+
+/* Notification Styling */
+.notification-list {
+    margin-top: 20px;
+}
+.notification-item {
+    background-color: var(--background-light); /* Use light background for notifications */
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 8px;
+    font-size: 0.95em;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.2s ease;
+}
+.notification-item:hover {
+    transform: translateX(5px);
+}
+.notification-item strong {
+    color: var(--primary-color);
+    display: block;
+    margin-bottom: 5px;
+    font-size: 1em;
+}
+.notification-item small {
+    display: block;
+    color: var(--text-medium);
+    margin-top: 5px;
+    font-size: 0.85em;
+}
+.notification-item.system-notification {
+    border-left: 5px solid var(--primary-color);
+}
+.notification-item.student-notification {
+    border-left: 5px solid var(--accent-color);
+}
+.notification-item:last-child {
+    margin-bottom: 0;
+}
+
+/* Course List Styling */
+.course-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    margin-top: 20px;
+}
+.course-list li {
+    padding: 15px 20px;
+    border-bottom: 1px dashed var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: var(--text-dark);
+    font-weight: 500;
+    background-color: var(--background-light);
+    border-radius: 8px;
+    margin-bottom: 8px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.03);
+}
+.course-list li:hover {
+    background-color: #f0f8ff;
+    transform: translateY(-3px);
+}
+.course-list li:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+}
+.course-list li span {
+    color: var(--text-medium);
+    font-size: 0.9em;
+}
+
+/* Logout Link */
+.logout-link {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.logout-link a {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 30px;
+    background-color: var(--accent-color);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+}
+
+.logout-link a:hover {
+    background-color: #c82333;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+}
+
+.logout-link a i {
+    margin-right: 10px;
+    font-size: 1.1em;
+}
+
+/* Back Link Styling */
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    padding: 12px 30px;
+    background-color: var(--primary-color, #007bff);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 123, 255, 0.15);
+    border: none;
+    font-size: 1em;
+    margin-left: 10px;
+}
+.back-link:hover {
+    background-color: #0056b3;
+    transform: translateY(-3px);
+    box-shadow: 0 6px 20px rgba(0, 123, 255, 0.25);
+}
+.back-link i {
+    margin-right: 10px;
+    font-size: 1.1em;
+}
+
+/* Responsive Adjustments (Copied and adapted from admin_dashboard.php) */
+@media (max-width: 1024px) {
+    .quick-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    }
+    .teacher-actions ul {
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+    .quick-stats-grid .overview-item i {
+        font-size: 2.5em;
+    }
+    .quick-stats-grid .overview-item strong {
+        font-size: 1.8em;
+    }
+    .quick-stats-grid .overview-item span {
+        font-size: 0.9em;
+    }
+    .teacher-actions li a {
+        font-size: 0.9em;
+    }
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        margin-left: 0;
+        padding: 20px;
+        padding-top: 80px; /* Adjust for potential fixed header/sidebar on mobile */
+    }
+    .teacher-dashboard-header {
+        flex-direction: column;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+    .teacher-dashboard-header h2 {
+        font-size: 1.8em;
+        margin-bottom: 10px;
+        text-align: left;
+    }
+
+    .dashboard-section, .dashboard-card {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    .dashboard-section h3, .dashboard-card h3 {
+        font-size: 1.4em;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+
+    .quick-stats-grid {
+        grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+        gap: 15px;
+        margin-top: 15px;
+    }
+    .quick-stats-grid .overview-item {
+        padding: 12px;
+    }
+    .quick-stats-grid .overview-item i {
+        font-size: 2em;
+        margin-bottom: 10px;
+    }
+    .quick-stats-grid .overview-item span {
+        font-size: 0.8em;
+    }
+    .quick-stats-grid .overview-item strong {
+        font-size: 1.3em;
+    }
+
+    .teacher-actions {
+        padding: 15px;
+        margin-bottom: 20px;
+    }
+    .teacher-actions h3 {
+        font-size: 1.4em;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+    .teacher-actions ul {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+    .teacher-actions li {
+        padding: 12px 15px;
+    }
+    .teacher-actions li a {
+        font-size: 0.9em;
+    }
+    .teacher-actions li a i {
+        font-size: 1em;
+    }
+
+    .notification-item {
+        padding: 12px;
+        font-size: 0.9em;
+    }
+    .notification-item strong {
+        font-size: 0.95em;
+    }
+    .notification-item small {
+        font-size: 0.8em;
+    }
+
+    .course-list li {
+        padding: 12px 15px;
+        font-size: 0.9em;
+    }
+    .course-list li span {
+        font-size: 0.8em;
+    }
+
+    .logout-link a {
+        padding: 10px 20px;
+        font-size: 0.95em;
+        width: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .teacher-dashboard-header h2 {
+        font-size: 1.4em;
+    }
+    .quick-stats-grid {
+        grid-template-columns: 1fr;
+    }
+    .quick-stats-grid .overview-item {
+        padding: 10px;
+    }
+    .quick-stats-grid .overview-item i {
+        font-size: 1.8em;
+    }
+    .quick-stats-grid .overview-item strong {
+        font-size: 1.2em;
+    }
+    .quick-stats-grid .overview-item span {
+        font-size: 0.75em;
+    }
+    .dashboard-section h3, .dashboard-card h3, .teacher-actions h3 {
+        font-size: 1.3em;
+    }
+    .teacher-actions li a {
+        font-size: 0.85em;
+    }
+    .logout-link a {
+        font-size: 0.9em;
+        padding: 8px 15px;
+    }
+}
+/* Styles for Chart Containers */
+/* Styles for Chart Containers */
+.chart-section {
+    /* Kế thừa từ .dashboard-section */
+    padding: 20px; /* Có thể điều chỉnh lại padding cho phần biểu đồ nếu muốn */
+    margin-bottom: 30px;
+    background-color: var(--background-card);
+    border-radius: 12px;
+    box-shadow: 0 5px 20px var(--shadow-light);
+}
+
+.chart-section h3 {
+    /* Đảm bảo tiêu đề trong phần biểu đồ cũng nhất quán */
+    margin-bottom: 20px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.chart-container {
+    position: relative; /* Rất quan trọng cho Chart.js responsive */
+    height: 400px; /* Increased height for larger chart */
+    width: 100%; /* Chiều rộng 100% của phần tử cha */
+    margin: auto; /* Căn giữa biểu đồ nếu parent cho phép */
+}
+
+/* Optional: Nếu biểu đồ vẫn chưa hiển thị, đôi khi cần đảm bảo canvas có kích thước rõ ràng */
+.chart-container canvas {
+    display: block; /* Loại bỏ khoảng trắng dưới inline elements */
+    width: 100% !important; /* Đảm bảo canvas chiếm hết chiều rộng của container */
+    height: 100% !important; /* Đảm bảo canvas chiếm hết chiều cao của container */
+}
+
+/* Responsive adjustments for charts (adjust as needed) */
+@media (max-width: 768px) {
+    .chart-container {
+        height: 400px; /* Adjusted height for smaller devices */
+    }
+}
+
+@media (max-width: 480px) {
+    .chart-container {
+        height: 350px; /* Adjusted height further for mobile devices */
+    }
+}
+/* ...existing code... */
+.top-students-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: var(--background-card, #fff);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0,0,0,0.08);
+    margin-top: 18px;
+    margin-bottom: 24px;
+    font-family: 'Poppins', Arial, sans-serif;
+}
+
+.top-students-table thead th {
+    background: var(--primary-color, #4f8cff);
+    color: #fff;
+    font-size: 1.1em;
+    font-weight: 600;
+    padding: 16px 18px;
+    border: none;
+    text-align: left;
+    letter-spacing: 0.5px;
+}
+
+.top-students-table tbody tr {
+    transition: background 0.2s;
+}
+
+.top-students-table tbody tr:nth-child(even) {
+    background: var(--background-light-alt, #f7f9fc);
+}
+
+.top-students-table tbody tr:hover {
+    background: var(--hover-color, #eaf1fb);
+}
+
+.top-students-table td {
+    padding: 14px 18px;
+    font-size: 1em;
+    color: var(--text-dark, #222);
+    border: none;
+    vertical-align: middle;
+}
+
+.top-students-table td:first-child {
+    font-weight: 700;
+    color: var(--accent-color, #ffb300);
+    text-align: center;
+    font-size: 1.15em;
+}
+
+.top-students-table td:last-child {
+    font-weight: 600;
+    color: var(--primary-color, #4f8cff);
+}
+
+.top-students-table th, .top-students-table td {
+    border-bottom: 1px solid var(--border-color, #e0e6ed);
+}
+
+.top-students-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+@media (max-width: 600px) {
+    .top-students-table th, .top-students-table td {
+        padding: 10px 8px;
+        font-size: 0.95em;
+    }
+}
+/* teacher_analytics.css */
+
+.chart-controls {
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.chart-controls label {
+    font-weight: 500;
+}
+
+.chart-controls select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+    min-width: 200px; /* Adjust as needed */
+}
+
+.chart-controls button {
+    padding: 8px 15px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.chart-controls button:hover {
+    background-color: #0056b3;
+}

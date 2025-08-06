@@ -1,0 +1,311 @@
+/* css/style.css */
+
+/* Basic Reset & Base Styles for common elements */
+:root {
+    --primary-color: #007bff; /* Blue */
+    --accent-color: #dc3545; /* Red (for BTEC) */
+    --background-light: #f4f7fa;
+    --background-card: #ffffff;
+    --text-dark: #212529;
+    --text-medium: #6c757d;
+    --text-light: #ced4da;
+    --border-color: #eee6e6;
+    --shadow-light: rgba(0, 0, 0, 0.05);
+    --shadow-medium: rgba(0, 0, 0, 0.1);
+}
+
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
+    line-height: 1.6;
+    display: flex; /* Important for sidebar layout */
+    min-height: 100vh;
+}
+
+/* --- SIDEBAR STYLES (Desktop) --- */
+.sidebar {
+    width: 280px; /* Consistent width */
+    background-color: var(--background-card);
+    color: var(--text-dark);
+    position: fixed;
+    height: 100vh;
+    padding-top: 30px;
+    box-shadow: 2px 0 15px var(--shadow-light);
+    z-index: 100;
+    overflow-y: auto;
+    scrollbar-width: none; /* Firefox */
+    border-right: 1px solid var(--border-color);
+    transition: transform 0.3s ease-in-out; /* Add transition for smooth animation */
+}
+
+.sidebar::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Edge */
+}
+
+.sidebar .logo {
+    text-align: center;
+    padding: 10px 0 30px 0;
+    margin-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.sidebar .logo img {
+    width: 80%;
+    max-width: 150px;
+    height: auto;
+    margin: 0 auto;
+    display: block;
+    filter: drop-shadow(0 0 5px rgba(0,0,0,0.05));
+}
+
+.sidebar ul {
+    list-style: none;
+    padding: 0 20px;
+    margin: 0;
+}
+
+.sidebar ul li {
+    margin-bottom: 5px;
+}
+
+.sidebar ul li a {
+    display: flex;
+    align-items: center;
+    padding: 12px 15px;
+    color: var(--text-medium);
+    text-decoration: none;
+    border-radius: 8px;
+    transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+    font-size: 0.95em;
+    font-weight: 500;
+    position: relative;
+    overflow: hidden;
+}
+
+.sidebar ul li a::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0;
+    height: 100%;
+    background-color: var(--primary-color);
+    opacity: 0.1;
+    transition: width 0.3s ease;
+    z-index: 0;
+}
+
+.sidebar ul li a:hover::before {
+    width: 100%;
+}
+
+.sidebar ul li a:hover,
+.sidebar ul li a.active {
+    color: var(--primary-color);
+    background-color: rgba(0, 123, 255, 0.1);
+}
+
+.sidebar ul li a.active::before {
+    width: 100%;
+    opacity: 0.15;
+}
+
+.sidebar ul li a i {
+    margin-right: 15px;
+    font-size: 1.1em;
+    color: inherit;
+    transition: color 0.3s ease;
+    z-index: 1;
+}
+
+.sidebar ul li a:hover i,
+.sidebar ul li a.active i {
+    color: var(--primary-color);
+}
+
+/* --- Burger Toggle Button --- */
+.sidebar-toggle {
+    display: none; /* Mặc định ẩn trên desktop */
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    background-color: var(--primary-color);
+    color: white;
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    justify-content: center; /* Đặt ở đây để dùng chung, nhưng display sẽ quyết định hiển thị */
+    align-items: center;    /* Đặt ở đây để dùng chung, nhưng display sẽ quyết định hiển thị */
+    font-size: 1.5em;
+    cursor: pointer;
+    z-index: 101; /* Higher than sidebar */
+    box-shadow: 0 4px 10px rgba(0, 123, 255, 0.3);
+    transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.sidebar-toggle:hover {
+    background-color: #0056b3;
+    transform: scale(1.05);
+}
+
+/* --- Sidebar Overlay --- */
+.sidebar-overlay {
+    /* Đã thay đổi: Loại bỏ display: none; ở đây */
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Semi-transparent black */
+    z-index: 99; /* Below sidebar, above main content */
+    opacity: 0; /* Mặc định ẩn */
+    visibility: hidden; /* Mặc định ẩn */
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.sidebar-overlay.active {
+    opacity: 1; /* Hiện khi active */
+    visibility: visible; /* Hiện khi active */
+}
+
+
+
+/* --- FOOTER STYLES --- */
+footer {
+    text-align: center;
+    padding: 30px;
+    margin-top: 40px;
+    font-size: 0.85em;
+    color: var(--text-medium);
+    background-color: var(--background-card);
+    border-top: 1px solid var(--border-color);
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 -2px 10px var(--shadow-light);
+    width: 100%;
+    flex-shrink: 0; /* Prevent footer from shrinking */
+}
+
+footer a {
+    color: var(--primary-color);
+    text-decoration: none;
+    margin: 0 8px;
+    transition: color 0.3s ease;
+}
+
+footer a:hover {
+    color: var(--accent-color);
+    text-decoration: underline;
+}
+
+footer p {
+    margin: 8px 0;
+}
+
+footer .contact-info {
+    margin-top: 15px;
+    line-height: 1.8;
+}
+
+footer .contact-info p {
+    margin: 0;
+}
+
+/* --- RESPONSIVE ADJUSTMENTS for Sidebar and Footer --- */
+
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        position: relative;
+    }
+
+    .sidebar {
+        width: 280px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        height: 100vh;
+        z-index: 100;
+        transform: translateX(-100%); /* Hidden by default */
+        box-shadow: 5px 0 15px rgba(0,0,0,0.2);
+        border-right: none;
+    }
+
+    .sidebar.active {
+        transform: translateX(0); /* Show sidebar */
+    }
+
+    .sidebar-toggle {
+        display: flex; /* Chỉ hiển thị nút burger trên màn hình nhỏ */
+    }
+
+    /* main-content adjustments moved to individual page's <style> or specific CSS files */
+
+    footer {
+        border-radius: 0;
+        margin-top: 30px;
+        padding: 20px;
+    }
+}
+
+/* --- DARK MODE FOR SIDEBAR AND FOOTER --- */
+body.dark-mode .sidebar {
+    background-color: #34495e;
+    box-shadow: 2px 0 15px rgba(0, 0, 0, 0.3);
+    border-right-color: #444;
+}
+
+body.dark-mode .sidebar .logo img {
+    filter: brightness(0.8) invert(1) hue-rotate(180deg) sepia(0.5) saturate(2);
+}
+
+body.dark-mode .sidebar ul li a {
+    color: #bdc3c7;
+}
+
+body.dark-mode .sidebar ul li a:hover,
+body.dark-mode .sidebar ul li a.active {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: #f1c40f; /* Yellow accent in dark mode */
+}
+
+body.dark-mode .sidebar ul li a:hover i,
+body.dark-mode .sidebar ul li a.active i {
+    color: #f1c40f;
+}
+
+body.dark-mode .sidebar ul li a::before {
+    background-color: #f1c40f;
+    opacity: 0.1;
+}
+
+body.dark-mode .sidebar-toggle {
+    background-color: #f1c40f; /* Yellow for dark mode burger */
+    color: #333d47; /* Dark text for contrast */
+    box-shadow: 0 4px 10px rgba(241, 196, 15, 0.3);
+}
+body.dark-mode .sidebar-toggle:hover {
+    background-color: #d35400; /* Darker orange on hover */
+}
+
+body.dark-mode .sidebar-overlay {
+    background-color: rgba(0, 0, 0, 0.7); /* Darker overlay */
+}
+
+body.dark-mode footer {
+    background-color: #34495e;
+    color: #bdc3c7;
+    border-top-color: #444;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.3);
+}
+
+body.dark-mode footer a {
+    color: #f1c40f;
+}
+

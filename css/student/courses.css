@@ -1,0 +1,259 @@
+  /* Specific styles for the courses page to override or add to general style.css */
+        .main-content {
+            margin-left: 280px; /* Must match sidebar width in style.css */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        .courses-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .courses-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .courses-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Course List Container */
+        .course-list-container {
+            list-style: none;
+            padding: 0;
+            margin-top: 20px;
+            display: grid; /* Use grid for a dashboard-like layout */
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive grid columns */
+            gap: 25px; /* Spacing between course cards */
+        }
+
+        .course-item {
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            transition: transform 0.3s ease, box-shadow 0.3s ease, background-color 0.3s ease;
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            position: relative; /* For the "View Details" button */
+            overflow: hidden;
+        }
+
+        .course-item:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 10px 30px var(--shadow-medium);
+            background-color: var(--hover-light);
+        }
+
+        .course-item strong {
+            color: var(--primary-color);
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            display: block; /* Make it a block element for spacing */
+        }
+
+        .course-item p {
+            color: var(--text-dark);
+            font-size: 1em;
+            line-height: 1.6;
+            margin-bottom: 20px; /* Space before button */
+            flex-grow: 1; /* Allow description to take available space */
+        }
+
+        .course-item a {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            /* Smooth transition for transform and box-shadow */
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 0.95em;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.2);
+            align-self: flex-end; /* Align button to the bottom right */
+            border: 2px solid transparent; /* Initial transparent border */
+        }
+
+        .course-item a i {
+            margin-left: 8px; /* Icon on the right */
+        }
+
+        .course-item a:hover {
+            transform: translateY(-3px); /* Slightly more pronounced lift */
+            box-shadow: 0 10px 30px rgba(var(--primary-rgb), 0.4); /* Stronger shadow on hover */
+            /* Removed border-color and text-shadow as they might imply color change */
+        }
+
+        .no-courses-message {
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            text-align: center;
+            color: var(--text-medium);
+            font-size: 1.1em;
+            margin-top: 20px;
+        }
+
+        /* Navigation Links below courses */
+        .navigation-links {
+            margin-top: 40px;
+            display: flex;
+            justify-content: center; /* Center the navigation links */
+            gap: 20px; /* Space between links */
+            flex-wrap: wrap; /* Allow wrapping on small screens */
+        }
+
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--accent-color); /* Use accent color for these buttons */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            /* Smooth transition for transform and box-shadow */
+            transition: transform 0.2s ease, box-shadow 0.3s ease;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(var(--accent-rgb), 0.2);
+            border: 2px solid transparent; /* Initial transparent border */
+        }
+
+        .navigation-links a:hover {
+            transform: translateY(-3px); /* Slightly more pronounced lift */
+            box-shadow: 0 10px 30px rgba(var(--accent-rgb), 0.4); /* Stronger shadow on hover */
+            /* Removed border-color and text-shadow as they might imply color change */
+        }
+
+        .navigation-links a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Toggle Mode Button - Repositioned for consistency */
+        .toggle-mode-btn {
+            position: absolute;
+            top: 20px; /* Adjust as needed */
+            right: 30px; /* Adjust as needed */
+            background-color: var(--secondary-color); /* Matches theme */
+            color: var(--text-light);
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease, color 0.3s ease, transform 0.2s ease;
+            z-index: 10;
+        }
+
+        .toggle-mode-btn:hover {
+            background-color: var(--secondary-dark);
+            transform: scale(1.05);
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .course-list-container {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+                gap: 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 80px; /* Adjust for potential fixed header/sidebar on mobile */
+            }
+            .courses-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .courses-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            .toggle-mode-btn {
+                top: 70px; /* Adjust position for mobile, below header */
+                right: 20px;
+            }
+            .course-list-container {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 15px;
+            }
+            .course-item {
+                padding: 20px;
+            }
+            .course-item strong {
+                font-size: 1.3em;
+            }
+            .course-item p {
+                font-size: 0.95em;
+                margin-bottom: 15px;
+            }
+            .course-item a {
+                padding: 8px 15px;
+                font-size: 0.9em;
+            }
+            .navigation-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .navigation-links a {
+                width: 90%; /* Make buttons full width on small screens */
+                justify-content: center;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .courses-header h2 {
+                font-size: 1.5em;
+            }
+            .course-list-container {
+                grid-template-columns: 1fr; /* Stack courses vertically on very small screens */
+            }
+            .toggle-mode-btn {
+                top: 60px;
+                right: 15px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.1em;
+            }
+            .navigation-links a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }

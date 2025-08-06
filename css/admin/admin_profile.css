@@ -1,0 +1,244 @@
+ .main-content {
+            margin-left: 280px; /* Must match sidebar width */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding-top: 80px;
+            }
+        }
+
+        .admin-page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .admin-page-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .admin-page-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Profile Card Styling (similar to edit-user-card) */
+        .profile-card {
+            background-color: var(--background-card);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+        }
+
+        .profile-card h3 {
+            font-size: 1.6em;
+            color: var(--text-dark);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border-color);
+            margin-bottom: 20px;
+        }
+
+        .profile-card h3 i {
+            margin-right: 10px;
+            color: var(--primary-color);
+            font-size: 1em;
+        }
+
+        .user-details-section { /* Reusing the class from admin_edit_user.php */
+            background-color: var(--background-input);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark-secondary);
+            font-size: 1em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px var(--shadow-light);
+        }
+
+        .user-details-section p {
+            margin: 0 0 8px 0;
+            display: flex;
+            align-items: center;
+        }
+
+        .user-details-section p:last-child {
+            margin-bottom: 0;
+        }
+
+        .user-details-section p strong {
+            color: var(--text-dark);
+            margin-right: 8px;
+            font-weight: 600;
+        }
+
+        .user-details-section p i {
+            margin-right: 8px;
+            color: var(--primary-color);
+            font-size: 0.9em;
+        }
+
+        /* Profile Actions Styling */
+        .profile-actions {
+            display: flex; /* For horizontal buttons */
+            gap: 15px; /* Space between buttons */
+            margin-top: 25px;
+            justify-content: center; /* Center buttons */
+            flex-wrap: wrap; /* Allow buttons to wrap on smaller screens */
+        }
+
+        .profile-actions a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--primary-color);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-size: 1.05em;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+
+        .profile-actions a:hover {
+            background-color: var(--primary-color-dark);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+        }
+
+        .profile-actions a i {
+            margin-right: 8px;
+        }
+
+        /* Back to Dashboard Link */
+        .back-to-users { /* Reusing class from admin_edit_user.php for consistent button style */
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .back-to-users a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: #6c757d; /* Gray color for back button */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .back-to-users a:hover {
+            background-color: #5a6268;
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+        .back-to-users a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        /* Dark Mode adjustments */
+        body.dark-mode .profile-card {
+            background-color: #343a40;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.3);
+            border-color: #555;
+        }
+        body.dark-mode .profile-card h3 {
+            color: #fff;
+            border-bottom-color: #555;
+        }
+        body.dark-mode .user-details-section {
+            background-color: #495057;
+            border-color: #555;
+            color: #ccc;
+        }
+        body.dark-mode .user-details-section p strong {
+            color: #eee;
+        }
+        body.dark-mode .profile-actions a {
+            background-color: #0056b3;
+            box-shadow: 0 4px 15px rgba(0, 123, 255, 0.2);
+        }
+        body.dark-mode .profile-actions a:hover {
+            background-color: #004085;
+            box-shadow: 0 6px 20px rgba(0, 123, 255, 0.3);
+        }
+        body.dark-mode .back-to-users a {
+            background-color: #7f8c8d;
+            box-shadow: 0 4px 15px rgba(127, 140, 141, 0.2);
+        }
+        body.dark-mode .back-to-users a:hover {
+            background-color: #95a5a6;
+            box-shadow: 0 6px 20px rgba(127, 140, 141, 0.3);
+        }
+
+        /* Responsive Adjustments */
+        @media (max-width: 1024px) {
+            .profile-card {
+                padding: 25px;
+            }
+            .profile-card h3 {
+                font-size: 1.4em;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .admin-page-header h2 {
+                font-size: 1.8em;
+            }
+            .profile-card h3 {
+                text-align: center;
+                margin-bottom: 25px;
+                padding-bottom: 10px;
+            }
+            .profile-actions {
+                flex-direction: column; /* Stack buttons vertically on smaller screens */
+                align-items: center;
+            }
+            .profile-actions a {
+                width: 80%; /* Make buttons take more width */
+            }
+        }
+
+        @media (max-width: 480px) {
+            .admin-page-header h2 {
+                font-size: 1.5em;
+            }
+            .profile-card {
+                padding: 20px;
+            }
+            .profile-card h3 {
+                font-size: 1.3em;
+            }
+            .profile-actions a {
+                padding: 10px 20px;
+                font-size: 1em;
+            }
+            .user-details-section {
+                padding: 15px;
+            }
+        }

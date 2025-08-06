@@ -1,0 +1,248 @@
+  body {
+            background-color: var(--background-light);
+            color: var(--text-dark);
+            font-family: 'Poppins', sans-serif;
+        }
+
+        .main-content {
+            margin-left: 280px; /* Must match sidebar width */
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--background-light);
+            transition: margin-left 0.3s ease;
+            position: relative;
+        }
+
+        .profile-header { /* Renamed from admin-page-header for clarity */
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .profile-header h2 {
+            font-size: 2.2em;
+            color: var(--text-dark);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            font-weight: 600;
+        }
+
+        .profile-header h2 i {
+            margin-right: 12px;
+            color: var(--primary-color);
+            font-size: 1.1em;
+        }
+
+        /* Card-like containers for profile sections, consistent with teacher_profile.css */
+        .profile-section { /* Renamed for consistency with teacher_profile.css's container concept */
+            background-color: var(--background-card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 5px 20px var(--shadow-light);
+            margin-bottom: 30px;
+            width: 100%;
+            max-width: 800px; /* Consistent max width */
+            align-self: center; /* Center these blocks */
+        }
+
+        .profile-section h3 {
+            font-size: 1.8em;
+            color: var(--text-dark); /* Changed to text-dark for consistency */
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+        }
+
+        .profile-section h3 i {
+            margin-right: 10px;
+            color: var(--primary-color); /* Or a relevant color */
+        }
+
+        /* Profile Information Display - Simplified to match teacher_profile.css */
+        .profile-info { /* New class for the container of info paragraphs */
+            list-style: none;
+            padding: 0;
+            margin-top: 15px; /* Adjust margin as needed */
+        }
+
+        .profile-info p {
+            font-size: 1em;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+            padding-bottom: 5px;
+            border-bottom: 1px dashed var(--border-color); /* Dashed border for consistency */
+        }
+        .profile-info p:last-child {
+            border-bottom: none;
+            margin-bottom: 0;
+        }
+        .profile-info strong {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-right: 5px;
+        }
+
+        /* Action buttons styling consistent with teacher_profile.css */
+        .profile-actions { /* New class for the container of action buttons */
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-top: 15px;
+        }
+
+        .profile-actions a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--primary-color); /* Changed to primary-color */
+            color: white;
+            text-decoration: none;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.2); /* Use primary-rgb for shadow */
+        }
+
+        .profile-actions a i {
+            margin-right: 8px;
+            font-size: 1.1em;
+        }
+
+        .profile-actions a:hover {
+            background-color: #2980b9; /* Darker shade of primary-color */
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(var(--primary-rgb), 0.3);
+        }
+
+        /* Back and Logout buttons styling consistent with teacher_profile.css's back-button */
+        .navigation-links { /* Renamed for consistency */
+            margin-top: 40px;
+            text-align: center;
+            display: flex; /* Ensure they flex for gap */
+            justify-content: center;
+            gap: 20px; /* Space between buttons */
+            flex-wrap: wrap;
+        }
+
+        .navigation-links a {
+            display: inline-flex;
+            align-items: center;
+            padding: 12px 25px;
+            background-color: var(--primary-color); /* Default to primary for consistency, or use specific color for logout */
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            box-shadow: 0 4px 15px rgba(var(--primary-rgb), 0.2);
+            border: none; /* Ensure no extra border */
+        }
+
+        .navigation-links a.back-button { /* Specific style for back button if needed */
+            background-color: #6c757d; /* Matches the grey back button in teacher_profile.css */
+            box-shadow: 0 4px 15px rgba(108, 117, 125, 0.2);
+        }
+
+        .navigation-links a.back-button:hover {
+            background-color: #5a6268;
+            box-shadow: 0 6px 20px rgba(108, 117, 125, 0.3);
+        }
+
+        .navigation-links a.logout-button { /* Specific style for logout button if needed */
+            background-color: #dc3545; /* A common red for logout/danger actions */
+            box-shadow: 0 4px 15px rgba(220, 53, 69, 0.2);
+        }
+
+        .navigation-links a.logout-button:hover {
+            background-color: #c82333;
+            box-shadow: 0 6px 20px rgba(220, 53, 69, 0.3);
+        }
+
+
+        .navigation-links a i {
+            margin-right: 10px;
+            font-size: 1.1em;
+        }
+
+        .navigation-links a:hover {
+            transform: translateY(-3px);
+            /* Box-shadow specific to button type will be handled by their respective classes */
+        }
+
+
+        /* Responsive adjustments */
+        @media (max-width: 1024px) {
+            .profile-section {
+                max-width: 700px; /* Adjust max width for slightly smaller screens */
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                padding: 20px;
+                padding-top: 80px;
+            }
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+                margin-bottom: 20px;
+            }
+            .profile-header h2 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+                text-align: left;
+            }
+            .profile-section {
+                padding: 20px;
+                margin-bottom: 25px;
+            }
+            .profile-section h3 {
+                font-size: 1.5em;
+                margin-bottom: 20px;
+            }
+            .profile-info p {
+                font-size: 0.95em;
+            }
+            .profile-actions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .profile-actions a {
+                width: 100%;
+                justify-content: center;
+            }
+            .navigation-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 15px;
+            }
+            .navigation-links a {
+                width: 90%;
+                justify-content: center;
+                padding: 10px 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .profile-header h2 {
+                font-size: 1.5em;
+            }
+            .profile-section {
+                padding: 15px;
+            }
+            .navigation-links a {
+                font-size: 0.9em;
+                padding: 8px 15px;
+            }
+        }
