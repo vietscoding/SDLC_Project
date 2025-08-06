@@ -9,8 +9,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // CSRF token validation
     if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
         $error = "Invalid CSRF token.";
+        exit;
     } else {
-        $fullname = htmlspecialchars(trim($_POST['fullname']), ENT_QUOTES, 'UTF-8');
+        // $fullname = htmlspecialchars(trim($_POST['fullname']), ENT_QUOTES, 'UTF-8');
+        // htmlspecialchars() chỉ dùng khi output ra HTML, không nên áp vào $fullname khi lưu DB
+        $fullname = trim($_POST['fullname']); // No htmlspecialchars
         $email = strtolower(trim($_POST['email']));
         $password = $_POST['password'];
         $confirm_password = $_POST['confirm-password'];
@@ -90,7 +93,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                 <p class="error-message"><i class="fas fa-exclamation-triangle"></i> <?= $error ?></p>
             <?php endif; ?>
             <form method="post" action="">
-
+                <input type="hidden" name="csrf_token" value="<?php echo $_SESSION['csrf_token']; ?>">
                 <div class="form-group">
                     <label for="fullname"><i class="fas fa-user"></i> Full Name:</label>
                     <input type="text" id="fullname" name="fullname" required>
@@ -118,7 +121,7 @@ $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
                     </select>
                 </div>
 
-                <button type="submit"><i class="fas fa-sign-up-alt"></i> Register</button>
+                <button type="submit"><i class="fas fa-user-plus"></i> Register</button>
             </form>
 
             <p class="link-text">Already have an account? <a href="login.php">Log in</a></p>
