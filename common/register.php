@@ -1,46 +1,73 @@
 <?php
 include "../includes/db_connect.php";
+session_start(); // Start session for CSRF and success message
 
 $success = "";
 $error = "";
 
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $fullname = trim($_POST['fullname']);
-    $email = trim($_POST['email']);
-    $password = $_POST['password'];
-    $role = $_POST['role']; // 'student' or 'teacher'
-    $status = ($role == 'teacher') ? 'pending' : 'approved';
-    if (!empty($fullname) && !empty($email) && !empty($password)) {
-        // Check if email already exists
-        $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
-        $check->bind_param("s", $email);
-        $check->execute();
-        $check->store_result();
-
-        if ($check->num_rows > 0) {
-            $error = "This email is already registered.";
-        } else {
-            // Hash password
-            $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-            $stmt = $conn->prepare("INSERT INTO users (fullname, email, password, role, status) VALUES (?, ?, ?, ?, ?)");
-            $stmt->bind_param("sssss", $fullname, $email, $hashedPassword, $role, $status);
-
-
-            if ($stmt->execute()) {
-                $success = "Registration successful! You can now log in.";
-            } else {
-                $error = "Failed to register. Please try again.";
-            }
-        }
-        $check->close();
+    // CSRF token validation
+    if (!isset($_POST['csrf_token']) || $_POST['csrf_token'] !== $_SESSION['csrf_token']) {
+        $error = "Invalid CSRF token.";
     } else {
-        $error = "Please fill in all fields.";
+        $fullname = htmlspecialchars(trim($_POST['fullname']), ENT_QUOTES, 'UTF-8');
+        $email = strtolower(trim($_POST['email']));
+        $password = $_POST['password'];
+        $confirm_password = $_POST['confirm-password'];
+        $role = $_POST['role'];
+
+        // Validate inputs
+        if (empty($fullname) || empty($email) || empty($password)) {
+            $error = "Please fill in all required fields.";
+        } elseif ($password !== $confirm_password) {
+            $error = "Passwords do not match.";
+        } elseif (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            $error = "Invalid email format.";
+        } elseif (strlen($password) < 6) {
+            $error = "Password must be at least 6 characters.";
+        } elseif (!in_array($role, ['student', 'teacher'])) {
+            $error = "Invalid role selected.";
+        } else {
+            // Check if email already exists
+            $check = $conn->prepare("SELECT id FROM users WHERE email = ?");
+            $check->bind_param("s", $email);
+            $check->execute();
+            $check->store_result();
+
+            if ($check->num_rows > 0) {
+                $error = "This email is already registered.";
+            } else {
+                // Hash password
+                $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
+                $status = ($role == 'teacher') ? 'pending' : 'approved';
+                $stmt = $conn->prepare("INSERT INTO users (fullname, email, password, role, status) VALUES (?, ?, ?, ?, ?)");
+                $stmt->bind_param("sssss", $fullname, $email, $hashedPassword, $role, $status);
+
+                try {
+                    if ($stmt->execute()) {
+                        $_SESSION['success'] = "Registration successful! You can now log in.";
+                        header("Location: login.php?registered=1");
+                        exit;
+                    } else {
+                        $error = "Error: " . $stmt->error;
+                    }
+                } catch (Exception $e) {
+                    $error = "Error: " . $e->getMessage();
+                }
+                $stmt->close();
+            }
+            $check->close();
+        }
     }
 }
+
+// Generate CSRF token
+$_SESSION['csrf_token'] = bin2hex(random_bytes(32));
 ?>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Register Account | BTEC FPT</title>
@@ -48,6 +75,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/common/register.css">
 </head>
+
 <body>
     <div class="registration-container">
         <div class="registration-panel">
@@ -56,29 +84,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 BTEC FPT
             </div>
             <h2> Create Account</h2>
-
-            <?php
-            // Example PHP logic for success/error messages
-            $success = null;
-            $error = null;
-
-            // This part would typically come from your server-side PHP processing
-            // For demonstration, let's simulate a success or error
-            // if (isset($_POST['submit_registration'])) {
-            //     // Simulate successful registration
-            //     $success = "Account registered successfully!";
-            //     // Simulate an error
-            //     // $error = "Email already exists. Please try another.";
-            // }
-            ?>
-
             <?php if ($success): ?>
                 <p class="success-message"><i class="fas fa-check-circle"></i> <?= $success ?></p>
             <?php elseif ($error): ?>
                 <p class="error-message"><i class="fas fa-exclamation-triangle"></i> <?= $error ?></p>
             <?php endif; ?>
-
             <form method="post" action="">
+
                 <div class="form-group">
                     <label for="fullname"><i class="fas fa-user"></i> Full Name:</label>
                     <input type="text" id="fullname" name="fullname" required>
@@ -93,7 +105,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     <label for="password"><i class="fas fa-lock"></i> Password:</label>
                     <input type="password" id="password" name="password" required>
                 </div>
-
+                <!-- Thêm trường Confirm Password -->
+                <div class="form-group">
+                    <label for="password"><i class="fas fa-lock"></i> Confirm Password:</label>
+                    <input type="password" id="confirm-password" name="confirm-password" required>
+                </div>
                 <div class="form-group">
                     <label for="role"><i class="fas fa-graduation-cap"></i> Role:</label>
                     <select id="role" name="role" required>
@@ -112,4 +128,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </body>
+
 </html>
