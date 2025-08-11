@@ -1,12 +1,12 @@
  .main-content {
-            margin-left: 280px; /* Must match sidebar width from style.css */
-            padding: 30px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            background-color: var(--background-light);
-            transition: margin-left 0.3s ease;
-        }
+    margin-left: 280px; /* Must match sidebar width from style.css */
+    padding: 30px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-light);
+    transition: margin-left 0.3s ease;
+}
 
         @media (max-width: 768px) {
             .main-content {

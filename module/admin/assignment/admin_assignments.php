@@ -17,71 +17,74 @@ $result = $conn->query($sql);
 ?>
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Manage Assignments | Admin</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../../../css/style.css">
- <link rel="stylesheet" href="../../../css/admin/admin_assignments.css">
-   
+    <link rel="stylesheet" href="../../../css/admin/admin_assignments.css">
+
 </head>
+
 <body>
-<?php include "../../../includes/sidebar.php"; ?>
+    <?php include "../../../includes/sidebar.php"; ?>
 
-<div class="main-content">
-    <div class="admin-page-header">
-        <h2><i class="fas fa-tasks"></i> Manage Assignments</h2>
-    </div>
-
-    <div class="course-management-overview">
-        <h3><i class="fas fa-edit"></i> Assignment Management Actions</h3>
-        <div class="course-management-content">
-            <a href="admin_assignment_edit.php?action=add" class="add-new-course-link">
-                <i class="fas fa-plus-circle"></i> Add New Assignment
-            </a>
+    <div class="main-content">
+        <div class="admin-page-header">
+            <h2><i class="fas fa-tasks"></i> Manage Assignments</h2>
         </div>
-    </div>
 
-    <?php if ($result->num_rows > 0): ?>
-        <table class="courses-table">
-            <thead>
-                <tr>
-                    <th>Course</th>
-                    <th>Title</th>
-                    <th>Due Date</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php while ($row = $result->fetch_assoc()): ?>
+        <div class="course-management-overview">
+            <h3><i class="fas fa-edit"></i> Assignment Management Actions</h3>
+            <div class="course-management-content">
+                <a href="admin_assignment_edit.php?action=add" class="add-new-course-link">
+                    <i class="fas fa-plus-circle"></i> Add New Assignment
+                </a>
+            </div>
+        </div>
+
+        <?php if ($result->num_rows > 0): ?>
+            <table class="courses-table">
+                <thead>
                     <tr>
-                        <td data-label="Course"><?= htmlspecialchars($row['course_title']) ?></td>
-                        <td data-label="Title"><?= htmlspecialchars($row['title']) ?></td>
-                        <td data-label="Due Date"><?= $row['due_date'] ?></td>
-                        <td data-label="Actions" class="course-actions">
-                            <a href="admin_assignment_edit.php?action=edit&id=<?= $row['id'] ?>"><i class="fas fa-edit"></i> Edit</a>
-                            <form action="admin_assignments.php" method="GET" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this assignment?');">
-                                <input type="hidden" name="delete_id" value="<?= $row['id'] ?>">
-                                <button type="submit" class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
-                            </form>
-                        </td>
+                        <th>Course</th>
+                        <th>Title</th>
+                        <th>Due Date</th>
+                        <th>Actions</th>
                     </tr>
-                <?php endwhile; ?>
-            </tbody>
-        </table>
-    <?php else: ?>
-        <p class="no-courses"><i class="fas fa-exclamation-circle"></i> No assignments found.</p>
-    <?php endif; ?>
+                </thead>
+                <tbody>
+                    <?php while ($row = $result->fetch_assoc()): ?>
+                        <tr>
+                            <td data-label="Course"><?= htmlspecialchars($row['course_title']) ?></td>
+                            <td data-label="Title"><?= htmlspecialchars($row['title']) ?></td>
+                            <td data-label="Due Date"><?= $row['due_date'] ?></td>
+                            <td data-label="Actions" class="course-actions">
+                                <a href="admin_assignment_edit.php?action=edit&id=<?= $row['id'] ?>"><i class="fas fa-edit"></i> Edit</a>
+                                <form action="admin_assignments.php" method="GET" style="display:inline;" onsubmit="return confirm('Are you sure you want to delete this assignment?');">
+                                    <input type="hidden" name="delete_id" value="<?= $row['id'] ?>">
+                                    <button type="submit" class="delete-btn"><i class="fas fa-trash-alt"></i> Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    <?php endwhile; ?>
+                </tbody>
+            </table>
+        <?php else: ?>
+            <p class="no-courses"><i class="fas fa-exclamation-circle"></i> No assignments found.</p>
+        <?php endif; ?>
 
-    <div class="back-to-dashboard">
-        <a href="../dashboard/admin_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        <div class="back-to-dashboard">
+            <a href="../dashboard/admin_dashboard.php"><i class="fas fa-arrow-left"></i> Back to Dashboard</a>
+        </div>
+
+        <?php include "../../../includes/footer.php"; ?>
     </div>
-
-    <?php include "../../../includes/footer.php"; ?>
-</div>
-<script src="../../../js/sidebar.js"></script>
+    <script src="../../../js/sidebar.js"></script>
 </body>
+
 </html>
 <?php
 // Xóa assignment
