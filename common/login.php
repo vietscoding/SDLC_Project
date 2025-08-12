@@ -20,32 +20,31 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt->fetch();
 
             // Verify password
-           if (password_verify($password, $hashedPassword)) {
-    // Check teacher approval
-    if ($role == 'teacher' && $status != 'approved') {
-        $error = "Your account is pending approval by admin.";
-    } else {
-        // Store user data in session
-        $_SESSION['user_id'] = $id;
-        $_SESSION['fullname'] = $fullname;
-        $_SESSION['role'] = $role;
+            if (password_verify($password, $hashedPassword)) {
+                // Check teacher approval
+                if ($role == 'teacher' && $status != 'approved') {
+                    $error = "Your account is pending approval by admin.";
+                } else {
+                    // Store user data in session
+                    $_SESSION['user_id'] = $id;
+                    $_SESSION['fullname'] = $fullname;
+                    $_SESSION['role'] = $role;
 
-        // Redirect based on role
-        if ($role == 'student') {
-            header("Location: ../module/student/dashboard/student_dashboard.php");
-            exit;
-        } elseif ($role == 'teacher') {
-            header("Location: ../module/teacher/dashboard/teacher_dashboard.php");
-            exit;
-        } elseif ($role == 'admin') {
-            header("Location: ../module/admin/dashboard/admin_dashboard.php");
-            exit;
-        }
-    }
-} else {
-    $error = "Incorrect password.";
-}
-
+                    // Redirect based on role
+                    if ($role == 'student') {
+                        header("Location: ../module/student/dashboard/student_dashboard.php");
+                        exit;
+                    } elseif ($role == 'teacher') {
+                        header("Location: ../module/teacher/dashboard/teacher_dashboard.php");
+                        exit;
+                    } elseif ($role == 'admin') {
+                        header("Location: ../module/admin/dashboard/admin_dashboard.php");
+                        exit;
+                    }
+                }
+            } else {
+                $error = "Incorrect password.";
+            }
         } else {
             $error = "Account not found.";
         }
@@ -58,6 +57,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <title>Log In | BTEC FPT</title>
@@ -65,8 +65,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../css/common/login.css">
 </head>
+
 <body>
-    
+
     <div class="login-container">
         <div class="login-panel">
             <div class="logo">
@@ -112,4 +113,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
     </div>
 </body>
+
 </html>
